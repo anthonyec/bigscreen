@@ -1,0 +1,48 @@
+###
+# osx files
+###
+.DS_Store
+.localized
+
+###
+# sublime text
+###
+*.sublime-project
+*.sublime-workspace
+
+###
+# orig file
+###
+*.orig
+
+###
+# system SWAP, TMP and BACKUP files
+###
+*~
+*.swp
+*.bak
+
+###
+# Project stuff
+###
+.coverage
+.s3.production.cfg
+.s3.staging.cfg
+.s3.dev.cfg
+.tmp_dist
+node_modules
+npm-debug.log
+dist
+
+###
+# localStorage
+###
+.scratch
+
+###
+# Misc
+###
+.ackrc
+.agignore
+.agrc
+tmp
