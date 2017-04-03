@@ -9,13 +9,16 @@
     "build": "node build.js",
     "lint": "eslint --ext .js ./",
     "lint:fix": "eslint --fix .js ./ ",
-    "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*')",
+    "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*' ! -ipath '*dist*')",
     "test:file": "NODE_ENV=test mocha",
-    "test:watch": "npm run test -- --watch --watch-extensions js"
+    "test:watch": "npm run test -- --watch --watch-extensions js",
+    "log": "bunyan"
   },
   "dependencies": {
+    "bunyan": "^1.8.9",
     "electron": "^1.6.2",
-    "electron-sudo": "^4.0.12"
+    "electron-sudo": "^4.0.12",
+    "js-yaml": "^3.8.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -23,6 +26,10 @@
     "electron-packager": "^8.6.0",
     "eslint": "^3.18.0",
     "mocha": "^3.2.0",
+    "mock-fs": "^4.2.0",
+    "node-fs-extra": "^0.8.1",
+    "proxyquire": "^1.7.11",
+    "rewire": "^2.5.2",
     "sinon": "^2.1.0"
   },
   "engines": {
