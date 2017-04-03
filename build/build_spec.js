@@ -50,6 +50,8 @@ describe('Build script', () => {
         'config.yaml': defaultConfigFile,
       },
     }, {
+      // Disable mock-fs creating a clone of then root dir, otherwise will get
+      // an error that it already exists when creating [__dirname] above.
       createCwd: false,
     });
   });
