@@ -5,7 +5,7 @@ const program = require('commander');
 const packager = require('electron-packager');
 const yaml = require('js-yaml');
 
-const log = require('./log');
+const log = require('../log');
 
 const DEFAULT_INPUT_PATH = path.join(__dirname);
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, 'dist');
@@ -35,11 +35,13 @@ const options = [
   },
 ];
 
-options.forEach((option) => {
-  program.option(option.command, option.description, option.defaultValue);
-});
+function parseProgramOptions() {
+  options.forEach((option) => {
+    program.option(option.command, option.description, option.defaultValue);
+  });
 
-program.parse(process.argv);
+  program.parse(process.argv);
+}
 
 /**
  * Check if the config path provided option is not different from the default.
@@ -80,22 +82,31 @@ function updateConfigFile(...args) {
   const callback = args.pop();
   const packageConfigPath = path.join(tempBuildPath, 'config.yaml');
 
-  if (!isDefaultConfigPath()) {
-    mergeConfigFiles(DEFAULT_CONFIG_PATH, program.config, packageConfigPath);
+  if (!exports.isDefaultConfigPath()) {
+    exports.mergeConfigFiles(
+      DEFAULT_CONFIG_PATH,
+      program.config,
+      packageConfigPath
+    );
   }
 
   callback();
 }
 
-packager({
-  dir: program.in,
-  out: program.out,
-  overwrite: true,
-  afterCopy: [updateConfigFile],
-}, (err, appPaths) => {
-  log.info('Build complete', appPaths);
-});
+function build() {
+  packager({
+    dir: program.in,
+    out: program.out,
+    overwrite: true,
+    afterCopy: [updateConfigFile],
+  }, (err, appPaths) => {
+    log.info('Build complete', appPaths);
+  });
+}
 
 module.exports.isDefaultConfigPath = isDefaultConfigPath;
 module.exports.mergeConfigFiles = mergeConfigFiles;
 module.exports.updateConfigFile = updateConfigFile;
+module.exports.parseProgramOptions = parseProgramOptions;
+module.exports.build = build;
+

@@ -6,7 +6,7 @@
   "author": "Anthony Cossins <anthony@signal-noise.co.uk>",
   "scripts": {
     "serve": "NODE_ENV=development electron .",
-    "build": "node build.js",
+    "build": "node ./build/index.js",
     "lint": "eslint --ext .js ./",
     "lint:fix": "eslint --fix .js ./ ",
     "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*' ! -ipath '*dist*')",

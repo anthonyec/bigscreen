@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const sinon = require('sinon');
 const fs = require('fs');
 const mock = require('mock-fs');
 const yaml = require('js-yaml');
@@ -23,6 +24,12 @@ default_url = https://www.google.com/"
 `;
 
 describe('Build script', () => {
+  let orginalArgv;
+
+  beforeEach(() => {
+    orginalArgv = process.argv;
+  });
+
   beforeEach(() => {
     // Set up a fake file system structure for `fs` calls to play with.
     mock({
@@ -54,16 +61,34 @@ describe('Build script', () => {
 
     build.mergeConfigFiles(configA, configB, destination);
 
+    const mergedFile = fs.readFileSync(destination, 'utf8');
     const expectedFileOutput = yaml.safeDump(
       Object.assign(userConfig, defaultConfig)
     );
 
-    const mergedFile = fs.readFileSync(destination, 'utf8');
-
     expect(mergedFile).to.be.equal(expectedFileOutput);
+  });
+
+  it('only merges configs when the provided path is different from the default', () => { // eslint-disable-line
+    const isDefaultConfigPathStub = sinon.stub(build, 'isDefaultConfigPath');
+    const mergeConfigFilesSpy = sinon.stub(build, 'mergeConfigFiles');
+    const callbackSpy = sinon.spy();
+
+    // Simulate the config path being the same as the default.
+    isDefaultConfigPathStub.returns(true);
+    build.updateConfigFile('/var/tmp/app', callbackSpy);
+    expect(mergeConfigFilesSpy).to.be.notCalled; // eslint-disable-line
+    expect(callbackSpy).to.be.calledOnce; // eslint-disable-line
+
+    // Simulate the config path NOT being the same as the default.
+    isDefaultConfigPathStub.returns(false);
+    build.updateConfigFile('/var/tmp/app', callbackSpy);
+    expect(mergeConfigFilesSpy).to.be.calledOnce; // eslint-disable-line
+    expect(callbackSpy).to.be.calledTwice; // eslint-disable-line
   });
 
   afterEach(() => {
     mock.restore();
+    process.argv = orginalArgv;
   });
 });
