@@ -24,12 +24,6 @@ default_url = https://www.google.com/"
 `;
 
 describe('Build script', () => {
-  let orginalArgv;
-
-  beforeEach(() => {
-    orginalArgv = process.argv;
-  });
-
   beforeEach(() => {
     // Set up a fake file system structure for `fs` calls to play with.
     mock({
@@ -54,6 +48,16 @@ describe('Build script', () => {
       // an error that it already exists when creating [__dirname] above.
       createCwd: false,
     });
+  });
+
+  it('parses array of arguments into an object from electron-packager', () => {
+    const options = build.getPackagerArguments([
+      'path',
+      () => {},
+    ]);
+
+    expect(options.tempBuildPath).to.be.equal('path');
+    expect(options.callback).to.be.an('function');
   });
 
   it('merge config files and writes them to desitnation', () => {
@@ -91,6 +95,5 @@ describe('Build script', () => {
 
   afterEach(() => {
     mock.restore();
-    process.argv = orginalArgv;
   });
 });

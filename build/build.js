@@ -52,6 +52,25 @@ function isDefaultConfigPath() {
 }
 
 /**
+ * Turn the electron-packager afterCopy into a object.
+ * @param {array} argsArray Arguments as an array.
+ * @returns {object} Object of arguments with keys
+ */
+function getPackagerArguments(argsArray) {
+  // Get the first buildPath arg. This is where electron-packager stores built
+  // files temporally.
+  const tempBuildPath = argsArray.shift();
+
+  // Get the last callback function argument. Call this to continue the build.
+  const callback = argsArray.pop();
+
+  return {
+    tempBuildPath,
+    callback,
+  }
+}
+
+/**
  * Merge two config.yaml files together and write output to a file.
  * @param {string} configPathA Path of the first config file.
  * @param {string} configPathB Path of the second config file.
@@ -74,13 +93,8 @@ function mergeConfigFiles(configPathA, configPathB, destinationPath) {
  * @return {undefined}
  */
 function updateConfigFile(...args) {
-  // Get the first buildPath arg. This is where electron-packager stores built
-  // files temporally.
-  const tempBuildPath = args.shift();
-
-  // Get the last callback function argument. Call this to continue the build.
-  const callback = args.pop();
-  const packageConfigPath = path.join(tempBuildPath, 'config.yaml');
+  const options = getPackagerArguments(args);
+  const packageConfigPath = path.join(options.tempBuildPath, 'config.yaml');
 
   if (!exports.isDefaultConfigPath()) {
     exports.mergeConfigFiles(
@@ -90,7 +104,14 @@ function updateConfigFile(...args) {
     );
   }
 
-  callback();
+  options.callback();
+}
+
+function updateResourcesFolder(...args) {
+  const options = getPackagerArguments(args);
+  const packageConfigPath = path.join(options.tempBuildPath, 'config.yaml');
+
+  options.callback();
 }
 
 function build() {
@@ -98,12 +119,13 @@ function build() {
     dir: program.in,
     out: program.out,
     overwrite: true,
-    afterCopy: [updateConfigFile],
+    afterCopy: [updateConfigFile, updateResourcesFolder],
   }, (err, appPaths) => {
     log.info('Build complete', appPaths);
   });
 }
 
+module.exports.getPackagerArguments = getPackagerArguments;
 module.exports.isDefaultConfigPath = isDefaultConfigPath;
 module.exports.mergeConfigFiles = mergeConfigFiles;
 module.exports.updateConfigFile = updateConfigFile;
