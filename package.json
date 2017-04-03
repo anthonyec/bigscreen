@@ -6,7 +6,7 @@
   "author": "Anthony Cossins <anthony@signal-noise.co.uk>",
   "scripts": {
     "serve": "NODE_ENV=development electron .",
-    "build": "node ./build/index.js",
+    "build": "node ./build/bin",
     "lint": "eslint --ext .js ./",
     "lint:fix": "eslint --fix .js ./ ",
     "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*' ! -ipath '*dist*')",
@@ -25,6 +25,8 @@
     "commander": "^2.9.0",
     "electron-packager": "^8.6.0",
     "eslint": "^3.18.0",
+    "fs-extra": "^2.1.2",
+    "merge-dirs": "^0.2.1",
     "mocha": "^3.2.0",
     "mock-fs": "^4.2.0",
     "node-fs-extra": "^0.8.1",

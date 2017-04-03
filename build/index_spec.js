@@ -4,7 +4,7 @@ const fs = require('fs');
 const mock = require('mock-fs');
 const yaml = require('js-yaml');
 
-const build = require('./build');
+const build = require('./');
 
 const defaultConfig = {
   app_name: 'Bigscreen',
@@ -31,12 +31,21 @@ describe('Build script', () => {
       '/user/desktop': {
         'user_config.yaml': userConfigFile,
         'broken_user_config.yaml': brokenConfigFile,
-        empty_directory: {},
+        'user_resources': {
+          'file_c': 'file_c',
+          'file_d': 'file_d',
+          'file_x': 'file_x',
+        },
       },
 
       // Fake the repo root directory.
       [__dirname]: {
         'config.yaml': defaultConfigFile,
+        'resources': {
+          'file_a': 'file_a',
+          'file_b': 'file_b',
+          'file_x': '',
+        },
       },
 
       // Fake the temporary path that electron-packager writes to when building.
@@ -56,6 +65,7 @@ describe('Build script', () => {
       () => {},
     ]);
 
+    expect(options).to.have.all.keys('tempBuildPath', 'callback');
     expect(options.tempBuildPath).to.be.equal('path');
     expect(options.callback).to.be.an('function');
   });
@@ -75,7 +85,27 @@ describe('Build script', () => {
     expect(mergedFile).to.be.equal(expectedFileOutput);
   });
 
-  it('only merges configs when the provided path is different from the default', () => { // eslint-disable-line
+  it('merge resource directories', () => {
+    const resourcesA = '/user/desktop/user_resources';
+    const resourcesB = `${__dirname}/resources`;
+
+    build.mergeDirectories(resourcesA, resourcesB);
+
+    const mergedDir = fs.readdirSync(resourcesB);
+    const fileXContent = fs.readFileSync(`${resourcesB}/file_x`, 'utf8');
+
+    expect(mergedDir).to.be.eql([
+      'file_a',
+      'file_b',
+      'file_c',
+      'file_d',
+      'file_x',
+    ]);
+
+    expect(fileXContent).to.be.equal(fileXContent);
+  });
+
+  it('only merges configs when the provided path isdifferent from the default', () => { // eslint-disable-line
     const isDefaultConfigPathStub = sinon.stub(build, 'isDefaultConfigPath');
     const mergeConfigFilesSpy = sinon.stub(build, 'mergeConfigFiles');
     const callbackSpy = sinon.spy();
@@ -90,6 +120,27 @@ describe('Build script', () => {
     isDefaultConfigPathStub.returns(false);
     build.updateConfigFile('/var/tmp/app', callbackSpy);
     expect(mergeConfigFilesSpy).to.be.calledOnce; // eslint-disable-line
+    expect(callbackSpy).to.be.calledTwice; // eslint-disable-line
+  });
+
+  it('only merges resources when the provided path is different from the default', () => { // eslint-disable-line
+    const isDefaultResourcesPathStub = sinon.stub(
+      build,
+      'isDefaultResourcesPath'
+    );
+    const mergeDirectoriesSpy = sinon.stub(build, 'mergeDirectories');
+    const callbackSpy = sinon.spy();
+
+    // Simulate the resources path being the same as the default.
+    isDefaultResourcesPathStub.returns(true);
+    build.updateResourcesDirectory('/var/tmp/app', callbackSpy);
+    expect(mergeDirectoriesSpy).to.be.notCalled;
+    expect(callbackSpy).to.be.calledOnce; // eslint-disable-line
+
+    // Simulate the resources path NOT being the same as the default.
+    isDefaultResourcesPathStub.returns(false);
+    build.updateResourcesDirectory('/var/tmp/app', callbackSpy);
+    expect(mergeDirectoriesSpy).to.be.calledOnce;
     expect(callbackSpy).to.be.calledTwice; // eslint-disable-line
   });
 
