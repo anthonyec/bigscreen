@@ -14,7 +14,7 @@ const DEFAULT_OUTPUT_PATH = path.join(CWD, 'dist');
 const DEFAULT_CONFIG_PATH = path.join(CWD, 'config.yaml');
 const DEFAULT_RESOURCES_PATH = path.join(CWD, 'resources');
 
-const options = [
+const PROGRAM_OPTIONS = [
   {
     command: '-i, --in <path>',
     description: 'set input path, defaults to ./',
@@ -38,7 +38,7 @@ const options = [
 ];
 
 function parseProgramOptions() {
-  options.forEach((option) => {
+  PROGRAM_OPTIONS.forEach((option) => {
     program.option(option.command, option.description, option.defaultValue);
   });
 
@@ -50,7 +50,7 @@ function parseProgramOptions() {
  * @returns {boolean} Is default config path different from program option.
  */
 function isDefaultConfigPath() {
-  return program.config ===  DEFAULT_CONFIG_PATH;
+  return program.config === DEFAULT_CONFIG_PATH;
 }
 
 /**
@@ -58,7 +58,7 @@ function isDefaultConfigPath() {
  * @returns {boolean} Is default config path different from program option.
  */
 function isDefaultResourcesPath() {
-  return program.resources ===DEFAULT_RESOURCES_PATH;
+  return program.resources === DEFAULT_RESOURCES_PATH;
 }
 
 /**
@@ -79,7 +79,7 @@ function getPackagerArguments(argsArray) {
   return {
     tempBuildPath,
     callback,
-  }
+  };
 }
 
 /**

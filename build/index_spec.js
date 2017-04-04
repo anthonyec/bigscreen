@@ -31,20 +31,20 @@ describe('Build script', () => {
       '/user/desktop': {
         'user_config.yaml': userConfigFile,
         'broken_user_config.yaml': brokenConfigFile,
-        'user_resources': {
-          'file_c': 'file_c',
-          'file_d': 'file_d',
-          'file_x': 'file_x',
+        user_resources: {
+          file_c: 'file_c',
+          file_d: 'file_d',
+          file_x: 'file_x',
         },
       },
 
       // Fake the repo root directory.
       [__dirname]: {
         'config.yaml': defaultConfigFile,
-        'resources': {
-          'file_a': 'file_a',
-          'file_b': 'file_b',
-          'file_x': '',
+        resources: {
+          file_a: 'file_a',
+          file_b: 'file_b',
+          file_x: '',
         },
       },
 
@@ -134,13 +134,13 @@ describe('Build script', () => {
     // Simulate the resources path being the same as the default.
     isDefaultResourcesPathStub.returns(true);
     build.updateResourcesDirectory('/var/tmp/app', callbackSpy);
-    expect(mergeDirectoriesSpy).to.be.notCalled;
+    expect(mergeDirectoriesSpy).to.be.notCalled; // eslint-disable-line
     expect(callbackSpy).to.be.calledOnce; // eslint-disable-line
 
     // Simulate the resources path NOT being the same as the default.
     isDefaultResourcesPathStub.returns(false);
     build.updateResourcesDirectory('/var/tmp/app', callbackSpy);
-    expect(mergeDirectoriesSpy).to.be.calledOnce;
+    expect(mergeDirectoriesSpy).to.be.calledOnce; // eslint-disable-line
     expect(callbackSpy).to.be.calledTwice; // eslint-disable-line
   });
 
