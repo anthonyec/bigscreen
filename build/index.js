@@ -37,6 +37,10 @@ const PROGRAM_OPTIONS = [
   },
 ];
 
+/**
+ * Turn each option into a program option for commander to use.
+ * @returns {undefined}
+ */
 function parseProgramOptions() {
   PROGRAM_OPTIONS.forEach((option) => {
     program.option(option.command, option.description, option.defaultValue);
@@ -92,11 +96,18 @@ function getPackagerArguments(argsArray) {
 function mergeConfigFiles(configPathA, configPathB, destinationPath) {
   const configA = yaml.safeLoad(fs.readFileSync(configPathA, 'utf8'));
   const configB = yaml.safeLoad(fs.readFileSync(configPathB, 'utf8'));
+
   const mergedConfig = Object.assign(configA, configB);
 
   fs.writeFileSync(destinationPath, yaml.safeDump(mergedConfig));
 }
 
+/**
+ * Merge two directories and overwrite and files/folders with same name.
+ * @param {string} dirPathA Path of the first dir.
+ * @param {string} dirPathB Path of the second dir.
+ * @return {undefined}
+ */
 function mergeDirectories(dirPathA, dirPathB) {
   mergeDirs(dirPathA, dirPathB, 'overwrite');
 }
@@ -107,8 +118,8 @@ function mergeDirectories(dirPathA, dirPathB) {
  * @return {undefined}
  */
 function updateConfigFile(...args) {
-  const options = getPackagerArguments(args);
-  const packageConfigPath = path.join(options.tempBuildPath, 'config.yaml');
+  const { tempBuildPath, callback } = getPackagerArguments(args);
+  const packageConfigPath = path.join(tempBuildPath, 'config.yaml');
 
   if (!exports.isDefaultConfigPath()) {
     exports.mergeConfigFiles(
@@ -118,7 +129,7 @@ function updateConfigFile(...args) {
     );
   }
 
-  options.callback();
+  callback();
 }
 
 /**
@@ -127,22 +138,38 @@ function updateConfigFile(...args) {
  * @return {undefined}
  */
 function updateResourcesDirectory(...args) {
-  const options = getPackagerArguments(args);
-  const packageResourcesPath = path.join(options.tempBuildPath, 'resources');
+  const { tempBuildPath, callback } = getPackagerArguments(args);
+  const packageResourcesPath = path.join(tempBuildPath, 'resources');
 
   if (!exports.isDefaultResourcesPath()) {
     exports.mergeDirectories(program.resources, packageResourcesPath);
   }
 
-  options.callback();
+  callback();
 }
 
+/**
+ * Run electron-packager via API http://tinyurl.com/mm2khtv.
+ * @return {undefined}
+ */
 function build() {
   packager({
+    // Directory for src files, this must include a package.json to be a valid
+    // electron app. Out directory is where the packaged app will be placed.
     dir: program.in,
     out: program.out,
+
+    // Override existing packages in the dist folder.
     overwrite: true,
-    afterCopy: [updateConfigFile, updateResourcesDirectory],
+
+    icon: path.join(program.resources, 'app_icon/app.icns'),
+
+    // afterCopy functions are done in order after the app files are moved
+    // to a temporary directory.
+    afterCopy: [
+      updateConfigFile,
+      updateResourcesDirectory,
+    ],
   }, (err, appPaths) => {
     log.info('Build complete', appPaths);
   });

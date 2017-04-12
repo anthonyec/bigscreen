@@ -1,6 +1,7 @@
+const fs = require('fs');
+const path = require('path');
 const { expect } = require('chai');
 const sinon = require('sinon');
-const fs = require('fs');
 const mock = require('mock-fs');
 const yaml = require('js-yaml');
 
@@ -20,7 +21,7 @@ const userConfig = {
 const defaultConfigFile = yaml.safeDump(defaultConfig);
 const userConfigFile = yaml.safeDump(userConfig);
 const brokenConfigFile = `
-default_url = https://www.google.com/"
+!default_url = "broke"
 `;
 
 describe('Build script', () => {
@@ -53,6 +54,7 @@ describe('Build script', () => {
         'config.yaml': defaultConfigFile,
       },
     }, {
+
       // Disable mock-fs creating a clone of then root dir, otherwise will get
       // an error that it already exists when creating [__dirname] above.
       createCwd: false,
@@ -72,7 +74,7 @@ describe('Build script', () => {
 
   it('merge config files and writes them to desitnation', () => {
     const configA = '/user/desktop/user_config.yaml';
-    const configB = `${__dirname}/config.yaml`;
+    const configB = path.join(__dirname, 'config.yaml');
     const destination = '/var/tmp/app/config.yaml';
 
     build.mergeConfigFiles(configA, configB, destination);
@@ -85,14 +87,35 @@ describe('Build script', () => {
     expect(mergedFile).to.be.equal(expectedFileOutput);
   });
 
+  it('handles incorrect user config path', () => {
+    const configA = '/user/desktop/does_not_exist.yaml';
+    const configB = path.join(__dirname, 'config.yaml');
+    const destination = '/var/tmp/app/config.yaml';
+
+    try {
+      build.mergeConfigFiles(configA, configB, destination);
+    } catch (err) {
+      expect(err.code).to.be.equal('ENOENT');
+    }
+
+    // Make sure that no file is written
+    const mergedFile = fs.readFileSync(destination, 'utf8');
+    const expectedFileOutput = yaml.safeDump(defaultConfig);
+
+    expect(mergedFile).to.be.equal(expectedFileOutput);
+  });
+
   it('merge resource directories', () => {
     const resourcesA = '/user/desktop/user_resources';
-    const resourcesB = `${__dirname}/resources`;
+    const resourcesB = path.join(__dirname, 'resources');
 
     build.mergeDirectories(resourcesA, resourcesB);
 
     const mergedDir = fs.readdirSync(resourcesB);
-    const fileXContent = fs.readFileSync(`${resourcesB}/file_x`, 'utf8');
+    const fileXContent = fs.readFileSync(
+      path.join(resourcesB, 'file_x'),
+      'utf8'
+    );
 
     expect(mergedDir).to.be.eql([
       'file_a',
@@ -105,7 +128,33 @@ describe('Build script', () => {
     expect(fileXContent).to.be.equal(fileXContent);
   });
 
-  it('only merges configs when the provided path isdifferent from the default', () => { // eslint-disable-line
+  it('handles incorrect resource path', () => {
+    const resourcesA = '/user/desktop/does_not_exist';
+    const resourcesB = path.join(__dirname, 'resources');
+
+    try {
+      build.mergeDirectories(resourcesA, resourcesB);
+    } catch (err) {
+      expect(err.code).to.be.equal('ENOENT');
+    }
+
+    // Make sure the file system is unchanged after the error
+    const mergedDir = fs.readdirSync(resourcesB);
+    const fileXContent = fs.readFileSync(
+      path.join(resourcesB, 'file_x'),
+      'utf8'
+    );
+
+    expect(mergedDir).to.be.eql([
+      'file_a',
+      'file_b',
+      'file_x',
+    ]);
+
+    expect(fileXContent).to.be.equal('');
+  });
+
+  it('only merges configs when the provided path is different from the default', () => { // eslint-disable-line
     const isDefaultConfigPathStub = sinon.stub(build, 'isDefaultConfigPath');
     const mergeConfigFilesSpy = sinon.stub(build, 'mergeConfigFiles');
     const callbackSpy = sinon.spy();
