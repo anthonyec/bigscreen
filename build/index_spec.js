@@ -87,6 +87,16 @@ describe('Build script', () => {
     expect(mergedFile).to.be.equal(expectedFileOutput);
   });
 
+  it('merge config files and return object', () => {
+    const configA = '/user/desktop/user_config.yaml';
+    const configB = path.join(__dirname, 'config.yaml');
+
+    const mergedConfig = build.getMergedConfigFiles(configA, configB);
+    const expectedOutput = Object.assign(userConfig, defaultConfig);
+
+    expect(mergedConfig).to.be.eql(expectedOutput);
+  });
+
   it('handles incorrect user config path', () => {
     const configA = '/user/desktop/does_not_exist.yaml';
     const configB = path.join(__dirname, 'config.yaml');

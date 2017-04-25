@@ -17,24 +17,34 @@ const DEFAULT_RESOURCES_PATH = path.join(CWD, 'resources');
 const PROGRAM_OPTIONS = [
   {
     command: '-i, --in <path>',
-    description: 'set input path, defaults to ./',
+    description: `set input path, defaults to ${DEFAULT_INPUT_PATH}`,
     defaultValue: DEFAULT_INPUT_PATH,
   },
   {
     command: '-o, --out <path>',
-    description: 'set output path, defaults to ./dist',
+    description: `set output path, defaults to ${DEFAULT_OUTPUT_PATH}`,
     defaultValue: DEFAULT_OUTPUT_PATH,
   },
   {
     command: '-c, --config <path>',
-    description: 'set config path, defaults to ./config.toml',
+    description: `set config path, defaults to ${DEFAULT_CONFIG_PATH}`,
     defaultValue: DEFAULT_CONFIG_PATH,
   },
   {
     command: '-r, --resources <path>',
-    description: 'set resources path, defaults to ./resources',
+    description: `set resources path, defaults to ${DEFAULT_RESOURCES_PATH}`,
     defaultValue: DEFAULT_RESOURCES_PATH,
   },
+  {
+    command: '-p, --platform <string>',
+    description: `the target platform(s) to build for, defaults to ${process.platform}`, // eslint-disable-line
+    defaultValue: process.platform,
+  },
+  {
+    command: '-a, --arch <string>',
+    description: `the architecture to build for, defaults to ${process.arch}`,
+    defaultValue: process.arch,
+  }
 ];
 
 /**
@@ -87,19 +97,29 @@ function getPackagerArguments(argsArray) {
 }
 
 /**
- * Merge two config.yaml files together and write output to a file.
+ * Merge two config.yaml files together and returned resulting object.
  * @param {string} configPathA Path of the first config file.
  * @param {string} configPathB Path of the second config file.
- * @param {string} destinationPath Where to write the merged output.
- * @return {undefined}
+ * @return {object} Object of merged YAML confif files.
  */
-function mergeConfigFiles(configPathA, configPathB, destinationPath) {
+function getMergedConfigFiles(configPathA, configPathB) {
   const configA = yaml.safeLoad(fs.readFileSync(configPathA, 'utf8'));
   const configB = yaml.safeLoad(fs.readFileSync(configPathB, 'utf8'));
 
-  const mergedConfig = Object.assign(configA, configB);
+  return Object.assign(configA, configB);
+}
 
-  fs.writeFileSync(destinationPath, yaml.safeDump(mergedConfig));
+/**
+ * Merge two config.yaml files together and write to a file.
+ * @param {string} configPathA Path of the first config file.
+ * @param {string} configPathB Path of the second config file.
+ * @param {string} destinationPath Path of output file.
+ * @return {undefined}
+ */
+function mergeConfigFiles(configPathA, configPathB, destinationPath) {
+  const config = getMergedConfigFiles(configPathA, configPathB);
+
+  fs.writeFileSync(destinationPath, yaml.safeDump(config));
 }
 
 /**
@@ -113,7 +133,8 @@ function mergeDirectories(dirPathA, dirPathB) {
 }
 
 /**
- * Update the default config.yaml file if the user provides one as an argument.
+ * Update the default config.yaml file if the user provides one as an argument
+ * and write it to a file.
  * @param {array} arguments Array of arguments from electron-packager.
  * @return {undefined}
  */
@@ -122,7 +143,7 @@ function updateConfigFile(...args) {
   const packageConfigPath = path.join(tempBuildPath, 'config.yaml');
 
   if (!exports.isDefaultConfigPath()) {
-    exports.mergeConfigFiles(
+    const config = exports.mergeConfigFiles(
       DEFAULT_CONFIG_PATH,
       program.config,
       packageConfigPath
@@ -153,7 +174,11 @@ function updateResourcesDirectory(...args) {
  * @return {undefined}
  */
 function build() {
+  const config = getMergedConfigFiles(DEFAULT_CONFIG_PATH, program.config);
+
   packager({
+    name: config.app_name,
+
     // Directory for src files, this must include a package.json to be a valid
     // electron app. Out directory is where the packaged app will be placed.
     dir: program.in,
@@ -163,6 +188,8 @@ function build() {
     overwrite: true,
 
     icon: path.join(program.resources, 'app_icon/app.icns'),
+    platform: program.platform,
+    arch: program.arch,
 
     // afterCopy functions are done in order after the app files are moved
     // to a temporary directory.
@@ -178,6 +205,7 @@ function build() {
 module.exports.isDefaultConfigPath = isDefaultConfigPath;
 module.exports.isDefaultResourcesPath = isDefaultResourcesPath;
 module.exports.getPackagerArguments = getPackagerArguments;
+module.exports.getMergedConfigFiles = getMergedConfigFiles;
 module.exports.mergeConfigFiles = mergeConfigFiles;
 module.exports.mergeDirectories = mergeDirectories;
 module.exports.updateConfigFile = updateConfigFile;
