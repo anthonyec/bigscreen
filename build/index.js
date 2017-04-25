@@ -44,7 +44,7 @@ const PROGRAM_OPTIONS = [
     command: '-a, --arch <string>',
     description: `the architecture to build for, defaults to ${process.arch}`,
     defaultValue: process.arch,
-  }
+  },
 ];
 
 /**
@@ -143,7 +143,7 @@ function updateConfigFile(...args) {
   const packageConfigPath = path.join(tempBuildPath, 'config.yaml');
 
   if (!exports.isDefaultConfigPath()) {
-    const config = exports.mergeConfigFiles(
+    exports.mergeConfigFiles(
       DEFAULT_CONFIG_PATH,
       program.config,
       packageConfigPath
