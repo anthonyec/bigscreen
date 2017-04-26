@@ -6,8 +6,6 @@ const program = require('commander');
 const packager = require('electron-packager');
 const yaml = require('js-yaml');
 
-const log = require('../log');
-
 const CWD = process.cwd();
 const DEFAULT_INPUT_PATH = path.join(CWD);
 const DEFAULT_OUTPUT_PATH = path.join(CWD, 'dist');
@@ -198,7 +196,7 @@ function build() {
       updateResourcesDirectory,
     ],
   }, (err, appPaths) => {
-    log.info('Build complete', appPaths);
+    console.log('Build complete', appPaths);
   });
 }
 

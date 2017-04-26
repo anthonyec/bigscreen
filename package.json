@@ -11,11 +11,9 @@
     "lint:fix": "eslint --fix .js ./ ",
     "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*' ! -ipath '*dist*')",
     "test:file": "NODE_ENV=test mocha",
-    "test:watch": "npm run test -- --watch --watch-extensions js",
-    "log": "bunyan"
+    "test:watch": "npm run test -- --watch --watch-extensions js"
   },
   "dependencies": {
-    "bunyan": "^1.8.9",
     "electron": "^1.6.2",
     "electron-sudo": "^4.0.12",
     "js-yaml": "^3.8.2"
