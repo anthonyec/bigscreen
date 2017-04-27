@@ -202,7 +202,7 @@ function build() {
         return reject(err);
       }
 
-      resolve(appPaths);
+      return resolve(appPaths);
     });
   });
 }
