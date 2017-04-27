@@ -1,6 +1,6 @@
 const electron = require('electron');
 
-const { settings, loadConfigIntoSettings } = require('./settings');
+const { loadConfigIntoSettings } = require('./settings');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;

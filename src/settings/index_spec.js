@@ -1,11 +1,9 @@
-const fs = require('fs');
 const path = require('path');
 
 const { expect } = require('chai');
 const sinon = require('sinon');
 const mock = require('mock-fs');
 const yaml = require('js-yaml');
-const { app } = require('electron')
 
 const settings = require('./');
 
@@ -31,7 +29,7 @@ describe('Settings', () => {
         'config.yaml': defaultConfigFile,
       },
       '/var/tmp/bigscreen': {
-        'Settings': '',
+        Settings: '',
       },
     }, {
 
@@ -52,16 +50,16 @@ describe('Settings', () => {
     getAllStub.callsFake(() => ({}));
 
     const noSettings = settings.hasSettings();
-    expect(noSettings).to.be.false;
+    expect(noSettings).to.be.false; // eslint-disable-line
 
     // Run test again but this time returns an object with some
-    // keys and values inside.
+    // keys and values inside to simulate settings existing.
     getAllStub.callsFake(() => {
       return { name: 'test', color: 'red' };
     });
 
     const hasSettings = settings.hasSettings();
-    expect(hasSettings).to.be.true;
+    expect(hasSettings).to.be.true; // eslint-disable-line
   });
 
   it('returns the parsed configuration from config.yaml', () => {
@@ -85,7 +83,6 @@ describe('Settings', () => {
   });
 
   it('loads config.yaml into settings only if settings do not exist', () => {
-    const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
     const hasSettingsStub = sandbox.stub(settings, 'hasSettings');
     const getConfigStub = sandbox.stub(settings, 'getConfig');
     const setAllSettingsWithStub = sandbox.stub(settings, 'setAllSettingsWith');
@@ -104,7 +101,7 @@ describe('Settings', () => {
     settings.loadConfigIntoSettings().then(() => {
       // Because no settings have been set we want to make sure setAll is called
       // once with the correct settings.
-      expect(setAllSettingsWithStub).to.be.calledOnce;
+      expect(setAllSettingsWithStub).to.be.calledOnce; // eslint-disable-line
       expect(setAllSettingsWithStub.args[0][0]).to.be.eql(defaultConfig);
 
       // Simulate the settings being set.
@@ -113,12 +110,12 @@ describe('Settings', () => {
       // Now the loadConfigIntoSettings should **not** load
       // config into settings. If it did, it would call the setAll twice.
       settings.loadConfigIntoSettings().then(() => {
-        expect(setAllSettingsWithStub.calledTwice).to.be.false;
+        expect(setAllSettingsWithStub.calledTwice).to.be.false; // eslint-disable-line
       });
     });
   });
 
-  it('loads config.yaml into settings if env var ALWAYS_LOAD_CONFIG is set', () => {
+  it('loads config.yaml into settings if env var ALWAYS_LOAD_CONFIG is set', () => { // eslint-disable-line
     const hasSettingsStub = sandbox.stub(settings, 'hasSettings');
     const shouldAlwaysLoadConfigStub = sandbox.stub(
       settings,
@@ -140,13 +137,13 @@ describe('Settings', () => {
     shouldAlwaysLoadConfigStub.returns(true);
 
     settings.loadConfigIntoSettings().then(() => {
-      expect(setAllSettingsWithStub).to.be.calledOnce;
+      expect(setAllSettingsWithStub).to.be.calledOnce; // eslint-disable-line
       expect(setAllSettingsWithStub.args[0][0]).to.be.eql(defaultConfig);
 
       shouldAlwaysLoadConfigStub.returns(false);
 
       settings.loadConfigIntoSettings().then(() => {
-        expect(setAllSettingsWithStub.calledTwice).to.be.false;
+        expect(setAllSettingsWithStub.calledTwice).to.be.false; // eslint-disable-line
       });
     });
   });

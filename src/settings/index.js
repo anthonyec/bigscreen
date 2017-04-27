@@ -38,19 +38,20 @@ function getConfig() {
   const configPath = exports.getConfigPath();
 
   return new Promise((resolve, reject) => {
-    fs.readFile(configPath, 'utf8', function(err, data) {
+    fs.readFile(configPath, 'utf8', (err, data) => {
       if (err) {
         return reject(err);
       }
 
       const config = yaml.safeLoad(data);
-      resolve(config);
+      return resolve(config);
     });
   });
 }
 
 /**
  * Use object as all the settings. Essentially wiping existing ones.
+ * @param {object} config Object with config settings.
  * @returns {undefined}
  */
 function setAllSettingsWith(config) {
@@ -60,7 +61,7 @@ function setAllSettingsWith(config) {
 /**
  * Get and parse and stored in ./config.yaml and save them settings ONLY if
  * no settings exist already or if the env variable ALWAYS_LOAD_CONFIG is set.
- * @returns {promise}
+ * @returns {promise} Returns the promise of getConfig.
  */
 function loadConfigIntoSettings() {
   return exports.getConfig().then((config) => {
