@@ -51,7 +51,7 @@ function getConfig() {
 
 /**
  * Use object as all the settings. Essentially wiping existing ones.
- * @param {object} Config object with config settings.
+ * @param {object} config Object with config settings.
  * @returns {void}
  */
 function setAllSettingsWith(config) {
