@@ -14,13 +14,14 @@ const defaultConfig = {
   default_url: null,
   accent_color: '#000000',
 };
-
 const defaultConfigFile = yaml.safeDump(defaultConfig);
+const configPath = path.join(__dirname, 'config.yaml');
 
 describe('Settings', () => {
   let sandbox;
 
   beforeEach(() => {
+    // Create sandbox to make it easier restore every stub after each test.
     sandbox = sinon.sandbox.create();
 
     // Set up a fake file system structure for `fs` calls to play with.
@@ -41,16 +42,21 @@ describe('Settings', () => {
   });
 
   it('check if the settings already exist or not', () => {
-    const electronSettingsStub = sandbox.stub(settings.settings, 'getAll');
+    const getAllStub = sandbox.stub(settings.settings, 'getAll');
+    const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
+
+    // Returns correct config path.
+    getConfigPathStub.returns(configPath);
 
     // Return an empty object.
-    electronSettingsStub.callsFake(() => ({}));
+    getAllStub.callsFake(() => ({}));
 
     const noSettings = settings.hasSettings();
     expect(noSettings).to.be.false;
 
-    // Returns an object with some keys and values inside.
-    electronSettingsStub.callsFake(() => {
+    // Run test again but this time returns an object with some
+    // keys and values inside.
+    getAllStub.callsFake(() => {
       return { name: 'test', color: 'red' };
     });
 
@@ -59,40 +65,53 @@ describe('Settings', () => {
   });
 
   it('returns the parsed configuration from config.yaml', () => {
-    const getAppPathStub = sandbox.stub(settings.app, 'getAppPath');
+    const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
 
-    getAppPathStub.callsFake(() => __dirname);
+    // Returns correct config path.
+    getConfigPathStub.returns(configPath);
 
+    // Make sure getConfig loads defaultConfig data.
     settings.getConfig().then((config) => {
       expect(config).to.be.eql(defaultConfig);
     });
 
-    getAppPathStub.callsFake(() => path.join(__dirname, 'incorrect_path'));
+    // Now change getConfigPath to return a non-exist path.
+    getConfigPathStub.returns(__dirname, 'incorrect_path');
 
+    // Make sure it throws an error.
     settings.getConfig().then().catch((err) => {
-      expect(err.code).to.be.equal('ENOENT');
+      expect(err.code).to.be.equal('EBADF');
     });
   });
 
   it('loads config.yaml into settings only if settings do not exist', () => {
+    const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
     const hasSettingsStub = sandbox.stub(settings, 'hasSettings');
     const getConfigStub = sandbox.stub(settings, 'getConfig');
     const setAllSettingsWithStub = sandbox.stub(settings, 'setAllSettingsWith');
 
+    // Stub getConfig to return a defaultConfig object.
     getConfigStub.callsFake(() => {
       return new Promise((resolve) => {
         resolve(defaultConfig);
       });
     });
 
+    // Simulate no settings being set.
     hasSettingsStub.returns(false);
 
+    // Test the loadConfigIntoSettings.
     settings.loadConfigIntoSettings().then(() => {
+      // Because no settings have been set we want to make sure setAll is called
+      // once with the correct settings.
       expect(setAllSettingsWithStub).to.be.calledOnce;
       expect(setAllSettingsWithStub.args[0][0]).to.be.eql(defaultConfig);
 
+      // Simulate the settings being set.
       hasSettingsStub.returns(true);
 
+      // Now the loadConfigIntoSettings should **not** load
+      // config into settings. If it did, it would call the setAll twice.
       settings.loadConfigIntoSettings().then(() => {
         expect(setAllSettingsWithStub.calledTwice).to.be.false;
       });
@@ -107,12 +126,16 @@ describe('Settings', () => {
     const getConfigStub = sandbox.stub(settings, 'getConfig');
     const setAllSettingsWithStub = sandbox.stub(settings, 'setAllSettingsWith');
 
+    // Stub getConfig to return a defaultConfig object.
     getConfigStub.callsFake(() => {
       return new Promise((resolve) => {
         resolve(defaultConfig);
       });
     });
 
+    // Simulate setting being set all already **but** with the override boolean
+    // of always loading settings. This would be via
+    // the env var ALWAYS_LOAD_CONFIG.
     hasSettingsStub.returns(true);
     shouldAlwaysLoadConfigStub.returns(true);
 

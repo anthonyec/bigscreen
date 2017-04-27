@@ -65,7 +65,6 @@ function setAllSettingsWith(config) {
 function loadConfigIntoSettings() {
   return exports.getConfig().then((config) => {
     if (!exports.hasSettings() || exports.shouldAlwaysLoadConfig()) {
-      console.log('obj');
       exports.setAllSettingsWith(config);
     }
   });
@@ -78,4 +77,3 @@ module.exports.loadConfigIntoSettings = loadConfigIntoSettings;
 module.exports.setAllSettingsWith = setAllSettingsWith;
 module.exports.getConfigPath = getConfigPath;
 module.exports.settings = settings;
-module.exports.app = app;
