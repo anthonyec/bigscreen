@@ -8,8 +8,8 @@
     "serve": "NODE_ENV=development electron .",
     "build": "node ./build/bin",
     "lint": "eslint --ext .js ./",
-    "lint:fix": "eslint --fix .js ./ ",
-    "test": "npm run test:file -- $(find . -name '*_spec.js' ! -ipath '*node_modules*' ! -ipath '*dist*')",
+    "lint:fix": "eslint --fix .js ./",
+    "test": "npm run test:file -- src/**/*_spec.js build/**/*_spec.js",
     "test:file": "NODE_ENV=test mocha",
     "test:watch": "npm run test -- --watch --watch-extensions js"
   },
