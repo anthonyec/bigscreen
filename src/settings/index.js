@@ -16,7 +16,7 @@ function getConfigPath() {
 
 /**
  * Check if any settings have been set.
- * @returns {boolean} Settings contain keys more than 0 keys.
+ * @returns {boolean} true if settings object contain more than 0 keys.
  */
 function hasSettings() {
   return Object.keys(settings.getAll()).length > 0;
@@ -24,7 +24,7 @@ function hasSettings() {
 
 /**
  * Returns boolean if the config should always be loaded to assist development.
- * @returns {boolean} Should config be loaded into settings.
+ * @returns {boolean} true if config should always be loaded into settings.
  */
 function shouldAlwaysLoadConfig() {
   return process.env.ALWAYS_LOAD_CONFIG;
@@ -32,7 +32,7 @@ function shouldAlwaysLoadConfig() {
 
 /**
  * Get and parse the settings stored in ./config.yaml.
- * @returns {promise} Returns object of config data.
+ * @returns {promise} Object of config data.
  */
 function getConfig() {
   const configPath = exports.getConfigPath();
@@ -51,8 +51,8 @@ function getConfig() {
 
 /**
  * Use object as all the settings. Essentially wiping existing ones.
- * @param {object} config Object with config settings.
- * @returns {undefined}
+ * @param {object} Config object with config settings.
+ * @returns {void}
  */
 function setAllSettingsWith(config) {
   settings.setAll(config);
@@ -61,7 +61,7 @@ function setAllSettingsWith(config) {
 /**
  * Get and parse and stored in ./config.yaml and save them settings ONLY if
  * no settings exist already or if the env variable ALWAYS_LOAD_CONFIG is set.
- * @returns {promise} Returns the promise of getConfig.
+ * @returns {promise} Promise of getConfig.
  */
 function loadConfigIntoSettings() {
   return exports.getConfig().then((config) => {
