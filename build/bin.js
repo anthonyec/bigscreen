@@ -5,4 +5,8 @@
 const build = require('./');
 
 build.parseProgramOptions();
-build.build();
+build.build().then((appPaths) => {
+  console.log('build complete', appPaths);
+}).catch((err) => {
+  console.log('build error', err);
+});

@@ -174,29 +174,35 @@ function updateResourcesDirectory(...args) {
 function build() {
   const config = getMergedConfigFiles(DEFAULT_CONFIG_PATH, program.config);
 
-  packager({
-    name: config.app_name,
+  return new Promise((resolve, reject) => {
+    packager({
+      name: config.app_name,
 
-    // Directory for src files, this must include a package.json to be a valid
-    // electron app. Out directory is where the packaged app will be placed.
-    dir: program.in,
-    out: program.out,
+      // Directory for src files, this must include a package.json to be a valid
+      // electron app. Out directory is where the packaged app will be placed.
+      dir: program.in,
+      out: program.out,
 
-    // Override existing packages in the dist folder.
-    overwrite: true,
+      // Override existing packages in the dist folder.
+      overwrite: true,
 
-    icon: path.join(program.resources, 'app_icon/app.icns'),
-    platform: program.platform,
-    arch: program.arch,
+      icon: path.join(program.resources, 'app_icon/app.icns'),
+      platform: program.platform,
+      arch: program.arch,
 
-    // afterCopy functions are done in order after the app files are moved
-    // to a temporary directory.
-    afterCopy: [
-      updateConfigFile,
-      updateResourcesDirectory,
-    ],
-  }, (err, appPaths) => {
-    console.log('Build complete', appPaths);
+      // afterCopy functions are done in order after the app files are moved
+      // to a temporary directory.
+      afterCopy: [
+        updateConfigFile,
+        updateResourcesDirectory,
+      ],
+    }, (err, appPaths) => {
+      if (err) {
+        return reject(err);
+      }
+
+      resolve(appPaths);
+    });
   });
 }
 
