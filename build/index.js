@@ -1,9 +1,9 @@
 const fs = require('fs');
-const mergeDirs = require('merge-dirs').default;
 const path = require('path');
 
-const program = require('commander');
 const packager = require('electron-packager');
+const mergeDirs = require('merge-dirs').default;
+const program = require('commander');
 const yaml = require('js-yaml');
 
 const CWD = process.cwd();
@@ -47,7 +47,7 @@ const PROGRAM_OPTIONS = [
 
 /**
  * Turn each option into a program option for commander to use.
- * @returns {undefined}
+ * @returns {void}
  */
 function parseProgramOptions() {
   PROGRAM_OPTIONS.forEach((option) => {
@@ -59,7 +59,8 @@ function parseProgramOptions() {
 
 /**
  * Check if the config path provided option is not different from the default.
- * @returns {boolean} Is default config path different from program option.
+ * @returns {boolean} true when default config path is the same as the
+ * program option.
  */
 function isDefaultConfigPath() {
   return program.config === DEFAULT_CONFIG_PATH;
@@ -67,18 +68,18 @@ function isDefaultConfigPath() {
 
 /**
  * Check if the config path provided option is not different from the default.
- * @returns {boolean} Is default config path different from program option.
+ * @returns {boolean} true when the default resources path is the same as the
+ * program option.
  */
 function isDefaultResourcesPath() {
   return program.resources === DEFAULT_RESOURCES_PATH;
 }
 
 /**
- * Turn the electron-packager afterCopy into a object.
- * buildPath, electronVersion, platform, arch, callback
+ * Turn the electron-packager afterCopy arguments array into an object.
  * http://tinyurl.com/memjc3j
- * @param {array} argsArray Arguments as an array.
- * @returns {object} Object of arguments with keys
+ * @param {array} argsArray Arguments as an array,
+ * @returns {object} Object with temp build path and packager callback.
  */
 function getPackagerArguments(argsArray) {
   // Get the first buildPath arg. This is where electron-packager stores built
@@ -98,7 +99,7 @@ function getPackagerArguments(argsArray) {
  * Merge two config.yaml files together and returned resulting object.
  * @param {string} configPathA Path of the first config file.
  * @param {string} configPathB Path of the second config file.
- * @return {object} Object of merged YAML confif files.
+ * @return {object} Object of merged YAML config files.
  */
 function getMergedConfigFiles(configPathA, configPathB) {
   const configA = yaml.safeLoad(fs.readFileSync(configPathA, 'utf8'));
@@ -112,7 +113,7 @@ function getMergedConfigFiles(configPathA, configPathB) {
  * @param {string} configPathA Path of the first config file.
  * @param {string} configPathB Path of the second config file.
  * @param {string} destinationPath Path of output file.
- * @return {undefined}
+ * @return {void}
  */
 function mergeConfigFiles(configPathA, configPathB, destinationPath) {
   const config = getMergedConfigFiles(configPathA, configPathB);
@@ -121,10 +122,10 @@ function mergeConfigFiles(configPathA, configPathB, destinationPath) {
 }
 
 /**
- * Merge two directories and overwrite and files/folders with same name.
+ * Merge two directories and overwrite files/folders with same name.
  * @param {string} dirPathA Path of the first dir.
  * @param {string} dirPathB Path of the second dir.
- * @return {undefined}
+ * @return {void}
  */
 function mergeDirectories(dirPathA, dirPathB) {
   mergeDirs(dirPathA, dirPathB, 'overwrite');
@@ -134,7 +135,7 @@ function mergeDirectories(dirPathA, dirPathB) {
  * Update the default config.yaml file if the user provides one as an argument
  * and write it to a file.
  * @param {array} arguments Array of arguments from electron-packager.
- * @return {undefined}
+ * @return {void}
  */
 function updateConfigFile(...args) {
   const { tempBuildPath, callback } = getPackagerArguments(args);
@@ -154,7 +155,7 @@ function updateConfigFile(...args) {
 /**
  * Update the default resources dir if the user provides one as an argument.
  * @param {array} arguments Array of arguments from electron-packager.
- * @return {undefined}
+ * @return {void}
  */
 function updateResourcesDirectory(...args) {
   const { tempBuildPath, callback } = getPackagerArguments(args);
@@ -169,7 +170,7 @@ function updateResourcesDirectory(...args) {
 
 /**
  * Run electron-packager via API http://tinyurl.com/mm2khtv.
- * @return {undefined}
+ * @return {void}
  */
 function build() {
   const config = getMergedConfigFiles(DEFAULT_CONFIG_PATH, program.config);

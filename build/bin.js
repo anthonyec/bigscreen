@@ -8,5 +8,5 @@ build.parseProgramOptions();
 build.build().then((appPaths) => {
   console.log('build complete', appPaths);
 }).catch((err) => {
-  console.log('build error', err);
+  console.error('build error', err);
 });
