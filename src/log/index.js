@@ -25,6 +25,10 @@ const log = bunyan.createLogger({
   ],
 });
 
+/**
+ * Log generic system information.
+ * @returns {void}
+ */
 function logSystemDetails() {
   // OS information to get. Docs for each: https://nodejs.org/api/os.html
   const details = [
@@ -41,6 +45,8 @@ function logSystemDetails() {
     'cpus',
   ];
 
+  // Make an object with the key as the os func name and value of that function.
+  // E.g platform: darwin
   const osInfo = details.reduce((info, detail) => {
     if (!info[detail]) {
       info[detail] = os[detail]();
