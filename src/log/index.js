@@ -26,7 +26,30 @@ const log = bunyan.createLogger({
 });
 
 function logSystemDetails() {
+  // OS information to get. Docs for each: https://nodejs.org/api/os.html
+  const details = [
+    'homedir',
+    'hostname',
+    'arch',
+    'totalmem',
+    'uptime',
+    'freemem',
+    'platform',
+    'release',
+    'type',
+    'uptime',
+    'cpus',
+  ];
 
+  const osInfo = details.reduce((info, detail) => {
+    if (!info[detail]) {
+      info[detail] = os[detail]();
+    }
+
+    return info;
+  }, {});
+
+  log.debug({ osInfo });
 }
 
 module.exports = {
