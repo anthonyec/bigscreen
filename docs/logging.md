@@ -36,4 +36,12 @@ These are based on the levels found in the [bunyan docs](https://github.com/tren
 
 ## Predefined logs
 
-- `logSystemDetails`
+- `logSystemDetails` - Log generic system information from the built in [os module](https://nodejs.org/api/os.html)
+
+## Follow logs in real time
+
+You can use the CLI utility `tail` to watch the log file and show updates in real time.
+
+```shell
+tail -f ~/Library/Application\ Support/bigscreen/log | ./node_modules/.bin/bunyan
+```
