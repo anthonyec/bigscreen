@@ -10,23 +10,24 @@
     "lint": "eslint --ext .js ./",
     "lint:fix": "eslint --fix .js ./",
     "test": "npm run test:file -- src/**/*_spec.js build/**/*_spec.js",
-    "test:file": "NODE_ENV=test mocha",
+    "test:file": "NODE_ENV=test electron-mocha",
     "test:watch": "npm run test -- --watch --watch-extensions js"
   },
   "dependencies": {
     "bunyan": "^1.8.10",
     "electron": "^1.6.2",
+    "electron-settings": "^3.0.14",
     "electron-sudo": "^4.0.12",
     "js-yaml": "^3.8.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "commander": "^2.9.0",
+    "electron-mocha": "^3.4.0",
     "electron-packager": "^8.6.0",
     "eslint": "^3.18.0",
     "fs-extra": "^2.1.2",
     "merge-dirs": "^0.2.1",
-    "mocha": "^3.2.0",
     "mock-fs": "^4.2.0",
     "node-fs-extra": "^0.8.1",
     "proxyquire": "^1.7.11",
