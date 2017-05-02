@@ -1,0 +1,5 @@
+# URL string to show in the web address textfield by default. Use null if none.
+default_url: null
+
+# Appearance
+accent_color: "#000000"
