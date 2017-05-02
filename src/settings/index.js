@@ -71,9 +71,11 @@ function loadConfigIntoSettings() {
   });
 }
 
-module.exports.hasSettings = hasSettings;
-module.exports.getConfig = getConfig;
-module.exports.shouldAlwaysLoadConfig = shouldAlwaysLoadConfig;
-module.exports.loadConfigIntoSettings = loadConfigIntoSettings;
-module.exports.setAllSettingsWith = setAllSettingsWith;
-module.exports.getConfigPath = getConfigPath;
+module.exports = exports = {
+  hasSettings,
+  getConfig,
+  shouldAlwaysLoadConfig,
+  loadConfigIntoSettings,
+  setAllSettingsWith,
+  getConfigPath,
+};
