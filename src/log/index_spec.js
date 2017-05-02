@@ -78,8 +78,17 @@ describe('Log', () => {
   });
 
   it('logs system details', () => {
+    const details = { foo: 1, bar: 2 };
+    const getSystemDetailsStub = sinon.stub(log, 'getSystemDetails');
+    getSystemDetailsStub.returns(details);
+
     log.logSystemDetails();
+
+    expect(getSystemDetailsStub.calledOnce).to.equal(true);
     expect(bunyanDebugStub.calledOnce).to.equal(true);
+    expect(bunyanDebugStub.args[0][0]).to.eql({ osInfo: details });
+
+    getSystemDetailsStub.restore();
   });
 
   afterEach(() => {
