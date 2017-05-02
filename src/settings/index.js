@@ -3,7 +3,7 @@ const path = require('path');
 
 const { app } = require('electron');
 const yaml = require('js-yaml');
-const settings = require('electron-settings');
+const electronSettings = require('electron-settings');
 
 /**
  * Get the path of the config.yaml file. It's in a own function so it can be
@@ -19,7 +19,7 @@ function getConfigPath() {
  * @returns {boolean} true if settings object contain more than 0 keys.
  */
 function hasSettings() {
-  return Object.keys(settings.getAll()).length > 0;
+  return Object.keys(electronSettings.getAll()).length > 0;
 }
 
 /**
@@ -55,7 +55,7 @@ function getConfig() {
  * @returns {void}
  */
 function setAllSettingsWith(config) {
-  settings.setAll(config);
+  electronSettings.setAll(config);
 }
 
 /**
@@ -77,4 +77,4 @@ module.exports.shouldAlwaysLoadConfig = shouldAlwaysLoadConfig;
 module.exports.loadConfigIntoSettings = loadConfigIntoSettings;
 module.exports.setAllSettingsWith = setAllSettingsWith;
 module.exports.getConfigPath = getConfigPath;
-module.exports.settings = settings;
+module.exports.electronSettings = electronSettings;

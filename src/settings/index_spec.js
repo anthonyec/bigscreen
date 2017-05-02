@@ -40,7 +40,7 @@ describe('Settings', () => {
   });
 
   it('check if the settings already exist or not', () => {
-    const getAllStub = sandbox.stub(settings.settings, 'getAll');
+    const getAllStub = sandbox.stub(settings.electronSettings, 'getAll');
     const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
 
     // Returns correct config path.
