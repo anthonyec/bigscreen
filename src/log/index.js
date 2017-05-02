@@ -13,52 +13,65 @@ const FILENAME = 'log';
 // On macOS this defaults to `~/Library/Application Support/<APP_NAME>`.
 const LOG_PATH = path.join(USER_DATA_PATH, FILENAME);
 
-const log = bunyan.createLogger({
-  name: settings.get('name'),
-  streams: [
-    { level: 'fatal', path: LOG_PATH },
-    { level: 'error', path: LOG_PATH },
-    { level: 'warn', path: LOG_PATH },
-    { level: 'info', path: LOG_PATH },
-    { level: 'debug', path: LOG_PATH },
-    { level: 'trace', path: LOG_PATH },
-  ],
-});
+// The names of the OS information to get. https://nodejs.org/api/os.html
+const SYSTEM_DETAILS = [
+  'homedir',
+  'hostname',
+  'arch',
+  'totalmem',
+  'uptime',
+  'freemem',
+  'platform',
+  'release',
+  'type',
+  'uptime',
+  'cpus',
+];
+
+/**
+ * Start a new bunyan logger instance.
+ * @returns {object} bunyan Logger instance.
+ */
+function startLogger() {
+  return bunyan.createLogger({
+    name: settings.get('name') || 'bigscreen',
+    streams: [
+      { level: 'fatal', path: LOG_PATH },
+      { level: 'error', path: LOG_PATH },
+      { level: 'warn', path: LOG_PATH },
+      { level: 'info', path: LOG_PATH },
+      { level: 'debug', path: LOG_PATH },
+      { level: 'trace', path: LOG_PATH },
+    ],
+  });
+}
+
+/**
+ * Get the system information specficied in SYSTEM_DETAILS.
+ * @returns {object} osInfo Object of various OS information.
+ */
+function getSystemDetails() {
+  // Make an object with the key as the os func name and result of
+  // that function. E.g platform: darwin
+  return exports.SYSTEM_DETAILS.reduce((info, detail) => {
+    info[detail] = os[detail]();
+    return info;
+  }, {});
+}
 
 /**
  * Log generic system information.
  * @returns {void}
  */
 function logSystemDetails() {
-  // OS information to get. Docs for each: https://nodejs.org/api/os.html
-  const details = [
-    'homedir',
-    'hostname',
-    'arch',
-    'totalmem',
-    'uptime',
-    'freemem',
-    'platform',
-    'release',
-    'type',
-    'uptime',
-    'cpus',
-  ];
-
-  // Make an object with the key as the os func name and value of that function.
-  // E.g platform: darwin
-  const osInfo = details.reduce((info, detail) => {
-    if (!info[detail]) {
-      info[detail] = os[detail]();
-    }
-
-    return info;
-  }, {});
-
-  log.debug({ osInfo });
+  const osInfo = exports.getSystemDetails();
+  exports.log.debug({ osInfo });
 }
 
-module.exports = {
-  log,
+module.exports = exports = {
+  log: startLogger(),
+  startLogger,
   logSystemDetails,
+  getSystemDetails,
+  SYSTEM_DETAILS,
 };
