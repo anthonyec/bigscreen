@@ -72,6 +72,8 @@ describe('Settings', () => {
     // Make sure getConfig loads defaultConfig data.
     settings.getConfig().then((config) => {
       expect(config).to.be.eql(defaultConfig);
+    }).catch((err) => {
+      console.error(err);
     });
 
     // Now change getConfigPath to return a non-exist path.

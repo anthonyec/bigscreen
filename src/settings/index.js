@@ -1,9 +1,9 @@
 const fs = require('fs');
-const path = require('path');
 
-const { app } = require('electron');
 const yaml = require('js-yaml');
 const electronSettings = require('electron-settings');
+
+const { CONFIG_PATH } = require('./paths');
 
 /**
  * Get the path of the config.yaml file. It's in a own function so it can be
@@ -11,7 +11,7 @@ const electronSettings = require('electron-settings');
  * @returns {string} Path of the config.yaml file.
  */
 function getConfigPath() {
-  return path.join(app.getAppPath(), 'config.yaml');
+  return CONFIG_PATH;
 }
 
 /**
