@@ -1,10 +1,14 @@
 const electron = require('electron');
 
+const { loadConfigIntoSettings } = require('./settings');
+
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
-app.on('ready', () => {
-  const mainWindow = new BrowserWindow();
+function main() {
+  const mainWindow = new BrowserWindow({
+    resizable: process.env.NODE_ENV === 'development',
+  });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
@@ -15,4 +19,10 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.openDevTools({ detach: true });
   }
+}
+
+app.on('ready', () => {
+  loadConfigIntoSettings().then(() => {
+    main();
+  });
 });
