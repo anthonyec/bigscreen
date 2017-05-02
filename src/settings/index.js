@@ -77,4 +77,3 @@ module.exports.shouldAlwaysLoadConfig = shouldAlwaysLoadConfig;
 module.exports.loadConfigIntoSettings = loadConfigIntoSettings;
 module.exports.setAllSettingsWith = setAllSettingsWith;
 module.exports.getConfigPath = getConfigPath;
-module.exports.electronSettings = electronSettings;

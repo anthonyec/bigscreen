@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const mock = require('mock-fs');
 const yaml = require('js-yaml');
+const electronSettings = require('electron-settings');
 
 const settings = require('./');
 
@@ -40,7 +41,7 @@ describe('Settings', () => {
   });
 
   it('check if the settings already exist or not', () => {
-    const getAllStub = sandbox.stub(settings.electronSettings, 'getAll');
+    const getAllStub = sandbox.stub(electronSettings, 'getAll');
     const getConfigPathStub = sandbox.stub(settings, 'getConfigPath');
 
     // Returns correct config path.
