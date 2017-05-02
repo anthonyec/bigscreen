@@ -1,3 +1,6 @@
+# Name that will appear in copy throughout the app and next to the icon.
+name: Bigscreen
+
 # URL string to show in the web address textfield by default. Use null if none.
 default_url: null
 
