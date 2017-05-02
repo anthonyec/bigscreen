@@ -64,6 +64,7 @@ function setAllSettingsWith(config) {
  * @returns {promise} Promise of getConfig.
  */
 function loadConfigIntoSettings() {
+  // Using `exports` so that it can be stubbed in the unit test.
   return exports.getConfig().then((config) => {
     if (!exports.hasSettings() || exports.shouldAlwaysLoadConfig()) {
       exports.setAllSettingsWith(config);
