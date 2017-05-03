@@ -31,7 +31,6 @@
     "mock-fs": "^4.2.0",
     "node-fs-extra": "^0.8.1",
     "proxyquire": "^1.7.11",
-    "rewire": "^2.5.2",
     "sinon": "^2.1.0"
   },
   "engines": {

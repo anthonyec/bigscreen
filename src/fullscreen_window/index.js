@@ -13,6 +13,11 @@ module.exports = class FullscreenWindow {
     this.registerShortcuts();
   }
 
+  // Test method.
+  getBrowserWindow() {
+    return BrowserWindow;
+  }
+
   /**
    * Get the BrowserWindow instance.
    * @returns {object} Instance of the electron BrowserWindow.
@@ -40,12 +45,7 @@ module.exports = class FullscreenWindow {
       });
 
       this.window.loadURL(this.url);
-
       this.window.on('show', resolve);
-
-      this.window.on('closed', () => {
-        this.window = null;
-      });
     });
   }
 
@@ -56,6 +56,7 @@ module.exports = class FullscreenWindow {
   close() {
     this.window.close();
     this.unregisterShortcuts();
+    this.window = null;
   }
 
   /**
