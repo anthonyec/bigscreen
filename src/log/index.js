@@ -2,6 +2,7 @@ const os = require('os');
 const path = require('path');
 
 const bunyan = require('bunyan');
+const electronSettings = require('electron-settings');
 const { app } = require('electron');
 
 const { settings } = require('../settings');
@@ -34,7 +35,7 @@ const SYSTEM_DETAILS = [
  */
 function startLogger() {
   return bunyan.createLogger({
-    name: settings.get('name') || 'bigscreen',
+    name: electronSettings.get('name') || 'bigscreen',
     streams: [
       { level: 'fatal', path: LOG_PATH },
       { level: 'error', path: LOG_PATH },
