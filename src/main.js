@@ -1,27 +1,20 @@
-const electron = require('electron');
+const { app } = require('electron');
+const electronSettings = require('electron-settings');
 
 const { loadConfigIntoSettings } = require('./settings');
-
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+const { logSystemDetails } = require('./log');
+const FullscreenWindow = require('./fullscreen_window');
 
 function main() {
-  const mainWindow = new BrowserWindow({
-    resizable: process.env.NODE_ENV === 'development',
-  });
+  const url = electronSettings.get('url') || 'about:blank';
+  const fullscreenWindow = new FullscreenWindow();
 
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show();
-  });
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.openDevTools({ detach: true });
-  }
+  fullscreenWindow.open(url);
 }
 
 app.on('ready', () => {
+  logSystemDetails();
+
   loadConfigIntoSettings().then(() => {
     main();
   });
