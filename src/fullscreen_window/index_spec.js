@@ -24,6 +24,7 @@ describe('Fullscreen window', () => {
     };
 
     const loadWindowStub = sandbox.stub();
+    const registerShortcutsStub = sandbox.stub();
 
     // Stub the electron's BrowserWindow with fake methods.
     function BrowserWindow() {
@@ -42,10 +43,15 @@ describe('Fullscreen window', () => {
     });
 
     const fullscreenWindow = new FullscreenWindowProxy();
+    fullscreenWindow.registerShortcuts = registerShortcutsStub;
+
     fullscreenWindow.open(url);
 
     // Check the URL gets stored in the class, the reload method uses it.
     expect(fullscreenWindow.url).to.equal(url);
+
+    // And that registerShortcuts get called.
+    expect(registerShortcutsStub.calledOnce).to.equal(true);
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
@@ -53,6 +59,7 @@ describe('Fullscreen window', () => {
     // loadURL should get called once with the URL.
     expect(loadWindowStub.calledOnce).to.equal(true);
     expect(loadWindowStub.args[0][0]).to.equal(url);
+
   });
 
   it('closes the window and unregisters shortcuts', () => {
@@ -90,10 +97,47 @@ describe('Fullscreen window', () => {
     expect(loadURLStub.args[0][0]).to.equal(expectURL);
   });
 
-  xit('registers shortcuts', () => {
+  it('registers shortcuts', () => {
+    const registerStub = sandbox.stub();
+    const FullscreenWindowProxy = proxyquire('./', {
+      electron: {
+        globalShortcut: {
+          register: registerStub,
+        },
+      },
+    });
+
+    const fullscreenWindow = new FullscreenWindowProxy();
+
+    fullscreenWindow.registerShortcuts();
+
+    expect(registerStub.callCount).to.equal(2);
+    expect(registerStub.args[0][0]).to.equal('Q');
+    expect(registerStub.args[1][0]).to.equal('R');
   });
 
-  xit('unregisters shortcuts', () => {
+  it('unregisters shortcuts', () => {
+    const expectedArgs = [
+      // Args look like this because forEach passes the key, index and array.
+      ['Q', 0, ['Q', 'R']],
+      ['R', 1, ['Q', 'R']],
+    ];
+
+    const unregisterStub = sandbox.stub();
+    const FullscreenWindowProxy = proxyquire('./', {
+      electron: {
+        globalShortcut: {
+          unregister: unregisterStub,
+        },
+      },
+    });
+
+    const fullscreenWindow = new FullscreenWindowProxy();
+
+    fullscreenWindow.unregisterShortcuts();
+
+    expect(unregisterStub.callCount).to.equal(2);
+    expect(unregisterStub.args).to.eql(expectedArgs);
   });
 
   afterEach(() => {

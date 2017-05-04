@@ -9,8 +9,6 @@ module.exports = class FullscreenWindow {
       Q: this.close,
       R: this.reload,
     };
-
-    this.registerShortcuts();
   }
 
   // Test method.
@@ -33,6 +31,7 @@ module.exports = class FullscreenWindow {
    */
   open(url) {
     this.url = url;
+    this.registerShortcuts();
 
     return new Promise((resolve) => { // reject
       this.window = new BrowserWindow({
