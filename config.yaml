@@ -4,3 +4,6 @@ name: Bigscreen
 # URL string to show in the web address text field by default. Use null if none.
 url: "https://www.google.com/"
 
+# Global variables that are available in the `window` in the displayed web page.
+globals:
+  example_api_key: '123456'
