@@ -59,7 +59,6 @@ describe('Fullscreen window', () => {
     // loadURL should get called once with the URL.
     expect(loadWindowStub.calledOnce).to.equal(true);
     expect(loadWindowStub.args[0][0]).to.equal(url);
-
   });
 
   it('closes the window and unregisters shortcuts', () => {
@@ -117,8 +116,8 @@ describe('Fullscreen window', () => {
   });
 
   it('unregisters shortcuts', () => {
+    // Args look like this because forEach passes the key, index and array.
     const expectedArgs = [
-      // Args look like this because forEach passes the key, index and array.
       ['Q', 0, ['Q', 'R']],
       ['R', 1, ['Q', 'R']],
     ];

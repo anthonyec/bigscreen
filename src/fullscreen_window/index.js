@@ -11,11 +11,6 @@ module.exports = class FullscreenWindow {
     };
   }
 
-  // Test method.
-  getBrowserWindow() {
-    return BrowserWindow;
-  }
-
   /**
    * Get the BrowserWindow instance.
    * @returns {object} Instance of the electron BrowserWindow.
