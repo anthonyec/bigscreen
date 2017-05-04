@@ -1,8 +1,6 @@
 # Name that will appear in copy throughout the app and next to the icon.
 name: Bigscreen
 
-# URL string to show in the web address textfield by default. Use null if none.
+# URL string to show in the web address text field by default. Use null if none.
 url: "https://www.google.com/"
 
-# Appearance
-accent_color: "#000000"

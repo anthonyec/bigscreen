@@ -1,3 +1,5 @@
+const path = require('path');
+
 const { expect } = require('chai');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
@@ -20,6 +22,7 @@ describe('Fullscreen window', () => {
       webPreferences: {
         webgl: true,
         backgroundThrottling: false,
+        preload: path.join(__dirname, 'preload.js'),
       },
     };
 
