@@ -74,7 +74,20 @@ describe('Fullscreen window', () => {
     expect(fullscreenWindow.window).to.equal(null);
   });
 
-  xit('reloads the window with the same URL', () => {
+  it('reloads the window with the same URL', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const loadURLStub = sandbox.stub();
+
+    fullscreenWindow.window = sinon.createStubInstance(FullscreenWindow);
+    fullscreenWindow.window.loadURL = loadURLStub;
+
+    fullscreenWindow.url = 'https://www.google.com/';
+    const expectURL = fullscreenWindow.url;
+
+    fullscreenWindow.reload();
+
+    expect(loadURLStub.calledOnce).to.equal(true);
+    expect(loadURLStub.args[0][0]).to.equal(expectURL);
   });
 
   xit('registers shortcuts', () => {
