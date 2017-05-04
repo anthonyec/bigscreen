@@ -111,15 +111,14 @@ describe('Fullscreen window', () => {
     fullscreenWindow.registerShortcuts();
 
     expect(registerStub.callCount).to.equal(2);
-    expect(registerStub.args[0][0]).to.equal('Q');
-    expect(registerStub.args[1][0]).to.equal('R');
+    expect(registerStub.args[0][0]).to.equal('CommandOrControl+Esc');
+    expect(registerStub.args[1][0]).to.equal('CommandOrControl+R');
   });
 
   it('unregisters shortcuts', () => {
-    // Args look like this because forEach passes the key, index and array.
     const expectedArgs = [
-      ['Q', 0, ['Q', 'R']],
-      ['R', 1, ['Q', 'R']],
+      ['CommandOrControl+Esc'],
+      ['CommandOrControl+R'],
     ];
 
     const unregisterStub = sandbox.stub();

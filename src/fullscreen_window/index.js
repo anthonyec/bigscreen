@@ -6,8 +6,8 @@ module.exports = class FullscreenWindow {
     this.url = '';
 
     this.shortcuts = {
-      Q: this.close,
-      R: this.reload,
+      'CommandOrControl+Esc': this.close,
+      'CommandOrControl+R': this.reload,
     };
   }
 
@@ -80,6 +80,8 @@ module.exports = class FullscreenWindow {
    */
   unregisterShortcuts() {
     const shortcuts = Object.keys(this.shortcuts);
-    shortcuts.forEach(globalShortcut.unregister);
+    shortcuts.forEach((shortcut) => {
+      globalShortcut.unregister(shortcut);
+    });
   }
 };
