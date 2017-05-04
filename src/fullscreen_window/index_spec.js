@@ -2,7 +2,16 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 
+const FullscreenWindow = require('./');
+
 describe('Fullscreen window', () => {
+  let sandbox;
+
+  beforeEach(() => {
+    // Create sandbox to make it easier restore every stub after each test.
+    sandbox = sinon.sandbox.create();
+  });
+
   it('opens a new window with a URL', () => {
     const url = 'https://google.com';
     const expectedBrowserWindowArgs = {
@@ -14,24 +23,25 @@ describe('Fullscreen window', () => {
       },
     };
 
-    const loadWindowStub = sinon.stub();
+    const loadWindowStub = sandbox.stub();
 
-    // TODO: Explain this.
+    // Stub the electron's BrowserWindow with fake methods.
     function BrowserWindow() {
       this.loadURL = loadWindowStub;
-      this.on = sinon.stub();
+      this.on = sandbox.stub();
     }
 
-    const browserWindowSpy = sinon.spy(BrowserWindow);
+    // Wrap the BrowserWindow in a spy.
+    const browserWindowSpy = sandbox.spy(BrowserWindow);
 
-    const FullscreenWindow = proxyquire('./', {
+    // Fake the electron module with the wrapped BrowserWindow method.
+    const FullscreenWindowProxy = proxyquire('./', {
       electron: {
         BrowserWindow: browserWindowSpy,
       },
     });
 
-    const fullscreenWindow = new FullscreenWindow();
-
+    const fullscreenWindow = new FullscreenWindowProxy();
     fullscreenWindow.open(url);
 
     // Check the URL gets stored in the class, the reload method uses it.
@@ -45,7 +55,23 @@ describe('Fullscreen window', () => {
     expect(loadWindowStub.args[0][0]).to.equal(url);
   });
 
-  xit('closes the window and unregisters shortcuts', () => {
+  it('closes the window and unregisters shortcuts', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const closeWindowStub = sandbox.stub();
+
+    fullscreenWindow.window = sinon.createStubInstance(FullscreenWindow);
+    fullscreenWindow.window.close = closeWindowStub;
+
+    const unregisterShortcutsStub = sandbox.stub(
+      fullscreenWindow,
+      'unregisterShortcuts'
+    );
+
+    fullscreenWindow.close();
+
+    expect(unregisterShortcutsStub.calledOnce).to.equal(true);
+    expect(closeWindowStub.calledOnce).to.equal(true);
+    expect(fullscreenWindow.window).to.equal(null);
   });
 
   xit('reloads the window with the same URL', () => {
@@ -55,5 +81,9 @@ describe('Fullscreen window', () => {
   });
 
   xit('unregisters shortcuts', () => {
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 });
