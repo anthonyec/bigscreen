@@ -1,6 +1,8 @@
 const path = require('path');
 
-const { BrowserWindow, globalShortcut } = require('electron');
+const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
+
+const { log } = require('../log');
 
 module.exports = class FullscreenWindow {
   constructor() {
@@ -11,6 +13,10 @@ module.exports = class FullscreenWindow {
       'CommandOrControl+Esc': this.close,
       'CommandOrControl+R': this.reload,
     };
+
+    ipcMain.on('window_log', (evt, args) => {
+      log.debug(args);
+    });
   }
 
   /**
@@ -37,6 +43,9 @@ module.exports = class FullscreenWindow {
         webPreferences: {
           webgl: true,
           backgroundThrottling: false,
+
+          // This will be loaded before other scripts run in the web page.
+          // Preload scripts have access to node.js and electron APIs.
           preload: path.join(__dirname, 'preload.js'),
         },
       });
