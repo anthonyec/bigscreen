@@ -5,6 +5,8 @@ The fullscreen window handles spawning a window that displayed a webpage in kios
 ---
 
 ## Shortcuts
+- Reload web page URL: `CMD` or `CTRL` + `R`.
+- Close the fullscreen window: `CMD` or `CTRL` + `ESC`.
 
 ## Preload script
 `preload.js` is a script that gets injected before any web page scripts load. 
