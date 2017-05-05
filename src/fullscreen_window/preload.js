@@ -1,9 +1,9 @@
 const { ipcRenderer } = require('electron');
+
 const electronSettings = require('electron-settings');
 
 /**
- * Clone a object and wrap each of its methods with a function that calls
- * a IPC event.
+ * Clone a object and wrap each method with a function that calls an IPC event.
  * @param {object} objectToCopy Object with methods to wrap.
  * @param {string} eventName Name of the event to call via IPC Renderer.
  * @returns {object} wrappedObj Clone of object with methods wrapped
@@ -27,15 +27,16 @@ function wrapMethodsWithIPCEvent(objectToCopy, eventName) {
   return wrappedMethods;
 }
 
+// This contains some things that eslint aint gonna like, for example
+// unexpected dangling and reassining native globals, but yeah.
 process.once('loaded', () => {
   // Replace console object with cloned version containing wrapped methods.
   console = wrapMethodsWithIPCEvent(console, 'window_log'); // eslint-disable-line
 
-
   // Assign globals from config.yaml to namespaced object in window.
-  window.__electron = electronSettings.get('globals');
+  window.__electron = electronSettings.get('globals'); // eslint-disable-line
 });
 
 module.exports = {
   wrapMethodsWithIPCEvent,
-}
+};

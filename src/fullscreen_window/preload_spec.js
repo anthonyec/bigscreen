@@ -31,7 +31,7 @@ describe('Preload script', () => {
     const fakeConsole = {
       log: logStub,
       debug: debugStub,
-    }
+    };
 
     const result = preload.wrapMethodsWithIPCEvent(fakeConsole, 'test_event');
 
@@ -56,11 +56,11 @@ describe('Preload script', () => {
 
     // Test ICP event has the arguments from the log call.
     expect(icpRendererStub.args[0][0]).to.equal('test_event');
-    expect(icpRendererStub.args[0][1].arguments[0]).to.equal('log test')
+    expect(icpRendererStub.args[0][1].arguments[0]).to.equal('log test');
 
     // Test ICP event has the arguments from the debug call.
     expect(icpRendererStub.args[1][0]).to.equal('test_event');
-    expect(icpRendererStub.args[1][1].arguments[0]).to.equal('debug test')
+    expect(icpRendererStub.args[1][1].arguments[0]).to.equal('debug test');
   });
 
   afterEach(() => {
