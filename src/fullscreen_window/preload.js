@@ -4,5 +4,5 @@
  */
 const electronSettings = require('electron-settings');
 
-// Merge window globals with the globals inside config.yaml.
-window.__electron = Object.assign(window, electronSettings.get('globals'));
+// Make globals from the config file accessible to the web page.
+window.__electron = electronSettings.get('globals');
