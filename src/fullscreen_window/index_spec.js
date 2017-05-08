@@ -5,6 +5,7 @@ const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 
 const FullscreenWindow = require('./');
+const { log } = require('../log');
 
 describe('Fullscreen window', () => {
   let sandbox;
@@ -28,6 +29,7 @@ describe('Fullscreen window', () => {
 
     const loadWindowStub = sandbox.stub();
     const registerShortcutsStub = sandbox.stub();
+    const addEventsStub = sandbox.stub();
 
     // Stub the electron's BrowserWindow with fake methods.
     function BrowserWindow() {
@@ -47,14 +49,16 @@ describe('Fullscreen window', () => {
 
     const fullscreenWindow = new FullscreenWindowProxy();
     fullscreenWindow.registerShortcuts = registerShortcutsStub;
+    fullscreenWindow.addEvents = addEventsStub;
 
     fullscreenWindow.open(url);
 
     // Check the URL gets stored in the class, the reload method uses it.
     expect(fullscreenWindow.url).to.equal(url);
 
-    // And that registerShortcuts get called.
+    // Chheck registerShortcuts and addEvents get called.
     expect(registerShortcutsStub.calledOnce).to.equal(true);
+    expect(addEventsStub.calledOnce).to.equal(true);
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
@@ -143,5 +147,114 @@ describe('Fullscreen window', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  it('add event handlers for webContents and window events', () => {
+
+  });
+
+  it('onDidFailToLoad logs an error', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const errorStub = sandbox.stub();
+    const expectedLogArgs = [
+      'did-fail-load',
+    ];
+
+    log.error = errorStub;
+
+    // Normally called by the 'certificate-error' event.
+    fullscreenWindow.onDidFailToLoad();
+
+    expect(errorStub.calledOnce).to.equal(true);
+    expect(errorStub.args[0]).to.eql(expectedLogArgs);
+  });
+
+  it('onCertificateError logs a warn', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const warnStub = sandbox.stub();
+    const expectedLogArgs = [
+      'certificate-error',
+    ];
+
+    log.warn = warnStub;
+
+    // Normally called by the 'certificate-error' event.
+    fullscreenWindow.onCertificateError();
+
+    // Expect the logger to be called with correct arguments.
+    expect(warnStub.calledOnce).to.equal(true);
+    expect(warnStub.args[0]).to.eql(expectedLogArgs);
+  });
+
+  it('onCrashed logs an error and reloads', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const reloadStub = sandbox.stub();
+    const errorStub = sandbox.stub();
+    const expectedLogArgs = [
+      'crashed',
+    ];
+
+    log.error = errorStub;
+
+    // Replace reload with stub.
+    fullscreenWindow.reload = reloadStub;
+
+    // Normally called by the 'crashed' event.
+    fullscreenWindow.onCrashed();
+
+    // Web page gets reloaded.
+    expect(reloadStub.calledOnce).to.equal(true);
+
+    // Expect the logger to be called with correct arguments.
+    expect(errorStub.calledOnce).to.equal(true);
+    expect(errorStub.args[0]).to.eql(expectedLogArgs);
+  });
+
+  it('onUnresponsive logs an error and reloads', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const reloadStub = sandbox.stub();
+    const errorStub = sandbox.stub();
+    const expectedLogArgs = [
+      'unresponsive',
+    ];
+
+    log.error = errorStub;
+
+    // Replace reload with stub.
+    fullscreenWindow.reload = reloadStub;
+
+    // Normally called by the 'unresponsive' event.
+    fullscreenWindow.onUnresponsive();
+
+    // Web page gets reloaded.
+    expect(reloadStub.calledOnce).to.equal(true);
+
+    // Expect the logger to be called with correct arguments.
+    expect(errorStub.calledOnce).to.equal(true);
+    expect(errorStub.args[0]).to.eql(expectedLogArgs);
+  });
+
+  it('onGPUCrashed logs an error and reloads', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const reloadStub = sandbox.stub();
+    const errorStub = sandbox.stub();
+    const expectedLogArgs = [
+      'gpu-process-crashed',
+    ];
+
+    log.error = errorStub;
+
+    // Replace reload with stub.
+    fullscreenWindow.reload = reloadStub;
+
+    // Normally called by the 'gpu-process-crashed' event.
+    fullscreenWindow.onGPUCrashed();
+
+    // Web page gets reloaded.
+    expect(reloadStub.calledOnce).to.equal(true);
+
+    // Expect the logger to be called with correct arguments.
+    expect(errorStub.calledOnce).to.equal(true);
+    expect(errorStub.args[0]).to.eql(expectedLogArgs);
   });
 });
