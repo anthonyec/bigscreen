@@ -5,8 +5,6 @@ const bunyan = require('bunyan');
 const electronSettings = require('electron-settings');
 const { app } = require('electron');
 
-const { settings } = require('../settings');
-
 const USER_DATA_PATH = app.getPath('userData');
 const FILENAME = 'log';
 
