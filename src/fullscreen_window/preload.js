@@ -33,7 +33,7 @@ process.once('loaded', () => {
   // Replace console object with cloned version containing wrapped methods.
   console = wrapMethodsWithIPCEvent(console, 'window_log'); // eslint-disable-line
 
-  // Assign globals from config.yaml to namespaced object in window.
+  // Make globals from the config file accessible to the web page.
   window.__electron = electronSettings.get('globals'); // eslint-disable-line
 });
 
