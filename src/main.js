@@ -1,6 +1,7 @@
 const electron = require('electron');
 
 const { loadConfigIntoSettings } = require('./settings');
+const { logSystemDetails } = require('./log');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -22,6 +23,8 @@ function main() {
 }
 
 app.on('ready', () => {
+  logSystemDetails();
+
   loadConfigIntoSettings().then(() => {
     main();
   });

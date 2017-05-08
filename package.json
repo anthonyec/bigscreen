@@ -14,6 +14,7 @@
     "test:watch": "npm run test -- --watch --watch-extensions js"
   },
   "dependencies": {
+    "bunyan": "^1.8.10",
     "electron": "^1.6.2",
     "electron-settings": "^3.0.14",
     "electron-sudo": "^4.0.12",
