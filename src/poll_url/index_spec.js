@@ -10,15 +10,19 @@ const poll = require('./');
 const chance = new Chance();
 
 describe('Poll URL', () => {
+  let clock;
   let sandbox;
 
   beforeEach(() => {
+    clock = sinon.useFakeTimers();
+
     // Create sandbox to make it easier restore every stub after each test.
     sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
     sandbox.restore();
+    clock.restore();
   });
 
   it('check if a URL uses the file URI scheme', () => {
@@ -100,18 +104,102 @@ describe('Poll URL', () => {
     // Check the URL again, hoping it errors.
     poll.checkRequestExists(randomURL, successStub, failedStub);
 
+    // Pretend connecting to the URL returned a error code that is not 200.
+    requestStub.callsFake((url, callback) => {
+      callback(null, 401);
+    });
+
+    // Check the URL again, hoping it errors.
+    poll.checkRequestExists(randomURL, successStub, failedStub);
+
     expect(successStub.calledOnce).to.equal(true);
-    expect(failedStub.calledOnce).to.equal(true);
+    expect(failedStub.calledTwice).to.equal(true);
   });
 
   it('poll calls the correct checking method', () => {
+    const isFileURISchemeStub = sandbox.stub(poll, 'isFileURIScheme');
+    const checkFileExistsStub = sandbox.stub(poll, 'checkFileExists');
+    const checkRequestExistsStub = sandbox.stub(poll, 'checkRequestExists');
+
     const randomURL = chance.url();
-    const randomFileURL = chance.url({ protocol: 'file' });
+
+    // Pretend the URL has a file schema.
+    isFileURISchemeStub.returns(true);
 
     poll.poll(randomURL);
+
+    expect(checkFileExistsStub.calledOnce).to.equal(true);
+    expect(checkRequestExistsStub.calledOnce).to.equal(false);
+
+    // Pretend the URL does not have a file schema.
+    isFileURISchemeStub.returns(false);
+
+    poll.poll(randomURL);
+
+    expect(checkFileExistsStub.calledOnce).to.equal(true);
+    expect(checkRequestExistsStub.calledOnce).to.equal(true);
   });
 
-  it('retry callback can be called', () => {
+  it('calls poll after a timeout of 1 second', () => {
+    const randomURL = chance.url();
+    const successStub = sandbox.stub();
+    const failedStub = sandbox.stub();
 
+    const pollStub = sandbox.stub(poll, 'poll');
+
+    poll.callPollAfterTimeout(randomURL, successStub, failedStub);
+
+    clock.tick(1000);
+
+    expect(pollStub.calledOnce).to.equal(true);
+    expect(pollStub.args[0]).to.eql([
+      randomURL,
+      successStub,
+      failedStub,
+    ]);
+  });
+
+  it('retry callback argument can be called via the success or failure', () => {
+    const isFileURISchemeStub = sandbox.stub(poll, 'isFileURIScheme');
+    const checkFileExistsStub = sandbox.stub(poll, 'checkFileExists');
+    const callPollAfterTimeoutStub = sandbox.stub(poll, 'callPollAfterTimeout');
+    const successStub = sandbox.stub();
+    const failedStub = sandbox.stub();
+
+    // Pretend the URL has a file schema.
+    isFileURISchemeStub.returns(true);
+
+    // And the file does not exist.
+    checkFileExistsStub.callsFake((url, successCallback, failedCallback) => {
+      failedCallback();
+    });
+
+    // When the poll fails it should called the retry callback that gets passed.
+    failedStub.callsFake((retry) => retry());
+
+    // Run the poll with the failure setup.
+    poll.poll('', successStub, failedStub);
+
+    // This time don't call retry callback function.
+    failedStub.returns(null);
+
+    // Run the poll with the failure setup but without retry being called.
+    poll.poll('', successStub, failedStub);
+
+    expect(failedStub.calledTwice).to.equal(true);
+    expect(callPollAfterTimeoutStub.calledOnce).to.equal(true);
+
+    // Do the same thing but for the success callback.
+    checkFileExistsStub.callsFake((url, successCallback) => { // failedCallback
+      successCallback();
+    });
+
+    successStub.callsFake((retry) => retry());
+    poll.poll('', successStub, failedStub);
+    successStub.returns(null);
+    poll.poll('', successStub, failedStub);
+
+    expect(successStub.calledTwice).to.equal(true);
+    expect(callPollAfterTimeoutStub.calledTwice).to.equal(true);
   });
 });

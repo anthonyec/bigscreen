@@ -176,20 +176,23 @@ describe('Fullscreen window', () => {
     expect(webContentsEventStub.args[2][0]).to.equal('crashed');
   });
 
-  it('onDidFailToLoad logs an error', () => {
+  it('onDidFailToLoad logs an error and opens fallback', () => {
     const fullscreenWindow = new FullscreenWindow();
+    const openFallbackStub = sandbox.stub();
     const errorStub = sandbox.stub();
     const expectedLogArgs = [
       'did-fail-load',
     ];
 
     log.error = errorStub;
+    fullscreenWindow.openFallback = openFallbackStub;
 
     // Normally called by the 'certificate-error' event.
     fullscreenWindow.onDidFailToLoad();
 
     expect(errorStub.calledOnce).to.equal(true);
     expect(errorStub.args[0]).to.eql(expectedLogArgs);
+    expect(openFallbackStub.calledOnce).to.equal(true);
   });
 
   it('onCertificateError logs a warn', () => {

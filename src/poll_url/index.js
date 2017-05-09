@@ -7,7 +7,7 @@ const FILE_URI_SCHEME = 'file://';
 const FILE_URI_REGEX = /^file:\/\//g;
 
 /**
- * Check if the url has `file://` as the start.
+ * Check if the url has `file://` at the start.
  * @param {string} url URL to check.
  * @returns {boolean} true if the url has "file://" at the start.
  */
@@ -43,7 +43,7 @@ function checkFileExists(url, successCallback, failedCallback) {
 }
 
 /**
- * Check if a successful request can be made to a URL.
+ * Check if a successful request can be made to a URL that returns 200.
  * @param {string} url URL to check.
  * @param {function} successCallback Called if the file exists.
  * @param {function} failedCallback Called if there is an
@@ -53,8 +53,8 @@ function checkFileExists(url, successCallback, failedCallback) {
 function checkRequestExists(url, successCallback, failedCallback) {
   // Using request.get because it's hard to stub request function directly.
   // See http://stackoverflow.com/a/20090180.
-  request.get(url, (err) => {
-    if (err) {
+  request.get(url, (err, response) => {
+    if (err || (response && response.statusCode !== 200)) {
       failedCallback();
     } else {
       successCallback();
@@ -74,7 +74,10 @@ function callPollAfterTimeout(url, successCallback, failedCallback) {
   // Using a timeout because sometimes a poll can fail instantly,
   // so we don't wanna spam too much.
   clearTimeout(timeout);
-  timeout = setTimeout(() => poll(url, successCallback, failedCallback), 1000);
+
+  timeout = setTimeout(() => {
+    module.exports.poll(url, successCallback, failedCallback);
+  }, 1000);
 }
 
 /**
@@ -89,13 +92,14 @@ function poll(url, successCallback, failedCallback) {
   // Use a different method for checking depending on if the URL is a
   // file path or web address.
   const chosenPollMethod = module.exports.isFileURIScheme(url) ?
-    checkFileExists :
-    checkRequestExists;
+    module.exports.checkFileExists :
+    module.exports.checkRequestExists;
 
   // Create the retry callback function.
-  const retry = () => callPollAfterTimeout.apply(this, arguments);
+  const retry = () =>
+    module.exports.callPollAfterTimeout.apply(this, arguments);
 
-  // Call the chosen poll method.
+  // // Call the chosen poll method.
   chosenPollMethod(url, () => {
     successCallback(retry);
   }, () => {
@@ -108,5 +112,6 @@ module.exports = {
   removeFileURIScheme,
   checkFileExists,
   checkRequestExists,
+  callPollAfterTimeout,
   poll,
 };
