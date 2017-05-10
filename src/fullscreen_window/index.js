@@ -38,8 +38,19 @@ module.exports = class FullscreenWindow {
         },
       });
 
-      this.window.loadURL(this.url);
-      this.window.on('show', resolve);
+      this.window.on('show', () => {
+        this.reload();
+        resolve();
+      });
+
+      // Add webContents and window event handlers.
+      this.addWindowEvents();
+
+      // Event that gets fired when console methods are called, i.e console.log.
+      // These events come from the preload script.
+      ipcMain.on('window_log', (evt, args) => {
+        log.debug(args);
+      });
     });
   }
 

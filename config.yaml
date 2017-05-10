@@ -2,6 +2,7 @@
 name: Bigscreen
 
 # URL string to show in the web address textfield by default. Use null if none.
+# NOTE: URL must contain `http://` protocol to be distinguished as a web url
 url: "https://www.google.com/"
 
 # Appearance
