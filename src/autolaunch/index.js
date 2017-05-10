@@ -10,22 +10,34 @@ const autoLauncher = new AutoLaunch({
   mac: { useLaunchAgent: true },
 });
 
+/**
+ * Check if autolaunch is enabled.
+ * @returns {boolean} true if autolaunch setting is set to true
+ */
 function isAutoLaunchEnabled() {
-  return electronSettings.get('autostart');
+  return electronSettings.get('autolaunch');
 }
 
+/**
+ * Enable app to start at login.
+ * @returns {void}
+ */
 function enableAutoLaunch() {
   autoLauncher.enable().then(() => {
-    electronSettings.set('autostart', true);
+    electronSettings.set('autolaunch', true);
     log.info('autolaunch enabled');
   }).catch((err) => {
     log.error('failed to disabled auto launch', err);
   });
 }
 
+/**
+ * Disable app from starting at login.
+ * @returns {void}
+ */
 function disableAutoLaunch() {
   autoLauncher.disable().then(() => {
-    electronSettings.set('autostart', false);
+    electronSettings.set('autolaunch', false);
     log.info('autolaunch disabled');
   }).catch((err) => {
     log.error('failed to disabled auto launch', err);
