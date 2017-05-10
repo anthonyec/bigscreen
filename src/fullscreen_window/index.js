@@ -1,6 +1,8 @@
 const path = require('path');
 
-const { BrowserWindow, globalShortcut } = require('electron');
+const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
+
+const { log } = require('../log');
 
 module.exports = class FullscreenWindow {
   constructor() {
@@ -10,6 +12,17 @@ module.exports = class FullscreenWindow {
     this.shortcuts = {
       'CommandOrControl+Esc': this.close,
       'CommandOrControl+R': this.reload,
+    };
+
+    this.webContentsEvents = {
+      'did-fail-load': this.onDidFailToLoad,
+      'certificate-error': this.onCertificateError,
+      crashed: this.onCrashed,
+    };
+
+    this.windowEvents = {
+      unresponsive: this.onUnresponsive,
+      'gpu-process-crashed': this.onGPUCrashed,
     };
   }
 
@@ -37,12 +50,24 @@ module.exports = class FullscreenWindow {
         webPreferences: {
           webgl: true,
           backgroundThrottling: false,
+
+          // This will be loaded before other scripts run in the web page.
+          // Preload scripts have access to node.js and electron APIs.
           preload: path.join(__dirname, 'preload.js'),
         },
       });
 
       this.window.loadURL(this.url);
       this.window.on('show', resolve);
+
+      // Add webContents and window event handlers.
+      this.addWindowEvents();
+
+      // Event that gets fired when console methods are called, i.e console.log.
+      // These events come from the preload script.
+      ipcMain.on('window_log', (evt, args) => {
+        log.debug(args);
+      });
     });
   }
 
@@ -86,5 +111,68 @@ module.exports = class FullscreenWindow {
     shortcuts.forEach((shortcut) => {
       globalShortcut.unregister(shortcut);
     });
+  }
+
+  /**
+   * Add handlers to window and webContents events.
+   * @returns {void}
+   */
+  addWindowEvents() {
+    const webContentsEvents = Object.keys(this.webContentsEvents);
+    const windowEvents = Object.keys(this.windowEvents);
+
+    webContentsEvents.forEach((event) => {
+      const handler = this.webContentsEvents[event];
+      this.window.webContents.on(event, handler.bind(this));
+    });
+
+    windowEvents.forEach((event) => {
+      const handler = this.windowEvents[event];
+      this.window.on(event, handler.bind(this));
+    });
+  }
+
+  /**
+   * Called when 'did-fail-to-load' event fires on the webContents.
+   * @returns {void}
+   */
+  onDidFailToLoad() {
+    log.error('did-fail-load');
+  }
+
+  /**
+   * Called when 'certificate-error' event fires on the webContents.
+   * @returns {void}
+   */
+  onCertificateError() {
+    log.warn('certificate-error');
+  }
+
+  /**
+   * Called when 'crashed' event fires on the webContents.
+   * @returns {void}
+   */
+  onCrashed() {
+    log.error('crashed');
+    this.reload();
+  }
+
+  /**
+   * Called when 'unresponsive' event fires on the window. This can take up to
+   * 30 seconds to trigger.
+   * @returns {void}
+   */
+  onUnresponsive() {
+    log.error('unresponsive');
+    this.reload();
+  }
+
+  /**
+   * Called when 'gpu-process-crashed' event fires on the window.
+   * @returns {void}
+   */
+  onGPUCrashed() {
+    log.error('gpu-process-crashed');
+    this.reload();
   }
 };
