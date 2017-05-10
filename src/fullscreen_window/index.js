@@ -1,3 +1,5 @@
+const path = require('path');
+
 const { BrowserWindow, globalShortcut } = require('electron');
 
 module.exports = class FullscreenWindow {
@@ -35,6 +37,7 @@ module.exports = class FullscreenWindow {
         webPreferences: {
           webgl: true,
           backgroundThrottling: false,
+          preload: path.join(__dirname, 'preload.js'),
         },
       });
 
