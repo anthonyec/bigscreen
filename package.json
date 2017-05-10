@@ -14,6 +14,7 @@
     "test:watch": "npm run test -- --watch --watch-extensions js"
   },
   "dependencies": {
+    "auto-launch": "^5.0.1",
     "bunyan": "^1.8.10",
     "electron": "^1.6.2",
     "electron-settings": "^3.0.14",
