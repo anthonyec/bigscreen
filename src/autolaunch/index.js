@@ -1,11 +1,12 @@
 const AutoLaunch = require('auto-launch');
+
 const electronSettings = require('electron-settings');
 
 const { log } = require('../log');
 
 const APP_NAME = electronSettings.get('name') || 'bigscreen';
 
-const autoLauncher = new AutoLaunch({
+const autoLaunch = new AutoLaunch({
   name: APP_NAME,
   mac: { useLaunchAgent: true },
 });
@@ -20,23 +21,23 @@ function isAutoLaunchEnabled() {
 
 /**
  * Enable app to start at login.
- * @returns {void}
+ * @returns {promise} Resolve if autoLaunch can create the system setting.
  */
 function enableAutoLaunch() {
-  autoLauncher.enable().then(() => {
+  return autoLaunch.enable().then(() => {
     electronSettings.set('autolaunch', true);
     log.info('autolaunch enabled');
   }).catch((err) => {
-    log.error('failed to disabled auto launch', err);
+    log.error('failed to enable auto launch', err);
   });
 }
 
 /**
  * Disable app from starting at login.
- * @returns {void}
+ * @returns {promise} Resolve if autoLaunch can remove the system setting.
  */
 function disableAutoLaunch() {
-  autoLauncher.disable().then(() => {
+  return autoLaunch.disable().then(() => {
     electronSettings.set('autolaunch', false);
     log.info('autolaunch disabled');
   }).catch((err) => {
