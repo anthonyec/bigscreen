@@ -8,6 +8,9 @@ const APP_NAME = electronSettings.get('name') || 'bigscreen';
 
 const autoLaunch = new AutoLaunch({
   name: APP_NAME,
+
+  // On Mac use a .plist file inside ~/Library/LaunchAgents/<APP_NAME>.
+  // Doing this because the other method opens a terminal console.
   mac: { useLaunchAgent: true },
 });
 
