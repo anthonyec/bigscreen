@@ -1644,7 +1644,7 @@ progress@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/progress/-/progress-1.1.8.tgz#e260c78f6161cdd9b0e56cc3e0a85de17c7a57be"
 
-proxyquire@^1.7.11:
+proxyquire:
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-1.7.11.tgz#13b494eb1e71fb21cc3ebe3699e637d3bec1af9e"
   dependencies:
@@ -1824,10 +1824,6 @@ restore-cursor@^1.0.1:
   dependencies:
     exit-hook "^1.0.0"
     onetime "^1.0.0"
-
-rewire@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/rewire/-/rewire-2.5.2.tgz#6427de7b7feefa7d36401507eb64a5385bc58dc7"
 
 rimraf@^2.2.8:
   version "2.6.1"
