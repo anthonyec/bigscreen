@@ -2,7 +2,8 @@
 name: Bigscreen
 
 # URL string to show in the web address textfield by default. Use null if none.
-# NOTE: URL must contain `http://` protocol to be distinguished as a web url
+# NOTE: URL must contain `http://` protocol to be distinguished as a web url or
+# `file://` for a local file relative to system root
 url: "https://www.google.com/"
 
 # Global variables that are available in the `window` in the displayed web page.
