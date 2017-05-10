@@ -11,7 +11,7 @@ module.exports = class FullscreenWindow {
 
     this.shortcuts = {
       'CommandOrControl+Esc': this.close,
-      'CommandOrControl+R': this.reload,
+      'CommandOrControl+R': this.load,
     };
 
     this.webContentsEvents = {
@@ -57,8 +57,10 @@ module.exports = class FullscreenWindow {
         },
       });
 
-      this.window.loadURL(this.url);
-      this.window.on('show', resolve);
+      this.window.on('show', () => {
+        this.load();
+        resolve();
+      });
 
       // Add webContents and window event handlers.
       this.addWindowEvents();
@@ -82,10 +84,10 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Reload the web page.
+   * Loads the web page
    * @returns {void}
    */
-  reload() {
+  load() {
     this.window.loadURL(this.url);
   }
 
@@ -154,7 +156,7 @@ module.exports = class FullscreenWindow {
    */
   onCrashed() {
     log.error('crashed');
-    this.reload();
+    this.load();
   }
 
   /**
@@ -164,7 +166,7 @@ module.exports = class FullscreenWindow {
    */
   onUnresponsive() {
     log.error('unresponsive');
-    this.reload();
+    this.load();
   }
 
   /**
@@ -173,6 +175,6 @@ module.exports = class FullscreenWindow {
    */
   onGPUCrashed() {
     log.error('gpu-process-crashed');
-    this.reload();
+    this.load();
   }
 };
