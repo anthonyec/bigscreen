@@ -11,7 +11,10 @@ const WINDOW_SETTINGS = {
 
 // Extend default FullscreenWindow with different screen options
 module.exports = class FramelessFullscreenWindow extends FullscreenWindow {
-  // Returns settings for the electron BrowserWindow to be created
+  /**
+   * Returns settings for the electron BrowserWindow to be created.
+   * @returns {object} - Extended settings
+   */
   getWindowSettings() {
     return Object.assign(
       {},
@@ -20,8 +23,13 @@ module.exports = class FramelessFullscreenWindow extends FullscreenWindow {
     );
   }
 
-  // Returns smallest window height and accumulated window widths
-  // This represents the largest window that can be displayed
+  /**
+   * Returns smallest window height and accumulated window widths, that
+   * represents the largest window that can be displayed.
+   * @returns {object} size
+   * @returns {number} size.width - Cumulative display width
+   * @returns {number} size.height - Smallest display height
+   */
   getWindowSize() {
     const displays = electron.screen.getAllDisplays();
 
@@ -34,8 +42,13 @@ module.exports = class FramelessFullscreenWindow extends FullscreenWindow {
     }, { width: 0, height: 0 });
   }
 
-  // Returns left-most display position and lowest-y position, so the window
-  // will be positioned properly
+  /**
+   * Returns left-most display position and lowest-y position, so the window
+   * will be positioned properly.
+   * @returns {object} position
+   * @returns {number} position.x - Lowest (furthest left) display x position
+   * @returns {number} position.y - Greatest (most bottom) display y position
+   */
   getWindowPosition() {
     const displays = electron.screen.getAllDisplays();
 
@@ -50,8 +63,15 @@ module.exports = class FramelessFullscreenWindow extends FullscreenWindow {
     }, { x: 0, y: 0 });
   }
 
+  /**
+   * Calls parent (FullscreenWindow) `open` method and immediately resizes and
+   * positions window with calculated maximum size/position.
+   * @param {string} url - URL to open in new BrowserWindow
+   * @returns {Promise} - Promise that will resolve once web page opened
+   *                      successfully.
+   */
   open(url) {
-    super.open(url);
+    const promise = super.open(url);
 
     // The bounds object containing the width/height and x/y position for the
     // BrowserWindow
@@ -65,5 +85,7 @@ module.exports = class FramelessFullscreenWindow extends FullscreenWindow {
     // specifying the x/y and width/height on instantiation as electron will not
     // position across displays correctly when the window is created
     this.window.setBounds(bounds);
+
+    return promise;
   }
 };
