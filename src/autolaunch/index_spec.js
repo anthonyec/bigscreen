@@ -29,13 +29,12 @@ describe('Autolaunch', () => {
   });
 
   it('enables electron setting and logs error', () => {
-    const stubbedAutoLaunch = sinon.stub(AutoLaunch.prototype, 'enable');
+    const stubbedAutoLaunch = sandbox.stub(AutoLaunch.prototype, 'enable');
     const autoLaunchProxy = proxyquire('./', {
       'auto-launch': AutoLaunch,
     });
 
     stubbedAutoLaunch.returns(Promise.resolve());
-    stubbedAutoLaunch.returns(Promise.reject());
 
     autoLaunchProxy.enableAutoLaunch().then(() => {
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
@@ -43,30 +42,57 @@ describe('Autolaunch', () => {
 
       expect(logInfoStub.calledOnce).to.equal(true);
       expect(logInfoStub.args[0]).to.eql(['autolaunch enabled']);
-    }).catch(() => {
-      expect(logErrorStub.calledOnce).to.equal(true);
-      expect(logErrorStub.args[0][0]).to.eql('failed to enable auto launch');
+    }).catch((err) => {
+      console.error(err);
     });
   });
 
-  it('disables electron setting and logs error', () => {
-    const stubbedAutoLaunch = sinon.stub(AutoLaunch.prototype, 'disable');
+  it('failing to enable autolaunch throws error and logs it', () => {
+    const stubbedAutoLaunch = sandbox.stub(AutoLaunch.prototype, 'enable');
+    const autoLaunchProxy = proxyquire('./', {
+      'auto-launch': AutoLaunch,
+    });
+
+    stubbedAutoLaunch.returns(Promise.reject());
+
+    autoLaunchProxy.enableAutoLaunch().catch((err) => {
+      expect(logErrorStub.calledOnce).to.equal(true);
+      expect(logErrorStub.args[0][0]).to.eql('failed to enable auto launch');
+      expect(err).to.exist; // eslint-disable-line
+    });
+  });
+
+  it('disables electron setting', () => {
+    const stubbedAutoLaunch = sandbox.stub(AutoLaunch.prototype, 'disable');
     const autoLaunchProxy = proxyquire('./', {
       'auto-launch': AutoLaunch,
     });
 
     stubbedAutoLaunch.returns(Promise.resolve());
-    stubbedAutoLaunch.returns(Promise.reject());
 
     autoLaunchProxy.disableAutoLaunch().then(() => {
-      expect(electronSettingsSetStub.calledOnce).to.equal(false);
+      expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql(['autolaunch', false]);
 
       expect(logInfoStub.calledOnce).to.equal(true);
       expect(logInfoStub.args[0]).to.eql(['autolaunch disabled']);
-    }).catch(() => {
+    }).catch((err) => {
+      console.error(err);
+    });
+  });
+
+  it('failing to disable autolaunch throws error and logs it', () => {
+    const stubbedAutoLaunch = sandbox.stub(AutoLaunch.prototype, 'disable');
+    const autoLaunchProxy = proxyquire('./', {
+      'auto-launch': AutoLaunch,
+    });
+
+    stubbedAutoLaunch.returns(Promise.reject());
+
+    autoLaunchProxy.disableAutoLaunch().catch((err) => {
       expect(logErrorStub.calledOnce).to.equal(true);
       expect(logErrorStub.args[0][0]).to.eql('failed to disabled auto launch');
+      expect(err).to.exist; // eslint-disable-line
     });
   });
 
