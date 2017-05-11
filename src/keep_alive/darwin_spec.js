@@ -1,9 +1,7 @@
 const fs = require('fs');
-const path = require('path');
 
 const { expect } = require('chai');
 const sinon = require('sinon');
-const bunyan = require('bunyan');
 const proxyquire = require('proxyquire');
 const electronSettings = require('electron-settings');
 const plist = require('plist');
@@ -46,7 +44,7 @@ describe('KeepAlive darwin', () => {
     it('calls mkdir to create directory', () => {
       const mkdirStub = sandbox.stub(fs, 'mkdir');
 
-      mkdirStub.callsFake((path, callback) => {
+      mkdirStub.callsFake((filePath, callback) => {
         callback();
       });
 
@@ -61,7 +59,7 @@ describe('KeepAlive darwin', () => {
     it('handles error creating directory', () => {
       const mkdirStub = sandbox.stub(fs, 'mkdir');
 
-      mkdirStub.callsFake((path, callback) => {
+      mkdirStub.callsFake((filePath, callback) => {
         callback('error');
       });
 
@@ -75,7 +73,7 @@ describe('KeepAlive darwin', () => {
     it('resolves if LaunchAgents directory exists', (done) => {
       const accessStub = sandbox.stub(fs, 'access');
 
-      accessStub.callsFake((path, mode, callback) => {
+      accessStub.callsFake((filePath, mode, callback) => {
         callback();
       });
 
@@ -98,7 +96,7 @@ describe('KeepAlive darwin', () => {
 
       createLaunchAgentsDirStub.returns(Promise.resolve());
 
-      accessStub.callsFake((path, mode, callback) => {
+      accessStub.callsFake((filePath, mode, callback) => {
         callback({ code: 'ENOENT' });
       });
 
@@ -117,7 +115,7 @@ describe('KeepAlive darwin', () => {
 
       createLaunchAgentsDirStub.returns(Promise.resolve());
 
-      accessStub.callsFake((path, mode, callback) => {
+      accessStub.callsFake((filePath, mode, callback) => {
         callback({ code: 'EACCESS' });
       });
 
@@ -138,7 +136,7 @@ describe('KeepAlive darwin', () => {
         'ensureLaunchAgentsDirExists'
       );
 
-      writeFileStub.callsFake((path, file, callback) => {
+      writeFileStub.callsFake((filePath, file, callback) => {
         callback();
       });
 
@@ -164,7 +162,7 @@ describe('KeepAlive darwin', () => {
         'ensureLaunchAgentsDirExists'
       );
 
-      writeFileStub.callsFake((path, file, callback) => {
+      writeFileStub.callsFake((filePath, file, callback) => {
         callback();
       });
 
@@ -183,7 +181,7 @@ describe('KeepAlive darwin', () => {
         'ensureLaunchAgentsDirExists'
       );
 
-      writeFileStub.callsFake((path, file, callback) => {
+      writeFileStub.callsFake((filePath, file, callback) => {
         callback('error');
       });
 
@@ -201,7 +199,7 @@ describe('KeepAlive darwin', () => {
     it('calls unlink', (done) => {
       const unlinkStub = sandbox.stub(fs, 'unlink');
 
-      unlinkStub.callsFake((path, callback) => {
+      unlinkStub.callsFake((filePath, callback) => {
         callback();
       });
 
@@ -219,7 +217,7 @@ describe('KeepAlive darwin', () => {
     it('handles error when trying remove the file', (done) => {
       const unlinkStub = sandbox.stub(fs, 'unlink');
 
-      unlinkStub.callsFake((path, callback) => {
+      unlinkStub.callsFake((filePath, callback) => {
         callback('error');
       });
 

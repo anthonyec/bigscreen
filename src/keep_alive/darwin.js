@@ -2,12 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 const plist = require('plist');
-const { app } = require('electron');
 const electronSettings = require('electron-settings');
 
 const {
   EXE_PATH,
-  HOME_PATH,
   LAUNCH_AGENTS_PATH,
 } = require('../settings/paths');
 
