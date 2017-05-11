@@ -138,7 +138,7 @@ module.exports = class FullscreenWindow {
     log.error('attempting to reconnect');
 
     poll(this.url, () => {
-      log.error('reconnected!');
+      log.info('reconnected!');
       this.reload();
     }, (retry) => {
       log.error('reconnected failed, trying again...');

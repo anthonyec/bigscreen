@@ -75,6 +75,7 @@ function callPollAfterTimeout(url, successCallback, failedCallback) {
   // so we don't wanna spam too much.
   clearTimeout(timeout);
 
+  // TODO: change to incremental timer, i.e (1s, 2s, 3s, 5, 8, 13, 21... 60).
   timeout = setTimeout(() => {
     module.exports.poll(url, successCallback, failedCallback);
   }, 1000);
