@@ -2,7 +2,13 @@ const os = require('os');
 
 const keepAliveDarwin = require('./darwin');
 
-const PLATFORM = os.platform();
+/**
+ * Get the OS platform name.
+ * @return {string} Platform name.
+ */
+function getPlatform() {
+  return os.platform();
+}
 
 /**
  * Fake function used to for unsupported platforms.
@@ -19,20 +25,23 @@ function dummyMethod() {
  * @return {object} methods - Object of exported methods.
  */
 function getPlatformAPI() {
-  if (PLATFORM === 'darwin') {
+  const platform = module.exports.getPlatform();
+
+  if (platform === 'darwin') {
     return {
       enableKeepAlive: keepAliveDarwin.enableKeepAlive,
       disableKeepAlive: keepAliveDarwin.disableKeepAlive,
     };
   }
 
-  console.warn(`keep_alive is not yet supported for ${PLATFORM}, sorry.`);
-
   return {
     // Return fake functions that always resolve.
-    enableKeepAlive: dummyMethod,
-    disableKeepAlive: dummyMethod,
+    enableKeepAlive: module.exports.dummyMethod,
+    disableKeepAlive: module.exports.dummyMethod,
   };
 }
 
-module.exports = getPlatformAPI();
+module.exports.getPlatformAPI = getPlatformAPI;
+module.exports.dummyMethod = dummyMethod;
+module.exports.getPlatform = getPlatform;
+module.exports = Object.assign(module.exports, getPlatformAPI());
