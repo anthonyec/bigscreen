@@ -44,11 +44,12 @@ function createLaunchAgentsDir() {
  */
 function ensureLaunchAgentsDirExists() {
   return new Promise((resolve, reject) => {
-    const canReadWrite = fs.constants.R_OK | fs.constants.W_OK;
+    const canWrite = fs.constants.W_OK;
 
-    fs.access(LAUNCH_AGENTS_PATH, canReadWrite, (err) => {
+    fs.access(LAUNCH_AGENTS_PATH, canWrite, (err) => {
       if (err && err.code === 'ENOENT') {
-        return createLaunchAgentsDir().then(resolve).catch(reject);
+        return module.exports.createLaunchAgentsDir()
+          .then(resolve).catch(reject);
       }
 
       if (err) {
@@ -68,14 +69,16 @@ function ensureLaunchAgentsDirExists() {
 function enableKeepAlive() {
   const file = plist.build(PLIST_FILE);
 
-  return ensureLaunchAgentsDirExists().then(() => {
-    return fs.writeFile(PLIST_PATH, file, (err) => {
-      if (err) {
-        throw new Error(err);
-      }
-    });
-  }).catch((err) => {
-    throw new Error(err);
+  return new Promise((resolve, reject) => {
+    module.exports.ensureLaunchAgentsDirExists().then(() => {
+      fs.writeFile(PLIST_PATH, file, (err) => {
+        if (err) {
+          return reject(err);
+        }
+
+        return resolve();
+      });
+    }).catch(reject);
   });
 }
 
