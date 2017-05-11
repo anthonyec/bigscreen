@@ -32,6 +32,7 @@ function enableAutoLaunch() {
     log.info('autolaunch enabled');
   }).catch((err) => {
     log.error('failed to enable auto launch', err);
+    throw new Error(err);
   });
 }
 
@@ -45,6 +46,7 @@ function disableAutoLaunch() {
     log.info('autolaunch disabled');
   }).catch((err) => {
     log.error('failed to disabled auto launch', err);
+    throw new Error(err);
   });
 }
 
