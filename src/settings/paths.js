@@ -10,4 +10,6 @@ module.exports = {
   EXE_PATH: app.getPath('exe'),
   HOME_PATH,
   LAUNCH_AGENTS_PATH,
+  FALLBACK_PATH: path.join(app.getAppPath(), 'resources', 'fallback',
+    'index.html'),
 };

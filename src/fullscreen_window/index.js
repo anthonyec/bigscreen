@@ -2,7 +2,9 @@ const path = require('path');
 
 const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
 
+const { poll } = require('../poll_url');
 const { log } = require('../log');
+const { FALLBACK_PATH } = require('../settings/paths');
 
 const WINDOW_SETTINGS = {
   backgroundColor: '#000000',
@@ -142,12 +144,31 @@ module.exports = class FullscreenWindow {
     });
   }
 
+  attemptToReconnect() {
+    log.error('attempting to reconnect');
+
+    poll(this.url, () => {
+      log.info('reconnected!');
+      this.reload();
+    }, (retry) => {
+      log.error('reconnected failed, trying again...');
+      retry();
+    });
+  }
+
+  openFallback() {
+    const fallbackURL = path.join('file://', FALLBACK_PATH);
+    this.window.loadURL(fallbackURL);
+    this.attemptToReconnect();
+  }
+
   /**
    * Called when 'did-fail-to-load' event fires on the webContents.
    * @returns {void}
    */
   onDidFailToLoad() {
     log.error('did-fail-load');
+    this.openFallback();
   }
 
   /**
