@@ -18,7 +18,8 @@
     "electron": "^1.6.2",
     "electron-settings": "^3.0.14",
     "electron-sudo": "^4.0.12",
-    "js-yaml": "^3.8.2"
+    "js-yaml": "^3.8.2",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
