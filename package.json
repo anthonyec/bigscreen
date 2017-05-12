@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "chance": "^1.0.8",
     "commander": "^2.9.0",
     "electron-mocha": "^3.4.0",
     "electron-packager": "^8.6.0",

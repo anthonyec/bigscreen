@@ -66,10 +66,6 @@ describe('Fullscreen window', () => {
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
-
-    // loadURL should get called once with the URL.
-    expect(loadWindowStub.calledOnce).to.equal(true);
-    expect(loadWindowStub.args[0][0]).to.equal(url);
   });
 
   it('closes the window and unregisters shortcuts', () => {
@@ -101,7 +97,7 @@ describe('Fullscreen window', () => {
     fullscreenWindow.url = 'https://www.google.com/';
     const expectURL = fullscreenWindow.url;
 
-    fullscreenWindow.reload();
+    fullscreenWindow.load();
 
     expect(loadURLStub.calledOnce).to.equal(true);
     expect(loadURLStub.args[0][0]).to.equal(expectURL);
@@ -220,7 +216,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'crashed' event.
     fullscreenWindow.onCrashed();
@@ -244,7 +240,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'unresponsive' event.
     fullscreenWindow.onUnresponsive();
@@ -268,7 +264,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'gpu-process-crashed' event.
     fullscreenWindow.onGPUCrashed();

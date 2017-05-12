@@ -4,6 +4,19 @@ const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
 
 const { log } = require('../log');
 
+const WINDOW_SETTINGS = {
+  backgroundColor: '#000000',
+  kiosk: true,
+  webPreferences: {
+    webgl: true,
+    backgroundThrottling: false,
+
+    // This will be loaded before other scripts run in the web page.
+    // Preload scripts have access to node.js and electron APIs.
+    preload: path.join(__dirname, 'preload.js'),
+  },
+};
+
 module.exports = class FullscreenWindow {
   constructor() {
     this.window = null;
@@ -34,6 +47,10 @@ module.exports = class FullscreenWindow {
     return this.window;
   }
 
+  getWindowSettings() {
+    return WINDOW_SETTINGS;
+  }
+
   /**
    * Open a URL in a fullscreen kiosk window
    * @param {url} url Web page to display.
@@ -43,19 +60,10 @@ module.exports = class FullscreenWindow {
     this.url = url;
     this.registerShortcuts();
 
-    return new Promise((resolve) => { // reject
-      this.window = new BrowserWindow({
-        backgroundColor: '#000000',
-        kiosk: true,
-        webPreferences: {
-          webgl: true,
-          backgroundThrottling: false,
+    const settings = this.getWindowSettings();
 
-          // This will be loaded before other scripts run in the web page.
-          // Preload scripts have access to node.js and electron APIs.
-          preload: path.join(__dirname, 'preload.js'),
-        },
-      });
+    return new Promise((resolve) => { // reject
+      this.window = new BrowserWindow(settings);
 
       this.window.on('show', () => {
         this.load();
