@@ -15,7 +15,11 @@ const PLIST_PATH = path.join(LAUNCH_AGENTS_PATH, `${LABEL}.keepalive.plist`);
 const PLIST_FILE = {
   label: LABEL,
   ProgramArguments: [EXE_PATH],
+
+  // Disable showing last opened windows.
   NSQuitAlwaysKeepsWindows: false,
+
+  // Only reopen the app if it exits without exit code 0.
   KeepAlive: { SuccessfulExit: false },
 };
 
