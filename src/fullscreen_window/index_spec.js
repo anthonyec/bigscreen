@@ -66,10 +66,6 @@ describe('Fullscreen window', () => {
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
-
-    // loadURL should get called once with the URL.
-    expect(loadWindowStub.calledOnce).to.equal(true);
-    expect(loadWindowStub.args[0][0]).to.equal(url);
   });
 
   it('closes the window and unregisters shortcuts', () => {
@@ -101,7 +97,7 @@ describe('Fullscreen window', () => {
     fullscreenWindow.url = 'https://www.google.com/';
     const expectURL = fullscreenWindow.url;
 
-    fullscreenWindow.reload();
+    fullscreenWindow.load();
 
     expect(loadURLStub.calledOnce).to.equal(true);
     expect(loadURLStub.args[0][0]).to.equal(expectURL);
@@ -176,20 +172,23 @@ describe('Fullscreen window', () => {
     expect(webContentsEventStub.args[2][0]).to.equal('crashed');
   });
 
-  it('onDidFailToLoad logs an error', () => {
+  it('onDidFailToLoad logs an error and opens fallback', () => {
     const fullscreenWindow = new FullscreenWindow();
+    const openFallbackStub = sandbox.stub();
     const errorStub = sandbox.stub();
     const expectedLogArgs = [
       'did-fail-load',
     ];
 
     log.error = errorStub;
+    fullscreenWindow.openFallback = openFallbackStub;
 
     // Normally called by the 'certificate-error' event.
     fullscreenWindow.onDidFailToLoad();
 
     expect(errorStub.calledOnce).to.equal(true);
     expect(errorStub.args[0]).to.eql(expectedLogArgs);
+    expect(openFallbackStub.calledOnce).to.equal(true);
   });
 
   it('onCertificateError logs a warn', () => {
@@ -220,7 +219,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'crashed' event.
     fullscreenWindow.onCrashed();
@@ -244,7 +243,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'unresponsive' event.
     fullscreenWindow.onUnresponsive();
@@ -268,7 +267,7 @@ describe('Fullscreen window', () => {
     log.error = errorStub;
 
     // Replace reload with stub.
-    fullscreenWindow.reload = reloadStub;
+    fullscreenWindow.load = reloadStub;
 
     // Normally called by the 'gpu-process-crashed' event.
     fullscreenWindow.onGPUCrashed();
