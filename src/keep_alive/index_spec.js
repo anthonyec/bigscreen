@@ -46,7 +46,7 @@ describe('KeepAlive', () => {
 
     it('returns dummy methods when platform is not supported', () => {
       const getPlatformStub = sandbox.stub(keepAlive, 'getPlatform');
-      const dummyMethodSub = sandbox.stub(keepAlive,'dummyMethod');
+      const dummyMethodSub = sandbox.stub(keepAlive, 'dummyMethod');
 
       getPlatformStub.returns('unsupported_OS');
 
@@ -60,8 +60,8 @@ describe('KeepAlive', () => {
   });
 
   describe('dummyMethod', () => {
-    it('returns a resolved promise', (done) => {
-      keepAlive.dummyMethod().then(done);
+    it('returns a resolved promise', () => {
+      return keepAlive.dummyMethod().then();
     });
   });
 

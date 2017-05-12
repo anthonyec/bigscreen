@@ -48,7 +48,7 @@ describe('KeepAlive darwin', () => {
         callback();
       });
 
-      darwinKeepAliveProxy.createLaunchAgentsDir().then(() => {
+      return darwinKeepAliveProxy.createLaunchAgentsDir().then(() => {
         const pathArg = mkdirStub.args[0][0];
 
         expect(mkdirStub.calledOnce).to.equal(true);
@@ -63,31 +63,30 @@ describe('KeepAlive darwin', () => {
         callback('error');
       });
 
-      darwinKeepAliveProxy.createLaunchAgentsDir().catch(() => {
+      return darwinKeepAliveProxy.createLaunchAgentsDir().catch(() => {
         expect(mkdirStub.calledOnce).to.equal(true);
       });
     });
   });
 
   describe('ensureLaunchAgentsDirExists', () => {
-    it('resolves if LaunchAgents directory exists', (done) => {
+    it('resolves if LaunchAgents directory exists', () => {
       const accessStub = sandbox.stub(fs, 'access');
 
       accessStub.callsFake((filePath, mode, callback) => {
         callback();
       });
 
-      darwinKeepAliveProxy.ensureLaunchAgentsDirExists().then(() => {
+      return darwinKeepAliveProxy.ensureLaunchAgentsDirExists().then(() => {
         const pathArg = accessStub.args[0][0];
         const modeArg = accessStub.args[0][1];
 
         expect(pathArg).to.equal('/Users/Jane/Library/LaunchAgents');
         expect(modeArg).to.equal(fs.constants.W_OK);
-        done();
       });
     });
 
-    it('calls createLaunchAgentsDir if directory does not exist', (done) => {
+    it('calls createLaunchAgentsDir if directory does not exist', () => {
       const accessStub = sandbox.stub(fs, 'access');
       const createLaunchAgentsDirStub = sandbox.stub(
         darwinKeepAliveProxy,
@@ -100,13 +99,12 @@ describe('KeepAlive darwin', () => {
         callback({ code: 'ENOENT' });
       });
 
-      darwinKeepAliveProxy.ensureLaunchAgentsDirExists().then(() => {
+      return darwinKeepAliveProxy.ensureLaunchAgentsDirExists().then(() => {
         expect(createLaunchAgentsDirStub.calledOnce).to.equal(true);
-        done();
       });
     });
 
-    it('handles any other error that is not ENOENT', (done) => {
+    it('handles any other error that is not ENOENT', () => {
       const accessStub = sandbox.stub(fs, 'access');
       const createLaunchAgentsDirStub = sandbox.stub(
         darwinKeepAliveProxy,
@@ -119,16 +117,15 @@ describe('KeepAlive darwin', () => {
         callback({ code: 'EACCESS' });
       });
 
-      darwinKeepAliveProxy.ensureLaunchAgentsDirExists().catch((err) => {
+      return darwinKeepAliveProxy.ensureLaunchAgentsDirExists().catch((err) => {
         expect(err).to.eql({ code: 'EACCESS' });
         expect(createLaunchAgentsDirStub.calledOnce).to.equal(false);
-        done();
       });
     });
   });
 
   describe('enableKeepAlive', () => {
-    it('calls ensureLaunchAgentsDirExists then calls writeFile', (done) => {
+    it('calls ensureLaunchAgentsDirExists then calls writeFile', () => {
       const writeFileStub = sandbox.stub(fs, 'writeFile');
       const plistBuildStub = sandbox.stub(plist, 'build');
       const ensureLaunchAgentsDirExistsStub = sandbox.stub(
@@ -142,7 +139,7 @@ describe('KeepAlive darwin', () => {
 
       ensureLaunchAgentsDirExistsStub.returns(Promise.resolve());
 
-      darwinKeepAliveProxy.enableKeepAlive().then(() => {
+      return darwinKeepAliveProxy.enableKeepAlive().then(() => {
         const pathArg = writeFileStub.args[0][0];
         const expectedPath =
           '/Users/Jane/Library/LaunchAgents/Bigscreen.keepalive.plist';
@@ -151,11 +148,10 @@ describe('KeepAlive darwin', () => {
         expect(pathArg).to.equal(expectedPath);
         expect(plistBuildStub.calledOnce).to.equal(true);
         expect(plistBuildStub.args[0][0]).to.eql(expectedPlistFileObject);
-        done();
       });
     });
 
-    it('handles error when ensureLaunchAgentsDirExists fails', (done) => {
+    it('handles error when ensureLaunchAgentsDirExists fails', () => {
       const writeFileStub = sandbox.stub(fs, 'writeFile');
       const ensureLaunchAgentsDirExistsStub = sandbox.stub(
         darwinKeepAliveProxy,
@@ -168,13 +164,12 @@ describe('KeepAlive darwin', () => {
 
       ensureLaunchAgentsDirExistsStub.returns(Promise.reject());
 
-      darwinKeepAliveProxy.enableKeepAlive().catch(() => {
+      return darwinKeepAliveProxy.enableKeepAlive().catch(() => {
         expect(writeFileStub.calledOnce).to.equal(false);
-        done();
       });
     });
 
-    it('handles error when it fails to write the file', (done) => {
+    it('handles error when it fails to write the file', () => {
       const writeFileStub = sandbox.stub(fs, 'writeFile');
       const ensureLaunchAgentsDirExistsStub = sandbox.stub(
         darwinKeepAliveProxy,
@@ -187,43 +182,40 @@ describe('KeepAlive darwin', () => {
 
       ensureLaunchAgentsDirExistsStub.returns(Promise.resolve());
 
-      darwinKeepAliveProxy.enableKeepAlive().catch((err) => {
+      return darwinKeepAliveProxy.enableKeepAlive().catch((err) => {
         expect(writeFileStub.calledOnce).to.equal(true);
         expect(err).to.equal('error');
-        done();
       });
     });
   });
 
   describe('disableKeepAlive', () => {
-    it('calls unlink', (done) => {
+    it('calls unlink', () => {
       const unlinkStub = sandbox.stub(fs, 'unlink');
 
       unlinkStub.callsFake((filePath, callback) => {
         callback();
       });
 
-      darwinKeepAliveProxy.disableKeepAlive().then(() => {
+      return darwinKeepAliveProxy.disableKeepAlive().then(() => {
         const pathArg = unlinkStub.args[0][0];
         const expectedPath =
           '/Users/Jane/Library/LaunchAgents/Bigscreen.keepalive.plist';
 
         expect(unlinkStub.calledOnce).to.equal(true);
         expect(pathArg).to.equal(expectedPath);
-        done();
       });
     });
 
-    it('handles error when trying remove the file', (done) => {
+    it('handles error when trying remove the file', () => {
       const unlinkStub = sandbox.stub(fs, 'unlink');
 
       unlinkStub.callsFake((filePath, callback) => {
         callback('error');
       });
 
-      darwinKeepAliveProxy.disableKeepAlive().catch((err) => {
+      return darwinKeepAliveProxy.disableKeepAlive().catch((err) => {
         expect(err).to.equal('error');
-        done();
       });
     });
   });
