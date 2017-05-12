@@ -6,6 +6,19 @@ const { poll } = require('../poll_url');
 const { log } = require('../log');
 const { FALLBACK_PATH } = require('../settings/paths');
 
+const WINDOW_SETTINGS = {
+  backgroundColor: '#000000',
+  kiosk: true,
+  webPreferences: {
+    webgl: true,
+    backgroundThrottling: false,
+
+    // This will be loaded before other scripts run in the web page.
+    // Preload scripts have access to node.js and electron APIs.
+    preload: path.join(__dirname, 'preload.js'),
+  },
+};
+
 module.exports = class FullscreenWindow {
   constructor() {
     this.window = null;
@@ -13,7 +26,7 @@ module.exports = class FullscreenWindow {
 
     this.shortcuts = {
       'CommandOrControl+Esc': this.close,
-      'CommandOrControl+R': this.reload,
+      'CommandOrControl+R': this.load,
     };
 
     this.webContentsEvents = {
@@ -36,6 +49,10 @@ module.exports = class FullscreenWindow {
     return this.window;
   }
 
+  getWindowSettings() {
+    return WINDOW_SETTINGS;
+  }
+
   /**
    * Open a URL in a fullscreen kiosk window
    * @param {url} url Web page to display.
@@ -45,22 +62,15 @@ module.exports = class FullscreenWindow {
     this.url = url;
     this.registerShortcuts();
 
+    const settings = this.getWindowSettings();
+
     return new Promise((resolve) => { // reject
-      this.window = new BrowserWindow({
-        backgroundColor: '#000000',
-        kiosk: true,
-        webPreferences: {
-          webgl: true,
-          backgroundThrottling: false,
+      this.window = new BrowserWindow(settings);
 
-          // This will be loaded before other scripts run in the web page.
-          // Preload scripts have access to node.js and electron APIs.
-          preload: path.join(__dirname, 'preload.js'),
-        },
+      this.window.on('show', () => {
+        this.load();
+        resolve();
       });
-
-      this.window.loadURL(this.url);
-      this.window.on('show', resolve);
 
       // Add webContents and window event handlers.
       this.addWindowEvents();
@@ -84,10 +94,10 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Reload the web page.
+   * Loads the web page
    * @returns {void}
    */
-  reload() {
+  load() {
     this.window.loadURL(this.url);
   }
 
@@ -175,7 +185,7 @@ module.exports = class FullscreenWindow {
    */
   onCrashed() {
     log.error('crashed');
-    this.reload();
+    this.load();
   }
 
   /**
@@ -185,7 +195,7 @@ module.exports = class FullscreenWindow {
    */
   onUnresponsive() {
     log.error('unresponsive');
-    this.reload();
+    this.load();
   }
 
   /**
@@ -194,6 +204,6 @@ module.exports = class FullscreenWindow {
    */
   onGPUCrashed() {
     log.error('gpu-process-crashed');
-    this.reload();
+    this.load();
   }
 };
