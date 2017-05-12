@@ -36,14 +36,12 @@ describe('Autolaunch', () => {
 
     stubbedAutoLaunch.returns(Promise.resolve());
 
-    autoLaunchProxy.enableAutoLaunch().then(() => {
+    return autoLaunchProxy.enableAutoLaunch().then(() => {
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql(['autolaunch', true]);
 
       expect(logInfoStub.calledOnce).to.equal(true);
       expect(logInfoStub.args[0]).to.eql(['autolaunch enabled']);
-    }).catch((err) => {
-      console.error(err);
     });
   });
 
@@ -55,7 +53,7 @@ describe('Autolaunch', () => {
 
     stubbedAutoLaunch.returns(Promise.reject());
 
-    autoLaunchProxy.enableAutoLaunch().catch((err) => {
+    return autoLaunchProxy.enableAutoLaunch().catch((err) => {
       expect(logErrorStub.calledOnce).to.equal(true);
       expect(logErrorStub.args[0][0]).to.eql('failed to enable auto launch');
       expect(err).to.exist; // eslint-disable-line
@@ -70,14 +68,12 @@ describe('Autolaunch', () => {
 
     stubbedAutoLaunch.returns(Promise.resolve());
 
-    autoLaunchProxy.disableAutoLaunch().then(() => {
+    return autoLaunchProxy.disableAutoLaunch().then(() => {
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql(['autolaunch', false]);
 
       expect(logInfoStub.calledOnce).to.equal(true);
       expect(logInfoStub.args[0]).to.eql(['autolaunch disabled']);
-    }).catch((err) => {
-      console.error(err);
     });
   });
 
@@ -89,7 +85,7 @@ describe('Autolaunch', () => {
 
     stubbedAutoLaunch.returns(Promise.reject());
 
-    autoLaunchProxy.disableAutoLaunch().catch((err) => {
+    return autoLaunchProxy.disableAutoLaunch().catch((err) => {
       expect(logErrorStub.calledOnce).to.equal(true);
       expect(logErrorStub.args[0][0]).to.eql('failed to disabled auto launch');
       expect(err).to.exist; // eslint-disable-line
