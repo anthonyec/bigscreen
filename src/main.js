@@ -12,6 +12,10 @@ function main() {
   fullscreenWindow.open(url);
 }
 
+app.on('window-all-closed', () => {
+  app.quit();
+});
+
 app.on('ready', () => {
   logSystemDetails();
 
