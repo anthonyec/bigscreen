@@ -190,6 +190,9 @@ function build() {
       icon: path.join(program.resources, 'app_icon/app.icns'),
       platform: program.platform,
       arch: program.arch,
+      ignore: [
+        'renderer_process/node_modules',
+      ],
 
       // afterCopy functions are done in order after the app files are moved
       // to a temporary directory.

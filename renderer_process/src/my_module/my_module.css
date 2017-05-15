@@ -1,0 +1,7 @@
+/* import the vars file */
+@import "../core/css/vars.css";
+
+:local .wrap {
+  /* use the variable */
+  color: $baseColor;
+}

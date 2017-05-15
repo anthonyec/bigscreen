@@ -1,3 +1,5 @@
+const path = require('path');
+
 const { app, BrowserWindow } = require('electron');
 const electronSettings = require('electron-settings');
 
@@ -20,9 +22,14 @@ function main() {
     resizable: true,
     show: false,
   });
-  preferencesWindow.loadURL(`file://${__dirname}/ui/index.html`);
+
+  const path = app.getAppPath('exe');
+  const baseURL = process.env.NODE_ENV === 'development' ? 'http://lvh.me:8080/' : `file://${path}/renderer_process/dist/index.html`;
+
+  preferencesWindow.loadURL(baseURL);
 
   preferencesWindow.on('ready-to-show', preferencesWindow.show);
+  preferencesWindow.openDevTools({ detach: true });
 }
 
 app.on('ready', () => {
