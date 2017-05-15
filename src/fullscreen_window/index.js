@@ -66,11 +66,7 @@ module.exports = class FullscreenWindow {
 
     return new Promise((resolve) => { // reject
       this.window = new BrowserWindow(settings);
-
-      this.window.on('show', () => {
-        this.load();
-        resolve();
-      });
+      this.load();
 
       // Add webContents and window event handlers.
       this.addWindowEvents();
@@ -80,6 +76,8 @@ module.exports = class FullscreenWindow {
       ipcMain.on('window_log', (evt, args) => {
         log.debug(args);
       });
+
+      resolve();
     });
   }
 
