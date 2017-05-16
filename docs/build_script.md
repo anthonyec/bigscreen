@@ -27,14 +27,18 @@ brew install wine
 ```
 
 ## Changing platform
-Currently the support platforms are:
+Currently the supported platforms are:
+
 - `darwin` - macOS 64bit
 - `win32` - Windows 32/64bit
 
-By default the build script will build for the platform you are running it on. To specfically choose one, use the  `--platform` CLI argument.
+By defaultm the build script will build for the platform you are running it on. To specfically choose one, use the  `--platform` or `-p` CLI argument.
 
-```
+```bash
+# macOS
 yarn run build -- --platform darwin
+
+# Windows
 yarn run build -- --platform win32
 ```
 
