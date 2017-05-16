@@ -31,13 +31,13 @@ describe('Fullscreen window', () => {
       },
     };
 
-    const loadWindowStub = sandbox.stub();
+    const loadStub = sandbox.stub();
     const registerShortcutsStub = sandbox.stub();
     const addWindowEventsStub = sandbox.stub();
+    const ipcMainOnStub = sandbox.stub();
 
     // Stub the electron's BrowserWindow with fake methods.
     function BrowserWindow() {
-      this.loadURL = loadWindowStub;
       this.on = sandbox.stub();
     }
 
@@ -48,24 +48,33 @@ describe('Fullscreen window', () => {
     const FullscreenWindowProxy = proxyquire('./', {
       electron: {
         BrowserWindow: browserWindowSpy,
+        ipcMain: {
+          on: ipcMainOnStub,
+        },
       },
     });
 
     const fullscreenWindow = new FullscreenWindowProxy();
     fullscreenWindow.registerShortcuts = registerShortcutsStub;
     fullscreenWindow.addWindowEvents = addWindowEventsStub;
+    fullscreenWindow.load = loadStub;
 
     fullscreenWindow.open(url);
 
     // Check the URL gets stored in the class, the reload method uses it.
     expect(fullscreenWindow.url).to.equal(url);
 
-    // Chheck registerShortcuts and addWindowEvents get called.
+    // Check registerShortcuts, addWindowEvents and load get called.
     expect(registerShortcutsStub.calledOnce).to.equal(true);
     expect(addWindowEventsStub.calledOnce).to.equal(true);
+    expect(loadStub.calledOnce).to.equal(true);
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
+
+    // Check that the ipcMain event for `window_log` gets added.
+    expect(ipcMainOnStub.calledOnce).to.equal(true);
+    expect(ipcMainOnStub.args[0][0]).to.equal('window_log');
   });
 
   it('closes the window and unregisters shortcuts', () => {
@@ -204,7 +213,7 @@ describe('Fullscreen window', () => {
   it('retries if poll is unsuccesfful', () => {
     const pollStub = sandbox.stub();
     const failedCallbackStub = sandbox.stub();
-    const errorStub = sandbox.stub();
+    const errorStub = sandbox.stub(log, 'error');
 
     const FullscreenWindowProxy = proxyquire('./', {
       '../poll_url': {
@@ -215,7 +224,6 @@ describe('Fullscreen window', () => {
     const fullscreenWindow = new FullscreenWindowProxy();
 
     fullscreenWindow.url = 'http://example.com';
-    log.error = errorStub;
 
     pollStub.callsFake((url, successCallback, failedCallback) => {
       expect(errorStub.calledOnce).to.equal(true);
@@ -229,15 +237,55 @@ describe('Fullscreen window', () => {
     expect(failedCallbackStub.calledOnce).to.equal(true);
   });
 
+  it('openFallback loads fallback URL and starts reconnection polling', () => {
+    const FullscreenWindowProxy = proxyquire('./', {
+      '../settings/paths': {
+        FALLBACK_PATH: 'bigscreen/resources/fallback/index.html',
+      },
+    });
+    const fullscreenWindow = new FullscreenWindowProxy();
+    const loadURLStub = sandbox.stub();
+    const attemptToReconnectStub = sandbox.stub();
+    const expectedPath = path.join(
+      'file://',
+      'bigscreen/resources/fallback/index.html'
+    );
+
+    fullscreenWindow.window = sinon.createStubInstance(FullscreenWindow);
+    fullscreenWindow.window.loadURL = loadURLStub;
+    fullscreenWindow.attemptToReconnect = attemptToReconnectStub;
+
+    fullscreenWindow.openFallback();
+
+    expect(loadURLStub.calledOnce).to.equal(true);
+    expect(loadURLStub.args[0][0]).to.equal(expectedPath);
+    expect(attemptToReconnectStub.calledOnce).to.equal(true);
+  });
+
+
+  it('onWebContentsLog logs a debug with args passed into it', () => {
+    const fullscreenWindow = new FullscreenWindow();
+    const debugStub = sandbox.stub(log, 'debug');
+    const expectedArgs = {
+      a: 1,
+      b: 2,
+    };
+
+    // Normally called by the 'window_log' event from ipcMain.
+    fullscreenWindow.onWebContentsLog(null, expectedArgs);
+
+    expect(debugStub.calledOnce).to.equal(true);
+    expect(debugStub.args[0][0]).to.eql(expectedArgs);
+  });
+
   it('onDidFailToLoad logs an error and opens fallback', () => {
     const fullscreenWindow = new FullscreenWindow();
     const openFallbackStub = sandbox.stub();
-    const errorStub = sandbox.stub();
+    const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'did-fail-load',
     ];
 
-    log.error = errorStub;
     fullscreenWindow.openFallback = openFallbackStub;
 
     // Normally called by the 'certificate-error' event.
@@ -268,12 +316,11 @@ describe('Fullscreen window', () => {
   it('onCrashed logs an error and reloads', () => {
     const fullscreenWindow = new FullscreenWindow();
     const reloadStub = sandbox.stub();
-    const errorStub = sandbox.stub();
+    const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'crashed',
     ];
 
-    log.error = errorStub;
 
     // Replace reload with stub.
     fullscreenWindow.load = reloadStub;
@@ -292,12 +339,11 @@ describe('Fullscreen window', () => {
   it('onUnresponsive logs an error and reloads', () => {
     const fullscreenWindow = new FullscreenWindow();
     const reloadStub = sandbox.stub();
-    const errorStub = sandbox.stub();
+    const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'unresponsive',
     ];
 
-    log.error = errorStub;
 
     // Replace reload with stub.
     fullscreenWindow.load = reloadStub;
@@ -316,12 +362,11 @@ describe('Fullscreen window', () => {
   it('onGPUCrashed logs an error and reloads', () => {
     const fullscreenWindow = new FullscreenWindow();
     const reloadStub = sandbox.stub();
-    const errorStub = sandbox.stub();
+    const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'gpu-process-crashed',
     ];
 
-    log.error = errorStub;
 
     // Replace reload with stub.
     fullscreenWindow.load = reloadStub;
