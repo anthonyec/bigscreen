@@ -6,7 +6,6 @@ const proxyquire = require('proxyquire');
 
 const FullscreenWindow = require('./');
 const { log } = require('../log');
-const pollUrl = require('../poll_url');
 
 describe('Fullscreen window', () => {
   let sandbox;
@@ -181,7 +180,7 @@ describe('Fullscreen window', () => {
     const FullscreenWindowProxy = proxyquire('./', {
       '../poll_url': {
         poll: pollStub,
-      }
+      },
     });
 
     const fullscreenWindow = new FullscreenWindowProxy();
@@ -190,7 +189,7 @@ describe('Fullscreen window', () => {
     fullscreenWindow.load = windowLoadStub;
     log.info = infoStub;
 
-    pollStub.callsFake((url, successCallback, failedCallback) => {
+    pollStub.callsFake((url, successCallback) => {
       successCallback();
     });
 
@@ -210,7 +209,7 @@ describe('Fullscreen window', () => {
     const FullscreenWindowProxy = proxyquire('./', {
       '../poll_url': {
         poll: pollStub,
-      }
+      },
     });
 
     const fullscreenWindow = new FullscreenWindowProxy();
