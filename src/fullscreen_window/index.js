@@ -24,8 +24,9 @@ module.exports = class FullscreenWindow {
     this.window = null;
     this.url = '';
 
+    // These shortcuts are free to use on windows and make sense on macOS.
     this.shortcuts = {
-      'CommandOrControl+Esc': this.close,
+      'CommandOrControl+W': this.close,
       'CommandOrControl+R': this.load,
     };
 

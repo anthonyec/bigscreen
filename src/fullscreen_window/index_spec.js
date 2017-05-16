@@ -119,13 +119,13 @@ describe('Fullscreen window', () => {
     fullscreenWindow.registerShortcuts();
 
     expect(registerStub.callCount).to.equal(2);
-    expect(registerStub.args[0][0]).to.equal('CommandOrControl+Esc');
+    expect(registerStub.args[0][0]).to.equal('CommandOrControl+W');
     expect(registerStub.args[1][0]).to.equal('CommandOrControl+R');
   });
 
   it('unregisters shortcuts', () => {
     const expectedArgs = [
-      ['CommandOrControl+Esc'],
+      ['CommandOrControl+W'],
       ['CommandOrControl+R'],
     ];
 
