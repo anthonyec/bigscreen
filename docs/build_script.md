@@ -1,4 +1,4 @@
-# Build instrsuctions and notes - macOS
+# Building a packaged application
 
 This guide will show you how to build Bigscreen for macOS.
 
@@ -32,7 +32,7 @@ Currently the supported platforms are:
 - `darwin` - macOS 64bit
 - `win32` - Windows 32/64bit
 
-By defaultm the build script will build for the platform you are running it on. To specfically choose one, use the  `--platform` or `-p` CLI argument.
+By default the build script will build for the platform you are running it on. To specfically choose one, use the  `--platform` or `-p` CLI argument.
 
 ```bash
 # macOS
