@@ -142,12 +142,16 @@ module.exports = class FullscreenWindow {
     });
   }
 
+  /**
+   * Polls URL until a connection is made.
+   * @returns {void}
+   */
   attemptToReconnect() {
     log.error('attempting to reconnect');
 
     poll(this.url, () => {
       log.info('reconnected!');
-      this.reload();
+      this.load();
     }, (retry) => {
       log.error('reconnected failed, trying again...');
       retry();

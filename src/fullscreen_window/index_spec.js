@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire');
 
 const FullscreenWindow = require('./');
 const { log } = require('../log');
+const pollUrl = require('../poll_url');
 
 describe('Fullscreen window', () => {
   let sandbox;
@@ -170,6 +171,63 @@ describe('Fullscreen window', () => {
     expect(webContentsEventStub.args[0][0]).to.equal('did-fail-load');
     expect(webContentsEventStub.args[1][0]).to.equal('certificate-error');
     expect(webContentsEventStub.args[2][0]).to.equal('crashed');
+  });
+
+  it('reloads URL if poll is successful', () => {
+    const pollStub = sandbox.stub();
+    const windowLoadStub = sandbox.stub();
+    const infoStub = sandbox.stub();
+
+    const FullscreenWindowProxy = proxyquire('./', {
+      '../poll_url': {
+        poll: pollStub,
+      }
+    });
+
+    const fullscreenWindow = new FullscreenWindowProxy();
+
+    fullscreenWindow.url = 'http://example.com';
+    fullscreenWindow.load = windowLoadStub;
+    log.info = infoStub;
+
+    pollStub.callsFake((url, successCallback, failedCallback) => {
+      successCallback();
+    });
+
+    fullscreenWindow.attemptToReconnect();
+
+    expect(pollStub.calledOnce).to.equal(true);
+    expect(pollStub.args[0][0]).to.equal('http://example.com');
+    expect(windowLoadStub.calledOnce).to.equal(true);
+    expect(infoStub.calledOnce).to.equal(true);
+  });
+
+  it('retries if poll is unsuccesfful', () => {
+    const pollStub = sandbox.stub();
+    const failedCallbackStub = sandbox.stub();
+    const errorStub = sandbox.stub();
+
+    const FullscreenWindowProxy = proxyquire('./', {
+      '../poll_url': {
+        poll: pollStub,
+      }
+    });
+
+    const fullscreenWindow = new FullscreenWindowProxy();
+
+    fullscreenWindow.url = 'http://example.com';
+    log.error = errorStub;
+
+    pollStub.callsFake((url, successCallback, failedCallback) => {
+      expect(errorStub.calledOnce).to.equal(true);
+      failedCallback(failedCallbackStub);
+    });
+
+    fullscreenWindow.attemptToReconnect();
+
+    expect(pollStub.calledOnce).to.equal(true);
+    expect(pollStub.args[0][0]).to.equal('http://example.com');
+    expect(failedCallbackStub.calledOnce).to.equal(true);
   });
 
   it('onDidFailToLoad logs an error and opens fallback', () => {
