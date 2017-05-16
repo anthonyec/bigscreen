@@ -12,6 +12,8 @@ function main() {
   fullscreenWindow.open(url);
 }
 
+// Make sure the main background process is stopped when no windows are open.
+// Fixes the problem of multiple processes spawning on Windows.
 app.on('window-all-closed', () => {
   app.quit();
 });
