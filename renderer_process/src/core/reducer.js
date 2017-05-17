@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 
-import myModule from '../my_module/reducer';
+import preferencesScreen from '../preferences_screen/reducer';
 
 export default combineReducers({
-  // you can combine all your other reducers under a single namespace like so
-  myModule,
+  preferencesScreen,
 });

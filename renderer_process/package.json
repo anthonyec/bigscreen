@@ -6,7 +6,6 @@
   "scripts": {
     "build": "NODE_PATH=. webpack",
     "build:production": "NODE_PATH=. webpack --config webpack.production.config.js -p",
-    "build:staging": "NODE_PATH=. webpack --config webpack.staging.config.js",
     "lint": "eslint --rulesdir ./eslint_rules --ext .js --ext .jsx ./",
     "lint:fix": "eslint --rulesdir eslint_rules --fix --ext .js --ext .jsx ./",
     "serve": "NODE_PATH=. NODE_ENV=development webpack-dev-server --host 0.0.0.0 --public lvh.me:8080",

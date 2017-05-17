@@ -1,18 +1,10 @@
-const path = require('path');
-
 const { app, BrowserWindow } = require('electron');
 const electronSettings = require('electron-settings');
 
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
-const FullscreenWindow = require('./fullscreen_window');
 
 function main() {
-  // const url = electronSettings.get('url') || 'about:blank';
-  // const fullscreenWindow = new FullscreenWindow();
-
-  // fullscreenWindow.open(url);
-
   const preferencesWindow = new BrowserWindow({
     background: '#ECECEC',
     title: electronSettings.get('name') + ' preferences',
@@ -24,12 +16,17 @@ function main() {
   });
 
   const path = app.getAppPath('exe');
-  const baseURL = process.env.NODE_ENV === 'development' ? 'http://lvh.me:8080/' : `file://${path}/renderer_process/dist/index.html`;
+  const baseURL = process.env.NODE_ENV === 'development' ?
+    'http://lvh.me:8080/' :
+    `file://${path}/renderer_process/dist/index.html`;
 
   preferencesWindow.loadURL(baseURL);
 
   preferencesWindow.on('ready-to-show', preferencesWindow.show);
-  preferencesWindow.openDevTools({ detach: true });
+
+  if (process.env.NODE_ENV === 'development') {
+    preferencesWindow.openDevTools({ detach: true });
+  }
 }
 
 app.on('ready', () => {

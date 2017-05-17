@@ -66,7 +66,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.hbs',
       inject: false,
-      title: 'REPLACE_THIS',
+      title: 'Bigscreen',
       config,
     }),
   ],
