@@ -5,6 +5,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const bunyan = require('bunyan');
 const { app } = require('electron');
+const proxyquire = require('proxyquire');
 
 const log = require('./');
 
@@ -17,7 +18,68 @@ describe('Log', () => {
     // Create sandbox to make it easier restore every stub after each test.
     sandbox = sinon.sandbox.create();
     bunyanCreateLoggerStub = sandbox.stub(bunyan, 'createLogger');
+    bunyanCreateLoggerStub.returns({
+      debug: () => {},
+    });
     bunyanDebugStub = sandbox.stub(log.log, 'debug');
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  it('getLoggerFactory creates logger instance and caches it', () => {
+    const isReadyStub = sandbox.stub();
+    const loggerProxy = proxyquire('./', {
+      electron: {
+        app: {
+          isReady: isReadyStub,
+          getPath: () => '/users/',
+        },
+      },
+    });
+    const startLoggerStub = sandbox.stub(loggerProxy, 'startLogger');
+
+    // Need to make sure startLogger returns something otherwise it won't think
+    // it's cached.
+    startLoggerStub.returns(true);
+    isReadyStub.returns(true);
+
+    const returnedFunction = loggerProxy.getLoggerFactory();
+    const result = returnedFunction();
+
+    // Call second time to ensure logger is cached.
+    returnedFunction();
+
+    // Expect logger to only be created once because it was cached the first
+    // time returnedFunction was called.
+    expect(startLoggerStub.calledOnce).to.equal(true);
+    expect(isReadyStub.calledTwice).to.equal(true);
+  });
+
+  it('getLoggerFactory throws error if app is not ready', () => {
+    const isReadyStub = sandbox.stub();
+    const loggerProxy = proxyquire('./', {
+      electron: {
+        app: {
+          isReady: isReadyStub,
+          getPath: () => '/users/',
+        },
+      },
+    });
+
+    isReadyStub.returns(false);
+
+    const returnedFunction = loggerProxy.getLoggerFactory();
+    const expectedError = `Error: Can't use logger before the app is ready.`;
+
+    try {
+      returnedFunction();
+    } catch (err) {
+      expect(err.toString()).to.equal(expectedError);
+    }
+
+    expect(isReadyStub.calledOnce).to.equal(true);
   });
 
   it('should call bunyan with correct arguments', () => {
@@ -89,9 +151,5 @@ describe('Log', () => {
     expect(bunyanDebugStub.args[0][0]).to.eql({ osInfo: details });
 
     getSystemDetailsStub.restore();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
   });
 });

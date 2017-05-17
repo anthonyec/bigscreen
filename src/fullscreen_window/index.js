@@ -3,7 +3,7 @@ const path = require('path');
 const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
 
 const { poll } = require('../poll_url');
-const { log } = require('../log');
+const logger = require('../log');
 const { FALLBACK_PATH } = require('../settings/paths');
 
 const WINDOW_SETTINGS = {
@@ -39,6 +39,8 @@ module.exports = class FullscreenWindow {
       unresponsive: this.onUnresponsive,
       'gpu-process-crashed': this.onGPUCrashed,
     };
+
+    logger.log.info('wow');
   }
 
   /**
@@ -75,10 +77,10 @@ module.exports = class FullscreenWindow {
       // Add webContents and window event handlers.
       this.addWindowEvents();
 
-      // Event that gets fired when console methods are called, i.e console.log.
+      // Event that gets fired when console methods are called, i.e console.logger.log.
       // These events come from the preload script.
       ipcMain.on('window_log', (evt, args) => {
-        log.debug(args);
+        logger.log.debug(args);
       });
     });
   }
@@ -145,13 +147,13 @@ module.exports = class FullscreenWindow {
   }
 
   attemptToReconnect() {
-    log.error('attempting to reconnect');
+    logger.log.error('attempting to reconnect');
 
     poll(this.url, () => {
-      log.info('reconnected!');
+      logger.log.info('reconnected!');
       this.reload();
     }, (retry) => {
-      log.error('reconnected failed, trying again...');
+      logger.log.error('reconnected failed, trying again...');
       retry();
     });
   }
@@ -167,7 +169,7 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   onDidFailToLoad() {
-    log.error('did-fail-load');
+    logger.log.error('did-fail-load');
     this.openFallback();
   }
 
@@ -176,7 +178,7 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   onCertificateError() {
-    log.warn('certificate-error');
+    logger.log.warn('certificate-error');
   }
 
   /**
@@ -184,7 +186,7 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   onCrashed() {
-    log.error('crashed');
+    logger.log.error('crashed');
     this.load();
   }
 
@@ -194,7 +196,7 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   onUnresponsive() {
-    log.error('unresponsive');
+    logger.log.error('unresponsive');
     this.load();
   }
 
@@ -203,7 +205,7 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   onGPUCrashed() {
-    log.error('gpu-process-crashed');
+    logger.log.error('gpu-process-crashed');
     this.load();
   }
 };
