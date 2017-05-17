@@ -38,7 +38,7 @@ function getLoggerFactory() {
     // App needs to be ready before the logger can be used because otherwise
     // the userData path will not exist.
     if (!app.isReady()) {
-      throw new Error(`Can't use logger before the app is ready.`);
+      throw new Error('Can\'t use logger before the app is ready.');
     }
 
     // Check if logger in scope above exists.
@@ -47,7 +47,7 @@ function getLoggerFactory() {
     }
 
     return logger;
-  }
+  };
 }
 
 /**
@@ -102,4 +102,4 @@ module.exports = {
 // created if one does not exist already.
 Object.defineProperty(module.exports, 'log', {
   get: getLoggerFactory(),
-})
+});

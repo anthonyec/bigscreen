@@ -1,18 +1,34 @@
+const { app } = require('electron');
 const AutoLaunch = require('auto-launch');
-
 const electronSettings = require('electron-settings');
 
-const { log } = require('../log');
+const logger = require('../log');
 
-const APP_NAME = electronSettings.get('name') || 'bigscreen';
+/**
+ * Return a function that creates a new AutoLaunch instance and caches it.
+ * @returns {function} Function to return a AutoLaunch instance.
+ */
+function getAutoLaunchFactory() {
+  let autoLaunch;
 
-const autoLaunch = new AutoLaunch({
-  name: APP_NAME,
+  return () => {
+    if (!app.isReady()) {
+      throw new Error('Can\'t use autoLaunch before the app is ready.');
+    }
 
-  // On Mac use a .plist file inside ~/Library/LaunchAgents/<APP_NAME>.
-  // Doing this because the other method opens a terminal console.
-  mac: { useLaunchAgent: true },
-});
+    if (!autoLaunch) {
+      autoLaunch = new AutoLaunch({
+        name: electronSettings.get('name') || 'bigscreen',
+
+        // On Mac use a .plist file inside ~/Library/LaunchAgents/<APP_NAME>.
+        // Doing this because the other method opens a terminal console.
+        mac: { useLaunchAgent: true },
+      });
+    }
+
+    return autoLaunch;
+  };
+}
 
 /**
  * Check if autolaunch is enabled.
@@ -27,11 +43,13 @@ function isAutoLaunchEnabled() {
  * @returns {promise} Resolve if autoLaunch can create the system setting.
  */
 function enableAutoLaunch() {
-  return autoLaunch.enable().then(() => {
+  const getAutoLaunchInstance = module.exports.getAutoLaunchFactory();
+
+  return getAutoLaunchInstance().enable().then(() => {
     electronSettings.set('autolaunch', true);
-    log.info('autolaunch enabled');
+    logger.log.info('autolaunch enabled');
   }).catch((err) => {
-    log.error('failed to enable auto launch', err);
+    logger.log.error('failed to enable auto launch', err);
     throw new Error(err);
   });
 }
@@ -41,16 +59,19 @@ function enableAutoLaunch() {
  * @returns {promise} Resolve if autoLaunch can remove the system setting.
  */
 function disableAutoLaunch() {
-  return autoLaunch.disable().then(() => {
+  const getAutoLaunchInstance = module.exports.getAutoLaunchFactory();
+
+  return getAutoLaunchInstance().disable().then(() => {
     electronSettings.set('autolaunch', false);
-    log.info('autolaunch disabled');
+    logger.log.info('autolaunch disabled');
   }).catch((err) => {
-    log.error('failed to disabled auto launch', err);
+    logger.log.error('failed to disabled auto launch', err);
     throw new Error(err);
   });
 }
 
 module.exports = {
+  getAutoLaunchFactory,
   isAutoLaunchEnabled,
   enableAutoLaunch,
   disableAutoLaunch,

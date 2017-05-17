@@ -46,7 +46,7 @@ describe('Log', () => {
     isReadyStub.returns(true);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    const result = returnedFunction();
+    returnedFunction();
 
     // Call second time to ensure logger is cached.
     returnedFunction();
@@ -71,7 +71,7 @@ describe('Log', () => {
     isReadyStub.returns(false);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    const expectedError = `Error: Can't use logger before the app is ready.`;
+    const expectedError = 'Error: Can\'t use logger before the app is ready.';
 
     try {
       returnedFunction();

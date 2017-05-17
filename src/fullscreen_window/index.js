@@ -39,8 +39,6 @@ module.exports = class FullscreenWindow {
       unresponsive: this.onUnresponsive,
       'gpu-process-crashed': this.onGPUCrashed,
     };
-
-    logger.log.info('wow');
   }
 
   /**
@@ -77,7 +75,7 @@ module.exports = class FullscreenWindow {
       // Add webContents and window event handlers.
       this.addWindowEvents();
 
-      // Event that gets fired when console methods are called, i.e console.logger.log.
+      // Event that gets fired when console methods are called, i.e console.log.
       // These events come from the preload script.
       ipcMain.on('window_log', (evt, args) => {
         logger.log.debug(args);
