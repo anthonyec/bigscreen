@@ -77,7 +77,6 @@ describe('Sleep blocker', () => {
           },
         },
       });
-      const getIDStub = sandbox.stub(sleepBlockerProxy, 'getID');
 
       sleepBlockerProxy.stopSleepBlocking();
 
