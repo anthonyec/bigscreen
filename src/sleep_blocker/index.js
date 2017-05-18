@@ -16,7 +16,7 @@ function getID() {
  * Start preventing the computer from sleeping.
  * @returns {void}
  */
-function startSleepBlocking() {
+function enableSleepBlocking() {
   id = powerSaveBlocker.start('prevent-display-sleep');
   electronSettings.set('sleep_blocking', true);
 }
@@ -25,7 +25,7 @@ function startSleepBlocking() {
  * Stop preventing the computer from sleeping.
  * @returns {void}
  */
-function stopSleepBlocking() {
+function disableSleepBlocking() {
   const sleepID = module.exports.getID();
 
   if (sleepID) {
@@ -36,6 +36,6 @@ function stopSleepBlocking() {
 
 module.exports = {
   getID,
-  startSleepBlocking,
-  stopSleepBlocking,
+  enableSleepBlocking,
+  disableSleepBlocking,
 };

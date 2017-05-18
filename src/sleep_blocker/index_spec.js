@@ -15,7 +15,7 @@ describe('Sleep blocker', () => {
     sandbox.restore();
   });
 
-  describe('startSleepBlocking', () => {
+  describe('enableSleepBlocking', () => {
     it('calls blocker start and sets electron-setting to true', () => {
       const startStub = sandbox.stub();
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
@@ -27,7 +27,7 @@ describe('Sleep blocker', () => {
         },
       });
 
-      sleepBlockerProxy.startSleepBlocking();
+      sleepBlockerProxy.enableSleepBlocking();
 
       expect(startStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
@@ -40,7 +40,7 @@ describe('Sleep blocker', () => {
     });
   });
 
-  describe('stopSleepBlocking', () => {
+  describe('disableSleepBlocking', () => {
     it('calls blocker stop and sets electron-setting to false', () => {
       const expectedID = 666;
       const stopStub = sandbox.stub();
@@ -55,7 +55,7 @@ describe('Sleep blocker', () => {
       const getIDStub = sandbox.stub(sleepBlockerProxy, 'getID');
 
       getIDStub.returns(expectedID);
-      sleepBlockerProxy.stopSleepBlocking();
+      sleepBlockerProxy.disableSleepBlocking();
 
       expect(stopStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
@@ -78,7 +78,7 @@ describe('Sleep blocker', () => {
         },
       });
 
-      sleepBlockerProxy.stopSleepBlocking();
+      sleepBlockerProxy.disableSleepBlocking();
 
       expect(stopStub.callCount).to.equal(0);
       expect(electronSettingsSetStub.callCount).to.equal(0);
