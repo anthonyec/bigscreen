@@ -24,8 +24,9 @@ module.exports = class FullscreenWindow {
     this.window = null;
     this.url = '';
 
+    // These shortcuts are free to use on Windows and make sense on macOS.
     this.shortcuts = {
-      'CommandOrControl+Esc': this.close,
+      'CommandOrControl+W': this.close,
       'CommandOrControl+R': this.load,
     };
 
@@ -49,38 +50,33 @@ module.exports = class FullscreenWindow {
     return this.window;
   }
 
+  /**
+   * Returns the windows settings.
+   * @returns {object} Object containing the settings.
+   */
   getWindowSettings() {
     return WINDOW_SETTINGS;
   }
 
   /**
-   * Open a URL in a fullscreen kiosk window
+   * Open a URL in a fullscreen kiosk window.
    * @param {url} url Web page to display.
-   * @returns {promise} Resolve if web page opened successfully.
+   * @returns {void}
    */
   open(url) {
+    const settings = this.getWindowSettings();
     this.url = url;
+
+    this.window = new BrowserWindow(settings);
+    this.load();
+
+    // Add webContents and window event handlers.
+    this.addWindowEvents();
     this.registerShortcuts();
 
-    const settings = this.getWindowSettings();
-
-    return new Promise((resolve) => { // reject
-      this.window = new BrowserWindow(settings);
-
-      this.window.on('show', () => {
-        this.load();
-        resolve();
-      });
-
-      // Add webContents and window event handlers.
-      this.addWindowEvents();
-
-      // Event that gets fired when console methods are called, i.e console.log.
-      // These events come from the preload script.
-      ipcMain.on('window_log', (evt, args) => {
-        log.debug(args);
-      });
-    });
+    // Event that gets fired when console methods are called, i.e console.log.
+    // These events come from the preload script.
+    ipcMain.on('window_log', this.onWebContentsLog);
   }
 
   /**
@@ -144,22 +140,41 @@ module.exports = class FullscreenWindow {
     });
   }
 
+  /**
+   * Polls URL until a connection is made.
+   * @returns {void}
+   */
   attemptToReconnect() {
     log.error('attempting to reconnect');
 
     poll(this.url, () => {
       log.info('reconnected!');
-      this.reload();
+      this.load();
     }, (retry) => {
       log.error('reconnected failed, trying again...');
       retry();
     });
   }
 
+  /**
+   * Load the fallback content and start attempting to reconnect
+   * in the background.
+   * @returns {void}
+   */
   openFallback() {
     const fallbackURL = path.join('file://', FALLBACK_PATH);
     this.window.loadURL(fallbackURL);
     this.attemptToReconnect();
+  }
+
+  /**
+   * Called when 'window_log' event fires from the webContents preload script.
+   * @param {object} evt Object with details of the ipcMain event.
+   * @param {object} args Arguments from the console method.
+   * @returns {void}
+   */
+  onWebContentsLog(evt, args) {
+    log.debug(args);
   }
 
   /**
