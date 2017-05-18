@@ -5,6 +5,10 @@ const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 const FullscreenWindow = require('./fullscreen_window');
 
+function start() {
+  start();
+}
+
 function main() {
   const url = electronSettings.get('url') || 'about:blank';
   const fullscreenWindow = new FullscreenWindow();
