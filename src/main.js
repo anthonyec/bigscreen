@@ -1,36 +1,34 @@
 const { app } = require('electron');
-const electronSettings = require('electron-settings');
 
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
-const FullscreenWindow = require('./fullscreen_window');
-const {
-  enableSleepBlocking,
-  disableSleepBlocking,
-} = require('./sleep_blocker');
+
+const fullscreen = require('./fullscreen');
+const { disableSleepBlocking } = require('./sleep_blocker');
 
 function main() {
-  const url = electronSettings.get('url') || 'about:blank';
-  const fullscreenWindow = new FullscreenWindow();
+  if (fullscreen.shouldFullscreenStart()) {
+    fullscreen.start();
+  } else {
 
-  fullscreenWindow.open(url);
-  startSleepBlocking();
+    // open preferences_window
+  }
 }
 
-// Make sure the main background process is stopped when no windows are open.
-// Fixes the problem of multiple processes spawning on Windows.
-app.on('window-all-closed', () => {
-  app.quit();
-});
+function cleanUpBeforeQuitting() {
+  disableSleepBlocking();
+}
 
-app.on('quit', () => {
-  stopSleepBlocking();
-});
-
-app.on('ready', () => {
+function boot() {
   logSystemDetails();
 
   loadConfigIntoSettings().then(() => {
     main();
   });
-});
+}
+
+// Make sure the main background process is stopped when no windows are open.
+// Fixes the problem of multiple processes spawning on Windows.
+app.on('window-all-closed', app.quit);
+app.on('will-quit', cleanUpBeforeQuitting);
+app.on('ready', boot);
