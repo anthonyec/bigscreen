@@ -181,12 +181,12 @@ describe('Fullscreen', () => {
       expect(enableKeepAliveStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql([
         FULLSCREEN_IS_RUNNING,
-        true
+        true,
       ]);
     });
   });
 
-   describe('stop', () => {
+  describe('stop', () => {
     it('sets FULLSCREEN_IS_RUNNING to false and disables sleep blocking and keep alive', () => { // eslint-disable-line
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
       const disableSleepBlockingStub = sandbox.stub(
@@ -197,10 +197,6 @@ describe('Fullscreen', () => {
         keepAlive,
         'disableKeepAlive'
       );
-      const openWindowAndBindEventsStub = sandbox.stub(
-        fullscreen,
-        'openWindowAndBindEvents'
-      );
 
       fullscreen.stop();
 
@@ -209,7 +205,7 @@ describe('Fullscreen', () => {
       expect(disableKeepAliveStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql([
         FULLSCREEN_IS_RUNNING,
-        false
+        false,
       ]);
     });
   });
