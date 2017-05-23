@@ -9,8 +9,8 @@
     "build": "npm run build:renderer && npm run build:main",
     "build:main": "node ./build/bin",
     "build:renderer": "cd ./renderer_process && npm run build:production",
-    "lint": "eslint --ext .js ./main_process",
-    "lint:fix": "eslint --fix .js ./main_process",
+    "lint": "eslint --ext .js ./main_process ./build",
+    "lint:fix": "eslint --fix .js ./main_process /build",
     "test": "npm run test:file -- main_process/**/*_spec.js build/**/*_spec.js",
     "test:file": "NODE_ENV=test electron-mocha",
     "test:watch": "npm run test -- --watch --watch-extensions js"
@@ -22,6 +22,7 @@
     "electron-settings": "^3.0.14",
     "electron-sudo": "^4.0.12",
     "js-yaml": "^3.8.2",
+    "plist": "^2.1.0",
     "request": "^2.81.0"
   },
   "devDependencies": {

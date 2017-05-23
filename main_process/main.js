@@ -7,7 +7,7 @@ const { logSystemDetails } = require('./log');
 function main() {
   const preferencesWindow = new BrowserWindow({
     background: '#ECECEC',
-    title: electronSettings.get('name') + ' preferences',
+    title: `${electronSettings.get('name') } preferences`,
     useContentSize: true,
     width: 450,
     height: 215,
