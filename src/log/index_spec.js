@@ -72,14 +72,14 @@ describe('Log', () => {
     isReadyStub.returns(false);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    const expectedError = 'Error: Can\'t use logger before the app is ready.';
+    const expectedError = 'Can\'t use logger before the app is ready.';
 
-    try {
-      returnedFunction();
-    } catch (err) {
-      expect(err.toString()).to.equal(expectedError);
-    }
+    // This does not use a try/catch because If returnedFunction does not
+    // throw, it will never end up in the catch. So the function call is
+    // wrapped in a method instead.
+    const call = () => returnedFunction();
 
+    expect(call).to.throw(expectedError);
     expect(isReadyStub.calledOnce).to.equal(true);
   });
 
