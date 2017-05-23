@@ -1,0 +1,7 @@
+/* example using sass style variables via postcss-simple-vars */
+$baseColor: #ff0000;
+
+/* example exporting using css-loader */
+:export {
+  baseColor: $baseColor;
+}
