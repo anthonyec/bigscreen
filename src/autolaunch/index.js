@@ -8,10 +8,12 @@ const logger = require('../log');
  * Return a function that creates a new AutoLaunch instance and caches it.
  * @returns {function} Function to return a AutoLaunch instance.
  */
-function getAutoLaunchFactory() {
+function getAutoLaunchInstance() {
   let autoLaunch;
 
   return () => {
+    // Electron settings requires the app to be ready before being called. This
+    // is because it relies on the userData app path.
     if (!app.isReady()) {
       throw new Error('Can\'t use autoLaunch before the app is ready.');
     }
@@ -43,14 +45,14 @@ function isAutoLaunchEnabled() {
  * @returns {promise} Resolve if autoLaunch can create the system setting.
  */
 function enableAutoLaunch() {
-  const getAutoLaunchInstance = module.exports.getAutoLaunchFactory();
+  const autoLaunch = module.exports.getAutoLaunchInstance();
 
-  return getAutoLaunchInstance().enable().then(() => {
+  return autoLaunch().enable().then(() => {
     electronSettings.set('autolaunch', true);
     logger.log.info('autolaunch enabled');
   }).catch((err) => {
     logger.log.error('failed to enable auto launch', err);
-    throw new Error(err);
+    throw err;
   });
 }
 
@@ -59,19 +61,22 @@ function enableAutoLaunch() {
  * @returns {promise} Resolve if autoLaunch can remove the system setting.
  */
 function disableAutoLaunch() {
-  const getAutoLaunchInstance = module.exports.getAutoLaunchFactory();
+  const autoLaunch = module.exports.getAutoLaunchInstance();
 
-  return getAutoLaunchInstance().disable().then(() => {
+  return autoLaunch().disable().then(() => {
     electronSettings.set('autolaunch', false);
     logger.log.info('autolaunch disabled');
   }).catch((err) => {
     logger.log.error('failed to disabled auto launch', err);
-    throw new Error(err);
+    throw err;
   });
 }
 
 module.exports = {
-  getAutoLaunchFactory,
+  // This is not instantiated in the normal singleton way because when creating
+  // a new AutoLaunch instance it requires electronSettings. ElectronSettings
+  // requires the app to be ready before being called.
+  getAutoLaunchInstance,
   isAutoLaunchEnabled,
   enableAutoLaunch,
   disableAutoLaunch,

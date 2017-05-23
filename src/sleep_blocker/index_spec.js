@@ -52,9 +52,8 @@ describe('Sleep blocker', () => {
           },
         },
       });
-      const getIDStub = sandbox.stub(sleepBlockerProxy, 'getID');
 
-      getIDStub.returns(expectedID);
+      sleepBlockerProxy.id = expectedID;
       sleepBlockerProxy.disableSleepBlocking();
 
       expect(stopStub.calledOnce).to.equal(true);
@@ -65,6 +64,8 @@ describe('Sleep blocker', () => {
         'sleep_blocking',
         false,
       ]);
+
+      expect(sleepBlockerProxy.id).to.equal(null);
     });
 
     it('does not call stop if there is no ID', () => {

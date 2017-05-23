@@ -2,22 +2,12 @@ const { powerSaveBlocker } = require('electron');
 
 const electronSettings = require('electron-settings');
 
-let id;
-
-/**
- * Get the ID of the sleep blocker.
- * @returns {integer} id of the sleep blocker
- */
-function getID() {
-  return id;
-}
-
 /**
  * Start preventing the computer from sleeping.
  * @returns {void}
  */
 function enableSleepBlocking() {
-  id = powerSaveBlocker.start('prevent-display-sleep');
+  module.exports.id = powerSaveBlocker.start('prevent-display-sleep');
   electronSettings.set('sleep_blocking', true);
 }
 
@@ -26,16 +16,17 @@ function enableSleepBlocking() {
  * @returns {void}
  */
 function disableSleepBlocking() {
-  const sleepID = module.exports.getID();
+  const sleepID = module.exports.id;
 
   if (sleepID) {
     powerSaveBlocker.stop(sleepID);
     electronSettings.set('sleep_blocking', false);
+    module.exports.id = null;
   }
 }
 
 module.exports = {
-  getID,
+  id: null,
   enableSleepBlocking,
   disableSleepBlocking,
 };

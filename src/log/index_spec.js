@@ -46,15 +46,16 @@ describe('Log', () => {
     isReadyStub.returns(true);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    returnedFunction();
+    const firstReturnedValue = returnedFunction();
 
-    // Call second time to ensure logger is cached.
-    returnedFunction();
+    // Call second time to ensure AutoLaunch is cached.
+    const secondReturnedValue = returnedFunction();
 
     // Expect logger to only be created once because it was cached the first
     // time returnedFunction was called.
     expect(startLoggerStub.calledOnce).to.equal(true);
     expect(isReadyStub.calledTwice).to.equal(true);
+    expect(firstReturnedValue).to.equal(secondReturnedValue);
   });
 
   it('getLoggerFactory throws error if app is not ready', () => {
@@ -71,14 +72,14 @@ describe('Log', () => {
     isReadyStub.returns(false);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    const expectedError = 'Error: Can\'t use logger before the app is ready.';
+    const expectedError = 'Can\'t use logger before the app is ready.';
 
-    try {
-      returnedFunction();
-    } catch (err) {
-      expect(err.toString()).to.equal(expectedError);
-    }
+    // This does not use a try/catch because If returnedFunction does not
+    // throw, it will never end up in the catch. So the function call is
+    // wrapped in a method instead.
+    const call = () => returnedFunction();
 
+    expect(call).to.throw(expectedError);
     expect(isReadyStub.calledOnce).to.equal(true);
   });
 
