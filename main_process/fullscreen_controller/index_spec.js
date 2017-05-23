@@ -82,8 +82,8 @@ describe('Fullscreen Controller', () => {
     });
   });
 
-  describe('openWindowAndBindEvents', () => {
-    it('opens the fullscreen_window with electron-setting URL', () => {
+  describe('openWindow', () => {
+    it('opens the fullscreen_window and binds once event', () => {
       const expectedURL = 'https://example.com';
       const openStub = sandbox.stub();
       const getWindowStub = sandbox.stub();
@@ -105,7 +105,7 @@ describe('Fullscreen Controller', () => {
         once: sinon.stub(),
       });
 
-      fullscreenControllerProxy.openWindowAndBindEvents();
+      fullscreenControllerProxy.openWindow();
 
       expect(openStub.calledOnce).to.equal(true);
       expect(openStub.args[0][0]).equal(expectedURL);
@@ -133,7 +133,7 @@ describe('Fullscreen Controller', () => {
         once: onceStub,
       });
 
-      fullscreenControllerProxy.openWindowAndBindEvents();
+      fullscreenControllerProxy.openWindow();
 
       expect(getWindowStub.calledOnce).to.equal(true);
       expect(onceStub.calledOnce).to.equal(true);
@@ -142,27 +142,59 @@ describe('Fullscreen Controller', () => {
   });
 
   describe('start', () => {
-    it('sets FULLSCREEN_IS_RUNNING to true and enables sleep blocking and keep alive', () => { // eslint-disable-line
+    it('opens window and starty processes only if instance does not exist', () => { // esline-disable-line
+      const openWindowStub = sandbox.stub(fullscreen, 'openWindow');
+      const startProcessesStub = sandbox.stub(fullscreen, 'startProcesses');
+
+      // Call start and pretend fullscreenWindow not to exist. This should
+      // call the openWindow and startProcesses functions once.
+      fullscreen.fullscreenWindow = false;
+      fullscreen.start();
+
+      // Call it a second time but pretend fullscreenWindow exists
+      fullscreen.fullscreenWindow = true;
+      fullscreen.start();
+
+      expect(openWindowStub.calledOnce).to.equal(true);
+      expect(startProcessesStub.calledOnce).to.equal(true);
+    });
+  });
+
+  describe('stop', () => {
+    it('closes window only if instance and window instance exists', () => {
+      const getWindowStub = sandbox.stub();
+      const closeWindowStub = sandbox.stub();
+
+      // Call start.
+      fullscreen.fullscreenWindow = sinon.createStubInstance(FullscreenWindow);
+      fullscreen.fullscreenWindow.getWindow = getWindowStub;
+      fullscreen.closeWindow = closeWindowStub;
+
+      fullscreen.stop();
+
+      // Call it a second time.
+      getWindowStub.returns(true);
+      fullscreen.stop();
+
+      expect(getWindowStub.calledTwice).to.equal(true);
+      expect(closeWindowStub.calledOnce).to.equal(true);
+    });
+  });
+
+  describe('startProcesses', () => {
+    it('enables sleep blocker, keep alive and sets electron-setting', () => {
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
+      const enableKeepAliveStub = sandbox.stub(keepAlive, 'enableKeepAlive');
       const enableSleepBlockingStub = sandbox.stub(
         sleepBlocker,
         'enableSleepBlocking'
       );
-      const enableKeepAliveStub = sandbox.stub(
-        keepAlive,
-        'enableKeepAlive'
-      );
-      const openWindowAndBindEventsStub = sandbox.stub(
-        fullscreen,
-        'openWindowAndBindEvents'
-      );
 
-      fullscreen.start();
+      fullscreen.startProcesses();
 
-      expect(openWindowAndBindEventsStub.calledOnce).to.equal(true);
-      expect(electronSettingsSetStub.calledOnce).to.equal(true);
-      expect(enableSleepBlockingStub.calledOnce).to.equal(true);
       expect(enableKeepAliveStub.calledOnce).to.equal(true);
+      expect(enableSleepBlockingStub.calledOnce).to.equal(true);
+      expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql([
         FULLSCREEN_IS_RUNNING,
         true,
@@ -170,37 +202,20 @@ describe('Fullscreen Controller', () => {
     });
   });
 
-  describe('stop', () => {
-    it('sets FULLSCREEN_IS_RUNNING to false and disables sleep blocking and keep alive', () => { // eslint-disable-line
-      const fullscreenStub = sinon.createStubInstance(FullscreenWindow);
-      const closeStub = sandbox.stub();
-      const getWindowStub = sandbox.stub();
+  describe('stopProcesses', () => {
+    it('disables sleep blocker, keep alive and sets electron-setting', () => {
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
+      const disableKeepAliveStub = sandbox.stub(keepAlive, 'disableKeepAlive');
       const disableSleepBlockingStub = sandbox.stub(
         sleepBlocker,
         'disableSleepBlocking'
       );
-      const disableKeepAliveStub = sandbox.stub(
-        keepAlive,
-        'disableKeepAlive'
-      );
 
-      const FullscreenWindowWrapper = sandbox.spy(function() { // eslint-disable-line
-        return fullscreenStub;
-      });
+      fullscreen.stopProcesses();
 
-      fullscreen.fullscreenWindow = FullscreenWindowWrapper;
-      fullscreen.fullscreenWindow.getWindow = getWindowStub;
-      fullscreen.fullscreenWindow.close = closeStub;
-      getWindowStub.returns(true);
-
-      fullscreen.stop();
-
-      expect(getWindowStub.calledOnce).to.equal(true);
-      expect(closeStub.calledOnce).to.equal(true);
-      expect(electronSettingsSetStub.calledOnce).to.equal(true);
-      expect(disableSleepBlockingStub.calledOnce).to.equal(true);
       expect(disableKeepAliveStub.calledOnce).to.equal(true);
+      expect(disableSleepBlockingStub.calledOnce).to.equal(true);
+      expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.args[0]).to.eql([
         FULLSCREEN_IS_RUNNING,
         false,

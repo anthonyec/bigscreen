@@ -10,6 +10,10 @@ const {
 } = require('../settings/attributes');
 
 class FullscreenController {
+  constructor() {
+    this.stop = this.stop.bind(this);
+  }
+
   /**
    * Check if fullscreen was active/running before.
    * @return {boolean} true if the `fullscreen_is_active` setting has not been
@@ -33,25 +37,24 @@ class FullscreenController {
    * it closes.
    * @return {void}
    */
-  openWindowAndBindEvents() {
+  openWindow() {
     const url = electronSettings.get('url');
 
     this.fullscreenWindow = new FullscreenWindow();
     this.fullscreenWindow.open(url);
 
-    this.window = this.fullscreenWindow.getWindow();
-    this.window.once('close', this.stop.bind(this));
+    this.fullscreenWindow.getWindow().once('close', () => {
+      this.stopProcesses();
+      delete this.fullscreenWindow;
+    });
   }
 
   /**
-   * Closes fullscreen window if it is open.
-   * it closes.
+   * Closes fullscreen window.
    * @return {void}
    */
   closeWindow() {
-    if (this.window) {
-      this.fullscreenWindow.close();
-    }
+    this.fullscreenWindow.close();
   }
 
   /**
@@ -60,10 +63,8 @@ class FullscreenController {
    */
   start() {
     if (!this.fullscreenWindow) {
-      this.openWindowAndBindEvents();
-      electronSettings.set(FULLSCREEN_IS_RUNNING, true);
-      sleepBlocker.enableSleepBlocking();
-      keepAlive.enableKeepAlive();
+      this.openWindow();
+      this.startProcesses();
     }
   }
 
@@ -72,16 +73,30 @@ class FullscreenController {
    * @return {void}
    */
   stop() {
-    if (this.fullscreenWindow.getWindow()) {
-      this.fullscreenWindow.close();
+    // return;
+    if (this.fullscreenWindow && this.fullscreenWindow.getWindow()) {
+      this.closeWindow();
     }
+  }
 
-    if (this.fullscreenWindow) {
-      electronSettings.set(FULLSCREEN_IS_RUNNING, false);
-      sleepBlocker.disableSleepBlocking();
-      keepAlive.disableKeepAlive();
-      delete this.fullscreenWindow;
-    }
+  /**
+   * Enable sleep blocking and keep alive.
+   * @return {[type]} [description]
+   */
+  startProcesses() {
+    electronSettings.set(FULLSCREEN_IS_RUNNING, true);
+    sleepBlocker.enableSleepBlocking();
+    keepAlive.enableKeepAlive();
+  }
+
+  /**
+   * Disable sleep blocking and keep alive.
+   * @return {void}
+   */
+  stopProcesses() {
+    electronSettings.set(FULLSCREEN_IS_RUNNING, false);
+    sleepBlocker.disableSleepBlocking();
+    keepAlive.disableKeepAlive();
   }
 }
 
