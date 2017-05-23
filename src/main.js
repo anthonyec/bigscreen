@@ -14,7 +14,7 @@ function main() {
   const fullscreenWindow = new FullscreenWindow();
 
   fullscreenWindow.open(url);
-  startSleepBlocking();
+  enableSleepBlocking();
 }
 
 // Make sure the main background process is stopped when no windows are open.
@@ -24,7 +24,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('quit', () => {
-  stopSleepBlocking();
+  disableSleepBlocking();
 });
 
 app.on('ready', () => {

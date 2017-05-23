@@ -5,14 +5,6 @@ const electronSettings = require('electron-settings');
 let id;
 
 /**
- * Get the ID of the sleep blocker.
- * @returns {integer} id of the sleep blocker
- */
-function getID() {
-  return id;
-}
-
-/**
  * Start preventing the computer from sleeping.
  * @returns {void}
  */
@@ -26,7 +18,7 @@ function enableSleepBlocking() {
  * @returns {void}
  */
 function disableSleepBlocking() {
-  const sleepID = module.exports.getID();
+  const sleepID = module.exports.id;
 
   if (sleepID) {
     powerSaveBlocker.stop(sleepID);
@@ -35,7 +27,7 @@ function disableSleepBlocking() {
 }
 
 module.exports = {
-  getID,
+  id,
   enableSleepBlocking,
   disableSleepBlocking,
 };
