@@ -1,0 +1,7 @@
+{
+  "ecmaVersion": 6,
+  "dontLoad": [],
+  "plugins": {
+    "node": true
+  }
+}

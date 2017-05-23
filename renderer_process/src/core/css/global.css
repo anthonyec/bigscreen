@@ -1,0 +1,10 @@
+@import './reset';
+@import './vars';
+
+html, body{
+  height: 100%;
+}
+
+#app{
+
+}

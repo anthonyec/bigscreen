@@ -1,0 +1,11 @@
+{
+  "name": "eslint-plugin-signalnoise",
+  "version": "0.0.1",
+  "description": "eslint rules for sigalnoise project template",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=6.7.0"
+  }
+}

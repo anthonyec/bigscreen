@@ -1,0 +1,9 @@
+---
+reporting:
+  dir: ./.coverage
+
+instrumentation:
+  root: src
+  extensions:
+    - .js
+    - .jsx
