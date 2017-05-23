@@ -20,6 +20,7 @@
     "electron-settings": "^3.0.14",
     "electron-sudo": "^4.0.12",
     "js-yaml": "^3.8.2",
+    "plist": "^2.1.0",
     "request": "^2.81.0"
   },
   "devDependencies": {
