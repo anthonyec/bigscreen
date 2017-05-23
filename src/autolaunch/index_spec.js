@@ -77,14 +77,14 @@ describe('Autolaunch', () => {
       isReadyStub.returns(false);
 
       const returnedFunction = autoLaunchProxy.getAutoLaunchFactory();
-      const expectedError = `Error: Can't use autoLaunch before the app is ready.`; // eslint-disable-line
+      const expectedError = `Can't use autoLaunch before the app is ready.`; // eslint-disable-line
 
-      try {
-        returnedFunction();
-      } catch (err) {
-        expect(err.toString()).to.equal(expectedError);
-      }
+      // This does not use a try/catch because If returnedFunction does not
+      // throw, it will never end up in the catch. So the function call is
+      // wrapped in a method instead.
+      const call = () => returnedFunction();
 
+      expect(call.bind()).to.throw(expectedError);
       expect(isReadyStub.calledOnce).to.equal(true);
     });
   });
