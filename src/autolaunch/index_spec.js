@@ -28,7 +28,7 @@ describe('Autolaunch', () => {
     sandbox.restore();
   });
 
-  describe('getAutoLaunchFactory', () => {
+  describe('getAutoLaunchInstance', () => {
     it('creates AutoLaunch instance and caches it', () => {
       const expectedArgs = {
         name: 'bigscreen',
@@ -52,15 +52,17 @@ describe('Autolaunch', () => {
 
       isReadyStub.returns(true);
 
-      const returnedFunction = autoLaunchProxy.getAutoLaunchFactory();
-      returnedFunction();
+      const returnedFunction = autoLaunchProxy.getAutoLaunchInstance();
+      const firstReturnedValue = returnedFunction();
 
       // Call second time to ensure AutoLaunch is cached.
-      returnedFunction();
+      const secondReturnedValue = returnedFunction();
 
       expect(isReadyStub.calledTwice).to.equal(true);
       expect(AutoLaunchSpyWrapper.calledOnce).to.equal(true);
       expect(AutoLaunchSpyWrapper.args[0][0]).to.eql(expectedArgs);
+
+      expect(firstReturnedValue).to.equal(secondReturnedValue);
     });
 
     it('throws error if app is not ready', () => {
@@ -76,7 +78,7 @@ describe('Autolaunch', () => {
 
       isReadyStub.returns(false);
 
-      const returnedFunction = autoLaunchProxy.getAutoLaunchFactory();
+      const returnedFunction = autoLaunchProxy.getAutoLaunchInstance();
       const expectedError = `Can't use autoLaunch before the app is ready.`; // eslint-disable-line
 
       // This does not use a try/catch because If returnedFunction does not
@@ -91,21 +93,21 @@ describe('Autolaunch', () => {
 
   describe('enableAutoLaunch', () => {
     it('sets electron-setting and logs a info message', () => {
-      const getAutoLaunchFactoryStub = sandbox.stub(
+      const getAutoLaunchInstanceStub = sandbox.stub(
         autolaunch,
-        'getAutoLaunchFactory'
+        'getAutoLaunchInstance'
       );
       const enableStub = sandbox.stub();
 
       // Return object with enable function to replicate AutoLAunch API.
-      getAutoLaunchFactoryStub.returns(() => ({ enable: enableStub }));
+      getAutoLaunchInstanceStub.returns(() => ({ enable: enableStub }));
 
       // Pretend AutoLaunch successfully enabled start at login.
       enableStub.returns(Promise.resolve());
 
       return autolaunch.enableAutoLaunch().then(() => {
         // Check that getAutoLaunchInstance is created.
-        expect(getAutoLaunchFactoryStub.calledOnce).to.equal(true);
+        expect(getAutoLaunchInstanceStub.calledOnce).to.equal(true);
 
         // Check settings are getting retrived.
         expect(electronSettingsSetStub.calledOnce).to.equal(true);
@@ -118,21 +120,21 @@ describe('Autolaunch', () => {
     });
 
     it('failing to enable autolaunch throws error and logs it', () => {
-      const getAutoLaunchFactoryStub = sandbox.stub(
+      const getAutoLaunchInstanceStub = sandbox.stub(
         autolaunch,
-        'getAutoLaunchFactory'
+        'getAutoLaunchInstance'
       );
       const enableStub = sandbox.stub();
 
       // Return object with enable function to replicate AutoLAunch API.
-      getAutoLaunchFactoryStub.returns(() => ({ enable: enableStub }));
+      getAutoLaunchInstanceStub.returns(() => ({ enable: enableStub }));
 
       // Pretend AutoLaunch successfully enabled start at login.
       enableStub.returns(Promise.reject());
 
       return autolaunch.enableAutoLaunch().catch(() => {
         // Check that getAutoLaunchInstance is created.
-        expect(getAutoLaunchFactoryStub.calledOnce).to.equal(true);
+        expect(getAutoLaunchInstanceStub.calledOnce).to.equal(true);
 
         // Check it logs error.
         expect(logErrorStub.calledOnce).to.equal(true);
@@ -146,21 +148,21 @@ describe('Autolaunch', () => {
 
   describe('disableAutoLaunch', () => {
     it('sets electron-setting and logs a info message', () => {
-      const getAutoLaunchFactoryStub = sandbox.stub(
+      const getAutoLaunchInstanceStub = sandbox.stub(
         autolaunch,
-        'getAutoLaunchFactory'
+        'getAutoLaunchInstance'
       );
       const disableStub = sandbox.stub();
 
       // Return object with enable function to replicate AutoLAunch API.
-      getAutoLaunchFactoryStub.returns(() => ({ disable: disableStub }));
+      getAutoLaunchInstanceStub.returns(() => ({ disable: disableStub }));
 
       // Pretend AutoLaunch successfully enabled start at login.
       disableStub.returns(Promise.resolve());
 
       return autolaunch.disableAutoLaunch().then(() => {
         // Check that getAutoLaunchInstance is created.
-        expect(getAutoLaunchFactoryStub.calledOnce).to.equal(true);
+        expect(getAutoLaunchInstanceStub.calledOnce).to.equal(true);
 
         // Check settings are getting retrieved.
         expect(electronSettingsSetStub.calledOnce).to.equal(true);
@@ -173,21 +175,21 @@ describe('Autolaunch', () => {
     });
 
     it('failing to disable autolaunch throws error and logs it', () => {
-      const getAutoLaunchFactoryStub = sandbox.stub(
+      const getAutoLaunchInstanceStub = sandbox.stub(
         autolaunch,
-        'getAutoLaunchFactory'
+        'getAutoLaunchInstance'
       );
       const disableStub = sandbox.stub();
 
       // Return object with enable function to replicate AutoLAunch API.
-      getAutoLaunchFactoryStub.returns(() => ({ disable: disableStub }));
+      getAutoLaunchInstanceStub.returns(() => ({ disable: disableStub }));
 
       // Pretend AutoLaunch successfully enabled start at login.
       disableStub.returns(Promise.reject());
 
       return autolaunch.disableAutoLaunch().catch(() => {
         // Check that getAutoLaunchInstance is created.
-        expect(getAutoLaunchFactoryStub.calledOnce).to.equal(true);
+        expect(getAutoLaunchInstanceStub.calledOnce).to.equal(true);
 
         // Check it logs error.
         expect(logErrorStub.calledOnce).to.equal(true);
