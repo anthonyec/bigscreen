@@ -3,12 +3,12 @@ const { app } = require('electron');
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 
-const fullscreen = require('./fullscreen');
+const fullscreenController = require('./fullscreen_controller');
 const { disableSleepBlocking } = require('./sleep_blocker');
 
 function main() {
-  if (fullscreen.shouldFullscreenStart()) {
-    fullscreen.start();
+  if (fullscreenController.shouldFullscreenStart()) {
+    fullscreenController.start();
   } else {
 
     // open preferences_window

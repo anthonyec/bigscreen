@@ -13,7 +13,7 @@ const {
   FULLSCREEN_IS_RUNNING,
 } = require('../settings/attributes');
 
-describe('Fullscreen', () => {
+describe('Fullscreen Controller', () => {
   let sandbox;
 
   beforeEach(() => {
@@ -23,28 +23,6 @@ describe('Fullscreen', () => {
 
   afterEach(() => {
     sandbox.restore();
-  });
-
-  describe('getFullscreenWindowFactory', () => {
-    it('creates logger instance and caches it', () => {
-      const FullscreenWindowWrapper = sandbox.spy(function() { // eslint-disable-line
-        return sinon.createStubInstance(FullscreenWindow);
-      });
-
-      const fullscreenProxy = proxyquire('./', {
-        '../fullscreen_window': FullscreenWindowWrapper,
-      });
-
-      const returnedFunction = fullscreenProxy.getFullscreenWindowFactory();
-      returnedFunction();
-
-      // Call second time to ensure logger is cached.
-      returnedFunction();
-
-      // Expect FullscreenWindow to only be instantiated once because it was
-      // cached the first time returnedFunction was called.
-      expect(FullscreenWindowWrapper.calledOnce).to.equal(true);
-    });
   });
 
   describe('wasFullscreenRunning', () => {
@@ -107,51 +85,57 @@ describe('Fullscreen', () => {
   describe('openWindowAndBindEvents', () => {
     it('opens the fullscreen_window with electron-setting URL', () => {
       const expectedURL = 'https://example.com';
+      const openStub = sandbox.stub();
+      const getWindowStub = sandbox.stub();
       const electronSettingsGetStub = sandbox.stub(electronSettings, 'get');
+      const fullscreenStub = sinon.createStubInstance(FullscreenWindow);
+
       const FullscreenWindowWrapper = sandbox.spy(function() { // eslint-disable-line
-        return sinon.createStubInstance(FullscreenWindow);
+        return fullscreenStub;
       });
 
-      const fullscreenProxy = proxyquire('./', {
+      const fullscreenControllerProxy = proxyquire('./', {
         '../fullscreen_window': FullscreenWindowWrapper,
       });
 
       electronSettingsGetStub.returns('https://example.com');
-
-      fullscreenProxy.window = sinon.createStubInstance(FullscreenWindow);
-      fullscreenProxy.window.open = sandbox.stub();
-      fullscreenProxy.window.getWindow = sandbox.stub();
-      fullscreenProxy.window.getWindow.returns({
+      fullscreenStub.open = openStub;
+      fullscreenStub.getWindow = getWindowStub;
+      getWindowStub.returns({
         once: sinon.stub(),
       });
 
-      fullscreenProxy.openWindowAndBindEvents();
-      expect(fullscreenProxy.window.open.calledOnce).to.equal(true);
-      expect(fullscreenProxy.window.open.args[0][0]).equal(expectedURL);
+      fullscreenControllerProxy.openWindowAndBindEvents();
+
+      expect(openStub.calledOnce).to.equal(true);
+      expect(openStub.args[0][0]).equal(expectedURL);
     });
 
     it('binds once window close event to stop', () => {
-      const electronSettingsGetStub = sandbox.stub(electronSettings, 'get');
       const onceStub = sandbox.stub();
+      const openStub = sandbox.stub();
+      const getWindowStub = sandbox.stub();
+      const electronSettingsGetStub = sandbox.stub(electronSettings, 'get');
+      const fullscreenStub = sinon.createStubInstance(FullscreenWindow);
+
       const FullscreenWindowWrapper = sandbox.spy(function() { // eslint-disable-line
-        return sinon.createStubInstance(FullscreenWindow);
+        return fullscreenStub;
       });
 
-      const fullscreenProxy = proxyquire('./', {
+      const fullscreenControllerProxy = proxyquire('./', {
         '../fullscreen_window': FullscreenWindowWrapper,
       });
 
       electronSettingsGetStub.returns('https://example.com');
-
-      fullscreenProxy.window = sinon.createStubInstance(FullscreenWindow);
-      fullscreenProxy.window.open = sandbox.stub();
-      fullscreenProxy.window.getWindow = sandbox.stub();
-      fullscreenProxy.window.getWindow.returns({
+      fullscreenStub.open = openStub;
+      fullscreenStub.getWindow = getWindowStub;
+      getWindowStub.returns({
         once: onceStub,
       });
 
-      fullscreenProxy.openWindowAndBindEvents();
+      fullscreenControllerProxy.openWindowAndBindEvents();
 
+      expect(getWindowStub.calledOnce).to.equal(true);
       expect(onceStub.calledOnce).to.equal(true);
       expect(onceStub.args[0][0]).to.equal('close');
     });
@@ -188,6 +172,9 @@ describe('Fullscreen', () => {
 
   describe('stop', () => {
     it('sets FULLSCREEN_IS_RUNNING to false and disables sleep blocking and keep alive', () => { // eslint-disable-line
+      const fullscreenStub = sinon.createStubInstance(FullscreenWindow);
+      const closeStub = sandbox.stub();
+      const getWindowStub = sandbox.stub();
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
       const disableSleepBlockingStub = sandbox.stub(
         sleepBlocker,
@@ -198,8 +185,19 @@ describe('Fullscreen', () => {
         'disableKeepAlive'
       );
 
+      const FullscreenWindowWrapper = sandbox.spy(function() { // eslint-disable-line
+        return fullscreenStub;
+      });
+
+      fullscreen.fullscreenWindow = FullscreenWindowWrapper;
+      fullscreen.fullscreenWindow.getWindow = getWindowStub;
+      fullscreen.fullscreenWindow.close = closeStub;
+      getWindowStub.returns(true);
+
       fullscreen.stop();
 
+      expect(getWindowStub.calledOnce).to.equal(true);
+      expect(closeStub.calledOnce).to.equal(true);
       expect(electronSettingsSetStub.calledOnce).to.equal(true);
       expect(disableSleepBlockingStub.calledOnce).to.equal(true);
       expect(disableKeepAliveStub.calledOnce).to.equal(true);
