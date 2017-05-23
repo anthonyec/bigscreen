@@ -7,14 +7,6 @@ const { logSystemDetails } = require('./log');
 const { disableSleepBlocking } = require('./sleep_blocker');
 
 function main() {
-  fullscreenController.start();
-  // fullscreenController.start();
-
-  setTimeout(() => {
-    fullscreenController.stop();
-  }, 2000);
-
-  return;
   if (fullscreenController.shouldFullscreenStart()) {
     fullscreenController.start();
   } else {

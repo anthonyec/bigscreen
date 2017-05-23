@@ -142,7 +142,7 @@ describe('Fullscreen Controller', () => {
   });
 
   describe('start', () => {
-    it('opens window and starty processes only if instance does not exist', () => { // esline-disable-line
+    it('opens window and starty processes only if instance does not exist', () => { // eslint-disable-line
       const openWindowStub = sandbox.stub(fullscreen, 'openWindow');
       const startProcessesStub = sandbox.stub(fullscreen, 'startProcesses');
 
