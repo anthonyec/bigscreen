@@ -86,7 +86,7 @@ describe('Autolaunch', () => {
       // wrapped in a method instead.
       const call = () => returnedFunction();
 
-      expect(call.bind()).to.throw(expectedError);
+      expect(call).to.throw(expectedError);
       expect(isReadyStub.calledOnce).to.equal(true);
     });
   });
