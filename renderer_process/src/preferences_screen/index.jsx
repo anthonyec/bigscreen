@@ -1,16 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Textfield } from './textfield';
+import { Combobox } from './combobox';
 
 import classes from '../core/css/screen.css';
 
 export function PreferencesScreen() {
   return (
     <div className={ classes.screen }>
-      PreferencesScreen
-
-      <Textfield/>
+      <Combobox>
+        <option disabled defaultValue>
+          Select one
+        </option>
+        <option value="https://ubs-opinion-wall.com/">
+          London
+        </option>
+        <option value="https://ubs-opinion-wall.com/">
+          London
+        </option>
+        <option value="https://ubs-opinion-wall.com/">
+          London
+        </option>
+      </Combobox>
     </div>
   );
 }

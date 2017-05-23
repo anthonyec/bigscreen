@@ -1,7 +1,8 @@
-.textfield {
-  display: block;
-}
+.textfield {}
 
 .input {
+  display: block;
   width: 100%;
+  font: menu;
+  padding: 2px;
 }
