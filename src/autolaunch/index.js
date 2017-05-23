@@ -45,9 +45,9 @@ function isAutoLaunchEnabled() {
  * @returns {promise} Resolve if autoLaunch can create the system setting.
  */
 function enableAutoLaunch() {
-  const getAutoLaunchInstance = module.exports.getAutoLaunchInstance();
+  const autoLaunch = module.exports.getAutoLaunchInstance();
 
-  return getAutoLaunchInstance().enable().then(() => {
+  return autoLaunch().enable().then(() => {
     electronSettings.set('autolaunch', true);
     logger.log.info('autolaunch enabled');
   }).catch((err) => {
@@ -61,9 +61,9 @@ function enableAutoLaunch() {
  * @returns {promise} Resolve if autoLaunch can remove the system setting.
  */
 function disableAutoLaunch() {
-  const getAutoLaunchInstance = module.exports.getAutoLaunchInstance();
+  const autoLaunch = module.exports.getAutoLaunchInstance();
 
-  return getAutoLaunchInstance().disable().then(() => {
+  return autoLaunch().disable().then(() => {
     electronSettings.set('autolaunch', false);
     logger.log.info('autolaunch disabled');
   }).catch((err) => {
