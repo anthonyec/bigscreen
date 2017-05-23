@@ -64,6 +64,8 @@ describe('Sleep blocker', () => {
         'sleep_blocking',
         false,
       ]);
+
+      expect(sleepBlockerProxy.id).to.equal(null);
     });
 
     it('does not call stop if there is no ID', () => {
