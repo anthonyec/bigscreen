@@ -46,15 +46,16 @@ describe('Log', () => {
     isReadyStub.returns(true);
 
     const returnedFunction = loggerProxy.getLoggerFactory();
-    returnedFunction();
+    const firstReturnedValue = returnedFunction();
 
-    // Call second time to ensure logger is cached.
-    returnedFunction();
+    // Call second time to ensure AutoLaunch is cached.
+    const secondReturnedValue = returnedFunction();
 
     // Expect logger to only be created once because it was cached the first
     // time returnedFunction was called.
     expect(startLoggerStub.calledOnce).to.equal(true);
     expect(isReadyStub.calledTwice).to.equal(true);
+    expect(firstReturnedValue).to.equal(secondReturnedValue);
   });
 
   it('getLoggerFactory throws error if app is not ready', () => {
