@@ -28,6 +28,29 @@ const SYSTEM_DETAILS = [
 ];
 
 /**
+ * Return a function that creates a new bunyan instance and caches it.
+ * @returns {function} Create bunyan instance.
+ */
+function getLoggerFactory() {
+  let logger;
+
+  return () => {
+    // App needs to be ready before the logger can be used because otherwise
+    // the userData path will not exist.
+    if (!app.isReady()) {
+      throw new Error('Can\'t use logger before the app is ready.');
+    }
+
+    // Check if logger in scope above exists.
+    if (!logger) {
+      logger = module.exports.startLogger();
+    }
+
+    return logger;
+  };
+}
+
+/**
  * Start a new bunyan logger instance.
  * @returns {object} bunyan Logger instance.
  */
@@ -52,7 +75,7 @@ function startLogger() {
 function getSystemDetails() {
   // Make an object with the key as the os func name and result of
   // that function. E.g platform: darwin
-  return exports.SYSTEM_DETAILS.reduce((info, detail) => {
+  return module.exports.SYSTEM_DETAILS.reduce((info, detail) => {
     info[detail] = os[detail]();
     return info;
   }, {});
@@ -63,14 +86,20 @@ function getSystemDetails() {
  * @returns {void}
  */
 function logSystemDetails() {
-  const osInfo = exports.getSystemDetails();
-  exports.log.debug({ osInfo });
+  const osInfo = module.exports.getSystemDetails();
+  module.exports.log.debug({ osInfo });
 }
 
-module.exports = exports = {
-  log: startLogger(),
+module.exports = {
+  getLoggerFactory,
   startLogger,
   logSystemDetails,
   getSystemDetails,
   SYSTEM_DETAILS,
 };
+
+// When log is accessed, e.g `module.exports.log`, a logger instance will be
+// created if one does not exist already.
+Object.defineProperty(module.exports, 'log', {
+  get: getLoggerFactory(),
+});
