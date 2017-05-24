@@ -47,7 +47,7 @@ export class Combobox extends React.Component {
 }
 
 Combobox.propTypes = {
-  value: React.propTypes.string,
+  value: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
     React.PropTypes.array,
     React.PropTypes.object,

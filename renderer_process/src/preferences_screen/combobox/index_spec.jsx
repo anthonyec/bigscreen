@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import React from 'react';
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Combobox } from './';
 import { Textfield } from '../textfield';
 
@@ -20,29 +20,39 @@ describe('Combobox', () => {
   });
 
   it('should render correctly', () => {
-    const wrapper = shallow(<Combobox/>);
+    const wrapper = shallow(
+      <Combobox>
+        <option value="bar">Bar</option>
+        <option className="first-option" value="foo">Foo</option>
+      </Combobox>
+    );
 
     expect(wrapper.find(`.${classes.combobox}`)).to.have.length(1);
     expect(wrapper.find(`.${classes.selectContainer}`)).to.have.length(1);
     expect(wrapper.find(`.${classes.select}`)).to.have.length(1);
     expect(wrapper.find(`.${classes.graphic}`)).to.have.length(1);
     expect(wrapper.find(Textfield)).to.have.length(1);
+    expect(wrapper.find('option')).to.have.length(2);
   });
 
-  it('selecting option updates Textfield value', () => {
-    // const onChangeStub = sandbox.stub();
-    const wrapper = mount(
+  it('handleTextfieldChange sets state to target value', () => {
+    const wrapper = shallow(<Combobox/>);
+    const instance = wrapper.instance();
+
+    instance.handleTextfieldChange({ target: { value: 'bar' } });
+    expect(wrapper.state()).to.eql({ value: 'bar' });
+  });
+
+  it('handleSelectChange sets state to target value', () => {
+    const wrapper = shallow(
       <Combobox>
-        <option className="first-option" value="foo">Foo</option>
         <option value="bar">Bar</option>
+        <option className="first-option" value="foo">Foo</option>
       </Combobox>
     );
+    const instance = wrapper.instance();
 
-    // wrapper.find(`.${classes.select}`).
-    // wrapper.find('.first-option').simulate('click');
-
-    wrapper.find('.first-option').simulate('click');
-
-    console.log(wrapper.find(Textfield).props());
+    instance.handleSelectChange({ target: { value: 'foo' } });
+    expect(wrapper.state()).to.eql({ value: 'foo' });
   });
 });

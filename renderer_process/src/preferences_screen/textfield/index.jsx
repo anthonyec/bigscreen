@@ -38,5 +38,5 @@ Textfield.defaultProps = {
 };
 
 Textfield.propTypes = {
-  onChange: React.propTypes.func,
+  onChange: React.PropTypes.func,
 };
