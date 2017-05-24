@@ -16,6 +16,7 @@ export class Textfield extends React.Component {
 
   handleChange(evt) {
     this.setState({ value: evt.target.value });
+    this.props.onChange(evt);
   }
 
   render() {
@@ -23,7 +24,7 @@ export class Textfield extends React.Component {
       <div className={ classes.textfield }>
         <input
           className={ classes.input }
-          type='text'
+          type="text"
           value={ this.state.value }
           onChange={ this.handleChange }
         />
@@ -31,3 +32,11 @@ export class Textfield extends React.Component {
     );
   }
 }
+
+Textfield.defaultProps = {
+  onChange: () => {},
+};
+
+Textfield.propTypes = {
+  onChange: React.propTypes.func,
+};

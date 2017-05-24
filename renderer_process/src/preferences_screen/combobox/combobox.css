@@ -4,16 +4,16 @@
 }
 
 .selectContainer {
-  background-color: white;
+  border-radius: 0 3px 3px 0;
+  background-color: #EBECF0;
   background-image: url('./down_arrow.svg');
   background-repeat: no-repeat;
   background-position: center;
-  border-left: 1px solid #CDCDCD;
   position: absolute;
-  width: 24px;
-  top: 4px;
-  bottom: 4px;
+  width: 30px;
+  top: 1px;
   right: 1px;
+  bottom: 1px;
 }
 
 .select {
@@ -21,5 +21,15 @@
   height: 100%;
   position: absolute;
   opacity: 0;
+}
+
+.select:focus + .graphic {
+  border-radius: 3px;
+  box-shadow:  0 0 0 2px #0070FF;
+  position: absolute;
+  top: 0;
+  left: 0px;
+  bottom: 0;
+  right: 0px;
 }
 

@@ -1,8 +1,16 @@
 .textfield {}
 
 .input {
+  border: 1px solid #CCCCCC;
+  border-radius: 3px;
+  font-size: 13px;
   display: block;
   width: 100%;
-  font: menu;
-  padding: 2px;
+  padding: 8px;
+}
+
+.input:focus {
+  border-color: #0070FF;
+  box-shadow:  0 0 0 1px #0070FF;
+  outline: none;
 }

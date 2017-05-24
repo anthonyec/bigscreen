@@ -8,14 +8,14 @@ export function PreferencesScreen() {
   return (
     <div className={ classes.screen }>
       <Combobox>
-        <option disabled defaultValue>
-          Select one
+        <option value="">
+          Custom
         </option>
-        <option value="https://ubs-opinion-wall.com/">
-          London
+        <option value="https://bsc.ubs-opinion-wall.com/">
+          Best of Switzerland Conference
         </option>
-        <option value="https://ubs-opinion-wall.com/">
-          London
+        <option value="https://gcc.ubs-opinion-wall.com/">
+          Greater China Conference
         </option>
         <option value="https://ubs-opinion-wall.com/">
           London
