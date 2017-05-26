@@ -6,18 +6,23 @@
 .selectContainer {
   border-radius: 0 3px 3px 0;
   background-color: #EBECF0;
-  background-image: url('./down_arrow.svg');
-  background-repeat: no-repeat;
-  background-position: center;
   position: absolute;
   width: 30px;
   top: 1px;
   right: 1px;
   bottom: 1px;
+  user-select: none;
 }
 
 .selectContainer:active {
   background-color: #E1E2E6;
+}
+
+.arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -2px;
 }
 
 .select {
@@ -27,7 +32,7 @@
   opacity: 0;
 }
 
-.select:focus + .graphic {
+.select:focus + .focusRing {
   border-radius: 3px;
   box-shadow:  0 0 0 2px #0070FF;
   position: absolute;
@@ -36,4 +41,3 @@
   bottom: 0;
   right: 0px;
 }
-

@@ -10,8 +10,9 @@ function main() {
     title: `${electronSettings.get('name') } preferences`,
     useContentSize: true,
     width: 450,
-    height: 215,
-    resizable: true,
+    height: 220,
+    resizable: false,
+    maximizable: false,
     show: false,
   });
 

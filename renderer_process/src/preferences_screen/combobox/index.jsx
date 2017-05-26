@@ -3,6 +3,7 @@ import React from 'react';
 import { Textfield } from '../textfield';
 
 import classes from './combobox.css';
+import downArrow from './down_arrow.svg';
 
 export class Combobox extends React.Component {
   constructor(props) {
@@ -31,6 +32,7 @@ export class Combobox extends React.Component {
           value={ this.state.value }
         />
         <div className={ classes.selectContainer }>
+          <img className={ classes.arrow } src={ downArrow }/>
           <select
             ref="select"
             value={ this.state.value }
@@ -39,7 +41,7 @@ export class Combobox extends React.Component {
           >
             { this.props.children }
           </select>
-          <div className={ classes.graphic } />
+          <div className={ classes.focusRing } />
         </div>
       </div>
     );
