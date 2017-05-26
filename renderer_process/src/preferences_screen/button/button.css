@@ -1,0 +1,21 @@
+.button {
+  border: 0;
+  border-radius: 3px;
+  background-image: linear-gradient(-180deg, #6AA8FF 0%, #4798FF 100%);
+  color: white;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-weight: 500;
+  height: 30px;
+  min-width: 100px;
+  padding: 0 16px;
+}
+
+.button:active {
+  background-image: linear-gradient(-180deg, #5E96E6 0%, #3F88E5 100%);
+}
+
+.button:focus {
+  box-shadow: 0 0 0 1px white, 0 0 0 3px #0070FF;
+  outline: none;
+}
