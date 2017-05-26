@@ -1,0 +1,77 @@
+.checkbox {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.checkboxBox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 2;
+}
+
+.check {
+  background: white;
+  border-radius: 3px;
+  border: 1px solid #CCCCCC;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  text-align: center;
+  transition: background 0.1s ease-out;
+}
+
+.input:checked + .check {
+  background: #4899FF;
+  border: 1px solid #4899FF;
+}
+
+.input:focus + .check {
+  box-shadow: 0 0 0 1px white, 0 0 0 3px #0070FF;
+}
+
+.input:checked + .check .tick {
+  transform: scale(1);
+  clip-path: inset(0 0 0 0);
+}
+
+.input:active + .check:after {
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.check .tick {
+  transform: scale(0.8);
+  transition: all 0.2s ease-in-out;
+  clip-path: inset(0 100% 0 0);
+}
+
+
+.label {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 13px;
+  padding-left: 7px;
+}
+
