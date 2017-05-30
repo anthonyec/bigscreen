@@ -23,6 +23,7 @@ export class Textfield extends React.Component {
     return (
       <div className={ classes.textfield }>
         <input
+          id={ this.props.id }
           className={ classes.input }
           type="text"
           value={ this.state.value }
@@ -38,5 +39,6 @@ Textfield.defaultProps = {
 };
 
 Textfield.propTypes = {
+  id: React.PropTypes.string,
   onChange: React.PropTypes.func,
 };

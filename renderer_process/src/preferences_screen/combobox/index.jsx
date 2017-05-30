@@ -28,6 +28,7 @@ export class Combobox extends React.Component {
     return (
       <div className={ classes.combobox }>
         <Textfield
+          id={ this.props.id }
           onChange={ this.handleTextfieldChange }
           value={ this.state.value }
         />
@@ -49,6 +50,7 @@ export class Combobox extends React.Component {
 }
 
 Combobox.propTypes = {
+  id: React.PropTypes.string,
   value: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
     React.PropTypes.array,

@@ -1,21 +1,36 @@
 import React from 'react';
 
+import uid from '../../core/utils/uid';
+
 import classes from './control.css';
 
 export class Control extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // ID is generated here instead of render to avoid unnecessarily creation.
+    this.id = uid('control');
+  }
+
   getLabel() {
     const label = `${this.props.label}:`;
     return this.props.label ? label : '';
   }
 
+  getInputControl() {
+    return React.cloneElement(this.props.children, {
+      id: this.id,
+    });
+  }
+
   render() {
     return (
       <div className={ classes.control }>
-        <div className={ classes.label }>
+        <label className={ classes.label } htmlFor={ this.id }>
           { this.getLabel() }
-        </div>
+        </label>
         <div className={ classes.input }>
-          { this.props.children }
+          { this.getInputControl() }
         </div>
       </div>
     );
@@ -25,7 +40,7 @@ export class Control extends React.Component {
 Control.propTypes = {
   label: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
-    React.PropTypes.array,
+    // Only allow one input.
     React.PropTypes.object,
   ]),
 };

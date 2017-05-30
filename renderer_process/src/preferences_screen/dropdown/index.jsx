@@ -25,6 +25,7 @@ export class Dropdown extends React.Component {
         </span>
         <img className={ classes.arrow } src={ downArrow }/>
         <select
+          id={ this.props.id }
           ref="select"
           className={ classes.select }
           onChange={ this.handleChange }
