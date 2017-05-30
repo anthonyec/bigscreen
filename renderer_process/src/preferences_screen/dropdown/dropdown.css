@@ -1,4 +1,4 @@
-@import '../../core/css/vars/ui_focus_properties';
+@import '../../core/css/vars/ui_focus';
 
 .dropdown {
   composes: UIFontStyle from '../../core/css/ui_font_style.css';
