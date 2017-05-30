@@ -1,3 +1,5 @@
+@import '../../core/css/vars/ui_focus_properties';
+
 .combobox {
   display: block;
   position: relative;
@@ -34,7 +36,7 @@
 
 .select:focus + .focusRing {
   border-radius: 3px;
-  box-shadow:  0 0 0 2px #0070FF;
+  box-shadow:  0 0 0 $focusWidth $focusColor;
   position: absolute;
   top: 0;
   left: 0px;

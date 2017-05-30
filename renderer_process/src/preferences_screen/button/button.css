@@ -1,3 +1,5 @@
+@import '../../core/css/vars/ui_focus_properties';
+
 .button {
   composes: UIFontStyleBold from '../../core/css/ui_font_style.css';
   border: 0;
@@ -14,6 +16,6 @@
 }
 
 .button:focus {
-  box-shadow: 0 0 0 1px white, 0 0 0 3px #0070FF;
+  box-shadow: 0 0 0 1px white, 0 0 0 calc($focusWidth + 1px) $focusColor;
   outline: none;
 }
