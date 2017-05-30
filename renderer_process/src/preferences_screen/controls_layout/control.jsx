@@ -1,6 +1,6 @@
 import React from 'react';
 
-import uid from '../../core/utils/uid';
+import uid from './src/core/utils/uid';
 
 import classes from './control.css';
 
@@ -40,6 +40,7 @@ export class Control extends React.Component {
 Control.propTypes = {
   label: React.PropTypes.string,
   children: React.PropTypes.oneOfType([
+
     // Only allow one input.
     React.PropTypes.object,
   ]),

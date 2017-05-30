@@ -39,6 +39,7 @@ export class Dropdown extends React.Component {
 }
 
 Dropdown.propTypes = {
+  id: React.PropTypes.string,
   value: React.PropTypes.string,
   defaultValue: React.PropTypes.string,
   children: React.PropTypes.oneOfType([

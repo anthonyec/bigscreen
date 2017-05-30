@@ -9,6 +9,7 @@
   height: 30px;
   min-width: 100px;
   padding: 0 16px;
+  user-select: none;
 }
 
 .button:active {
