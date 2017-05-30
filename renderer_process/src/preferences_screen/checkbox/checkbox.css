@@ -69,9 +69,8 @@
 
 
 .label {
+  composes: UIFontStyle from '../../core/css/ui_font_style.css';
   display: inline-block;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  font-size: 13px;
   padding-left: 7px;
 }
 

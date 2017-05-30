@@ -1,0 +1,9 @@
+.UIFontStyle {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 13px;
+}
+
+.UIFontStyleBold {
+  composes: UIFontStyle;
+  font-weight: 500;
+}
