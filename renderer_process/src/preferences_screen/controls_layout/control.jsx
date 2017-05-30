@@ -1,6 +1,6 @@
 import React from 'react';
 
-import uid from './src/core/utils/uid';
+import uid from 'core/utils/uid';
 
 import classes from './control.css';
 
