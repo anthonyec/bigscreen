@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 
 const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
@@ -31,6 +32,7 @@ module.exports = class FullscreenWindow {
     };
 
     this.webContentsEvents = {
+      'did-finish-load': this.onDidFinishLoad,
       'did-fail-load': this.onDidFailToLoad,
       'certificate-error': this.onCertificateError,
       crashed: this.onCrashed,
@@ -101,6 +103,29 @@ module.exports = class FullscreenWindow {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Toggle the dev tools.
+   * @returns {void}
+   */
+  toggleDevTools() {
+    this.window.toggleDevTools();
+  }
+
+  injectCSS() {
+    const stylesheetPath = path.join(__dirname, 'injected_styles.css');
+
+    fs.readFile(stylesheetPath, 'utf8', (err, css) => {
+      if (err) {
+        throw (err);
+      }
+
+      this.window.webContents.insertCSS(css);
+    });
+  }
+
+  /**
+>>>>>>> ee7295f... Added hide cursor via injected stylesheet
    * Creates global shortcuts.
    * @returns {void}
    */
@@ -178,6 +203,14 @@ module.exports = class FullscreenWindow {
    */
   onWebContentsLog(evt, args) {
     logger.log.debug(args);
+  }
+
+  /**
+   * Called when 'did-finish-load' event fires on the webContents.
+   * @returns {void}
+   */
+  onDidFinishLoad() {
+    this.injectCSS();
   }
 
   /**
