@@ -184,9 +184,14 @@ module.exports = class FullscreenWindow {
    * Called when 'did-fail-to-load' event fires on the webContents.
    * @returns {void}
    */
-  onDidFailToLoad() {
-    logger.log.error('did-fail-load');
-    this.openFallback();
+  onDidFailToLoad(evt, errorCode, errorDesc, url, isMainFrame) {
+    logger.log.error('did-fail-load', { url });
+
+    // Only load fallback if the main paged failed to load. Allow resources of
+    // the page to fail.
+    if (isMainFrame) {
+      this.openFallback();
+    }
   }
 
   /**
