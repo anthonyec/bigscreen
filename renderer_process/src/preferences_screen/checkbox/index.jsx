@@ -1,6 +1,7 @@
 import React from 'react';
 
-import uid from 'core/utils/uid.js';
+import uid from 'src/utils/uid.js';
+import noop from 'src/utils/noop';
 
 import classes from './checkbox.css';
 import tick from './tick.svg';
@@ -8,7 +9,13 @@ import tick from './tick.svg';
 export class Checkbox extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isChecked: props.isChecked,
+    };
+
     this.id = uid('checkbox');
+    this.handleChange = this.handleChange.bind(this);
   }
 
   getLabel() {
@@ -25,11 +32,24 @@ export class Checkbox extends React.Component {
     return label;
   }
 
+  handleChange() {
+    const isChecked = !this.state.isChecked;
+
+    this.setState({ isChecked });
+    this.props.onChange(isChecked);
+  }
+
   render() {
     return (
       <div className={ classes.checkbox }>
         <div className={ classes.checkboxBox }>
-          <input className={ classes.input } type="checkbox" id={ this.id }/>
+          <input
+            className={ classes.input }
+            type="checkbox"
+            ref="checkbox"
+            id={ this.id }
+            onChange={this.handleChange}
+          />
           <div className={ classes.check }>
             <img className={ classes.tick } src={ tick }/>
           </div>
@@ -40,7 +60,14 @@ export class Checkbox extends React.Component {
   }
 }
 
+Checkbox.defaultProps = {
+  onChange: noop,
+  isChecked: false,
+};
+
 Checkbox.propTypes = {
   label: React.PropTypes.string,
+  isChecked: React.PropTypes.bool,
+  onChange: React.PropTypes.func,
 };
 
