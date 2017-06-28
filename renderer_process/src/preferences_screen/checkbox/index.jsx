@@ -1,7 +1,7 @@
 import React from 'react';
 
-import uid from 'src/utils/uid.js';
-import noop from 'src/utils/noop';
+import uid from 'utils/uid';
+import noop from 'utils/noop';
 
 import classes from './checkbox.css';
 import tick from './tick.svg';
