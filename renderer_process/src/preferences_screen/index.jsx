@@ -18,14 +18,14 @@ export function PreferencesScreen() {
             <option value="">
               Custom
             </option>
-            <option value="https://bsc.ubs-opinion-wall.com/">
-              Best of Switzerland Conference
+            <option value="https://google.com/">
+              Google
             </option>
-            <option value="https://gcc.ubs-opinion-wall.com/">
-              Greater China Conference
+            <option value="https://yahoo.com/">
+              Yahoo
             </option>
-            <option value="https://ubs-opinion-wall.com/">
-              London
+            <option value="https://ask.com/">
+              Ask
             </option>
           </Combobox>
         </Control>
