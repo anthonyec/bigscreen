@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PreferencesScreen } from '../preferences_screen';
+import PreferencesScreen from '../preferences_screen';
 
 import './css/global.css';
 

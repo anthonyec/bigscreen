@@ -69,7 +69,6 @@ app.on('window-all-closed', (evt) => {
 
   // Event needs one tick before getAllWindows().length is accurate.
   setTimeout(() => {
-
     // This event gets called when closing kiosk and opening preferences so
     // double check there are really no windows open.
     if (BrowserWindow.getAllWindows().length === 0) {

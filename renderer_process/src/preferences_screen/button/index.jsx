@@ -1,18 +1,23 @@
 import React from 'react';
 
+import noop from 'utils/noop';
+
 import classes from './button.css';
 
-export class Button extends React.Component {
-  render() {
-    return (
-      <button className={ classes.button }>
-        { this.props.children }
-      </button>
-    );
-  }
-}
+export const Button = (props) => {
+  return (
+    <button className={classes.button} onClick={props.onClick}>
+      {props.children}
+    </button>
+  );
+};
+
+Button.defaultProps = {
+  onClick: noop,
+};
 
 Button.propTypes = {
+  onClick: React.PropTypes.func,
   children: React.PropTypes.oneOfType([
     React.PropTypes.array,
     React.PropTypes.object,

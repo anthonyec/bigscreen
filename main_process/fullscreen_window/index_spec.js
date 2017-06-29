@@ -80,9 +80,11 @@ describe('Fullscreen window', () => {
   it('closes the window and unregisters shortcuts', () => {
     const fullscreenWindow = new FullscreenWindow();
     const closeWindowStub = sandbox.stub();
+    const setKioskStub = sandbox.stub();
 
     fullscreenWindow.window = sinon.createStubInstance(FullscreenWindow);
     fullscreenWindow.window.close = closeWindowStub;
+    fullscreenWindow.window.setKiosk = setKioskStub;
 
     const unregisterShortcutsStub = sandbox.stub(
       fullscreenWindow,
@@ -93,6 +95,8 @@ describe('Fullscreen window', () => {
 
     expect(unregisterShortcutsStub.calledOnce).to.equal(true);
     expect(closeWindowStub.calledOnce).to.equal(true);
+    expect(setKioskStub.calledOnce).to.equal(true);
+    expect(setKioskStub.args[0][0]).to.equal(false);
     expect(fullscreenWindow.window).to.equal(null);
   });
 
