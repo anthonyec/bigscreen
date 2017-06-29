@@ -11,5 +11,5 @@ export const Button = (props) => {
 };
 
 Button.propTypes = {
-  children: React.PropTypes.none,
+  children: React.PropTypes.node,
 };
