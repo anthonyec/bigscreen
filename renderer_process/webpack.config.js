@@ -8,6 +8,7 @@ const config = {
 };
 
 module.exports = {
+  target: 'electron-renderer',
   entry: [
     'babel-polyfill',
     './src/index.js',

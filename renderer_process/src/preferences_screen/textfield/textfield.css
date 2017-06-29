@@ -1,0 +1,20 @@
+@import '../../core/css/vars/ui_focus';
+
+.textfield {}
+
+.input {
+  composes: UIFontStyle from '../../core/css/ui_font_style.css';
+  border: 1px solid #CCCCCC;
+  border-radius: 3px;
+  color: #333333;
+  font-size: 13px;
+  display: block;
+  width: 100%;
+  padding: 6px 8px 6px;
+}
+
+.input:focus {
+  border-color: $focusColor;
+  box-shadow:  0 0 0 calc($focusWidth - 1px) $focusColor;
+  outline: none;
+}
