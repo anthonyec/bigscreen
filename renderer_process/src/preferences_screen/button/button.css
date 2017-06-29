@@ -1,7 +1,7 @@
 @import '../../core/css/vars/ui_focus';
 
 .button {
-  composes: UIFontStyleBold from '../../core/css/ui_font_style.css';
+  composes: uiFontStyleBold from '../../core/css/ui_font_style.css';
   border: 0;
   border-radius: 3px;
   background-image: linear-gradient(-180deg, #6AA8FF 0%, #4798FF 100%);

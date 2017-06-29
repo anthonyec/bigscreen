@@ -1,7 +1,7 @@
 @import '../../core/css/vars/ui_focus';
 
 .dropdown {
-  composes: UIFontStyle from '../../core/css/ui_font_style.css';
+  composes: uiFontStyle from '../../core/css/ui_font_style.css';
   background-color: #EBECF0;
   border-radius: 3px;
   color: #333333;

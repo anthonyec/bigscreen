@@ -39,9 +39,5 @@ export class Control extends React.Component {
 
 Control.propTypes = {
   label: React.PropTypes.string,
-  children: React.PropTypes.oneOfType([
-
-    // Only allow one input.
-    React.PropTypes.object,
-  ]),
+  children: React.PropTypes.element,
 };

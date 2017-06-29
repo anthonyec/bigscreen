@@ -8,7 +8,7 @@
 }
 
 .label {
-  composes: UIFontStyle from '../../core/css/ui_font_style.css';
+  composes: uiFontStyle from '../../core/css/ui_font_style.css';
   display: flex;
   min-width: 100px;
   align-items: center;

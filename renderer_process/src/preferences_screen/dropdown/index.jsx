@@ -42,8 +42,5 @@ Dropdown.propTypes = {
   id: React.PropTypes.string,
   value: React.PropTypes.string,
   defaultValue: React.PropTypes.string,
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.array,
-    React.PropTypes.object,
-  ]),
+  children: React.PropTypes.node,
 };
