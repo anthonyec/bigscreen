@@ -71,7 +71,7 @@
 
 
 .label {
-  composes: UIFontStyle from '../../core/css/ui_font_style.css';
+  composes: uiFontStyle from '../../core/css/ui_font_style.css';
   display: inline-block;
   padding-left: 7px;
 }

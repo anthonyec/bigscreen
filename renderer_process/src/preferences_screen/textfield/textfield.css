@@ -3,7 +3,7 @@
 .textfield {}
 
 .input {
-  composes: UIFontStyle from '../../core/css/ui_font_style.css';
+  composes: uiFontStyle from '../../core/css/ui_font_style.css';
   border: 1px solid #CCCCCC;
   border-radius: 3px;
   color: #333333;
