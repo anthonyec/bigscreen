@@ -8,7 +8,7 @@ export const Button = (props) => {
       {props.children}
     </button>
   );
-}
+};
 
 Button.propTypes = {
   children: React.PropTypes.none,

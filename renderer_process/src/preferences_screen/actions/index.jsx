@@ -8,7 +8,7 @@ export const Actions = (props) => {
       {props.children}
     </div>
   );
-}
+};
 
 Actions.propTypes = {
   children: React.PropTypes.node,

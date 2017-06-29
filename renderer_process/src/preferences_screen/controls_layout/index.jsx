@@ -15,8 +15,5 @@ export class ControlsLayout extends React.Component {
 }
 
 ControlsLayout.propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.array,
-    React.PropTypes.object,
-  ]),
+  children: React.PropTypes.node,
 };
