@@ -1,11 +1,10 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import uid from './uid';
 
 describe('UID generator', () => {
   it('generates incrementing number each time is called', () => {
-    let uidResults = [];
+    const uidResults = [];
     const expectedResults = [
       'id_1',
       'id_2',
@@ -19,7 +18,7 @@ describe('UID generator', () => {
       'id_10',
     ];
 
-    for (let i=0; i<10; i++) {
+    for (let i = 0; i < 10; i++) {
       const result = uid();
       uidResults.push(result);
     }
