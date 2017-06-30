@@ -10,10 +10,7 @@ export const makeStore = () => {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   const middleware = [thunk];
-
-  const preloadedState = {
-    preferencesScreen: fromJS(window.PRELOADED_STATE.preferencesScreen),
-  };
+  const preloadedState = fromJS(window.PRELOADED_STATE);
 
   return createStore(reducer, preloadedState, composeEnhancers(
     applyMiddleware(...middleware)

@@ -79,8 +79,10 @@ PreferencesScreen.defaultProps = {
 };
 
 export function mapStateToProps(state) {  // ownProps
+  const preferencesScreen = state.get('preferencesScreen');
+
   return {
-    url: state.preferencesScreen.get('url', ''),
+    url: preferencesScreen.get('url', ''),
   };
 }
 
