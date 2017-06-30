@@ -27,6 +27,10 @@ function showPreferencesWindow() {
 
   preferencesWindow.loadURL(baseURL);
   preferencesWindow.on('ready-to-show', preferencesWindow.show);
+
+  if (process.env.NODE_ENV === 'development') {
+    preferencesWindow.openDevTools({ detach: true });
+  }
 }
 
 function main() {
@@ -43,10 +47,6 @@ function main() {
         showPreferencesWindow();
       });
     });
-
-    if (process.env.NODE_ENV === 'development') {
-      preferencesWindow.openDevTools({ detach: true });
-    }
   }
 }
 
