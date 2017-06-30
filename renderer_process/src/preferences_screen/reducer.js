@@ -11,7 +11,7 @@ export const startFullscreen = () => {
 };
 
 export const updateWebAddress = (url) => {
-  ipcRenderer.send(UPDATE_WEB_ADDRESS, { url});
+  ipcRenderer.send(UPDATE_WEB_ADDRESS, { url });
 };
 
 export default function(state = new Map(), action) {

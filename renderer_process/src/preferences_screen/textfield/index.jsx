@@ -43,5 +43,6 @@ Textfield.defaultProps = {
 
 Textfield.propTypes = {
   id: React.PropTypes.string,
+  value: React.PropTypes.string,
   onChange: React.PropTypes.func,
 };

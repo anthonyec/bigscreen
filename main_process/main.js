@@ -1,3 +1,4 @@
+const path = require('path');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const electronSettings = require('electron-settings');
 
@@ -9,26 +10,31 @@ const { disableSleepBlocking } = require('./sleep_blocker');
 let preferencesWindow;
 
 function showPreferencesWindow() {
+  const isDevEnv = process.env.NODE_ENV === 'development';
+
   preferencesWindow = new BrowserWindow({
     background: '#ECECEC',
     title: `${electronSettings.get('name') } preferences`,
     useContentSize: true,
     width: 450,
     height: 215,
-    resizable: true,
+    resizable: isDevEnv,
     show: false,
     kiosk: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+    },
   });
 
-  const path = app.getAppPath('exe');
-  const baseURL = process.env.NODE_ENV === 'development' ?
+  const basePath = app.getAppPath('exe');
+  const baseURL = isDevEnv ?
     'http://lvh.me:8080/' :
-    `file://${path}/renderer_process/dist/index.html`;
+    `file://${basePath}/renderer_process/dist/index.html`;
 
   preferencesWindow.loadURL(baseURL);
   preferencesWindow.on('ready-to-show', preferencesWindow.show);
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevEnv) {
     preferencesWindow.openDevTools({ detach: true });
   }
 }

@@ -8,7 +8,7 @@ export function startFullscreen() {
 }
 
 export function updateWebAddress(url) {
- return {
+  return {
     type: UPDATE_WEB_ADDRESS,
     url,
   };

@@ -69,10 +69,13 @@ export class PreferencesScreen extends React.Component {
 
 PreferencesScreen.propTypes = {
   startFullscreen: React.PropTypes.func,
+  updateWebAddress: React.PropTypes.func,
+  url: React.PropTypes.string,
 };
 
 PreferencesScreen.defaultProps = {
   startFullscreen: noop,
+  updateWebAddress: noop,
 };
 
 export function mapStateToProps(state) {  // ownProps

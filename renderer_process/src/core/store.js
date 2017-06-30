@@ -1,5 +1,6 @@
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { fromJS } from 'immutable';
 
 import reducer from './reducer';
 
@@ -10,7 +11,11 @@ export const makeStore = () => {
 
   const middleware = [thunk];
 
-  return createStore(reducer, composeEnhancers(
+  const preloadedState = {
+    preferencesScreen: fromJS(window.PRELOADED_STATE.preferencesScreen),
+  };
+
+  return createStore(reducer, preloadedState, composeEnhancers(
     applyMiddleware(...middleware)
   ));
 };
