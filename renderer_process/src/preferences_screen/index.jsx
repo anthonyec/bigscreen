@@ -8,17 +8,27 @@ import { Combobox } from './combobox';
 import { Dropdown } from './dropdown';
 import { Checkbox } from './checkbox';
 import { Button } from './button';
-import { startFullscreen } from './action_creators';
+import {
+  startFullscreen,
+  updateWebAddress,
+} from './action_creators';
 
 import classes from '../core/css/screen.css';
 
 export class PreferencesScreen extends React.Component {
+  handleWebAddressOnChange(evt) {
+    this.props.updateWebAddress(evt.target.value);
+  }
+
   render() {
     return (
       <div className={ classes.screen }>
         <ControlsLayout>
           <Control label="Web address">
-            <Combobox>
+            <Combobox
+              value={this.props.url}
+              onChange={this.handleWebAddressOnChange.bind(this)}
+            >
               <option value="">
                 Custom
               </option>
@@ -66,9 +76,11 @@ PreferencesScreen.defaultProps = {
 };
 
 export function mapStateToProps(state) {  // ownProps
-  return state;
+  return {
+    url: state.preferencesScreen.get('url', ''),
+  };
 }
 
 export default connect(
-  mapStateToProps, { startFullscreen }
+  mapStateToProps, { startFullscreen, updateWebAddress }
 )(PreferencesScreen);

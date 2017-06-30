@@ -47,6 +47,10 @@ function main() {
         showPreferencesWindow();
       });
     });
+
+    ipcMain.on('UPDATE_WEB_ADDRESS', (evt, action) => {
+      electronSettings.set('url', action.url);
+    });
   }
 }
 
