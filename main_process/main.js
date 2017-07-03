@@ -1,50 +1,31 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const electronSettings = require('electron-settings');
 
 const fullscreenController = require('./fullscreen_controller');
+const PreferencesWindow = require('./preferences_window');
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 const { disableSleepBlocking } = require('./sleep_blocker');
 
 let preferencesWindow;
-
-function showPreferencesWindow() {
-  preferencesWindow = new BrowserWindow({
-    background: '#ECECEC',
-    title: `${electronSettings.get('name') } preferences`,
-    useContentSize: true,
-    width: 450,
-    height: 215,
-    resizable: true,
-    show: false,
-    kiosk: false,
-  });
-
-  const path = app.getAppPath('exe');
-  const baseURL = process.env.NODE_ENV === 'development' ?
-    'http://lvh.me:8080/' :
-    `file://${path}/renderer_process/dist/index.html`;
-
-  preferencesWindow.loadURL(baseURL);
-  preferencesWindow.on('ready-to-show', preferencesWindow.show);
-
-  if (process.env.NODE_ENV === 'development') {
-    preferencesWindow.openDevTools({ detach: true });
-  }
-}
+let fullscreenWindow;
 
 function main() {
+  preferencesWindow = new PreferencesWindow();
+
   if (fullscreenController.shouldFullscreenStart()) {
     fullscreenController.start();
   } else {
-    showPreferencesWindow();
+    preferencesWindow.open();
 
-    ipcMain.on('start_fullscreen', () => {
-      fullscreenController.start();
+    ipcMain.on('START_FULLSCREEN', () => {
       preferencesWindow.close();
+      fullscreenController.start();
 
-      fullscreenController.fullscreenWindow.window.once('closed', () => {
-        showPreferencesWindow();
+      fullscreenWindow =
+        fullscreenController.fullscreenWindow.getWindow();
+
+      fullscreenWindow.once('closed', () => {
+        preferencesWindow.open();
       });
     });
   }
