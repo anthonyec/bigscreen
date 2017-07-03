@@ -35,7 +35,6 @@ function main() {
   }
 }
 
-
 function cleanUpBeforeQuitting() {
   disableSleepBlocking();
 }

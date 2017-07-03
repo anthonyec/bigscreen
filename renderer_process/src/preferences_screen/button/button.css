@@ -1,0 +1,22 @@
+@import '../../core/css/vars/ui_focus';
+
+.button {
+  composes: uiFontStyleBold from '../../core/css/ui_font_style.css';
+  border: 0;
+  border-radius: 3px;
+  background-image: linear-gradient(-180deg, #6AA8FF 0%, #4798FF 100%);
+  color: white;
+  height: 30px;
+  min-width: 100px;
+  padding: 0 16px;
+  user-select: none;
+}
+
+.button:active {
+  background-image: linear-gradient(-180deg, #5E96E6 0%, #3F88E5 100%);
+}
+
+.button:focus {
+  box-shadow: 0 0 0 1px white, 0 0 0 calc($focusWidth + 1px) $focusColor;
+  outline: none;
+}

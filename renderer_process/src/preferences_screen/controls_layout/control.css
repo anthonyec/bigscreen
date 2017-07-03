@@ -1,0 +1,23 @@
+.control {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.control:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  composes: uiFontStyle from '../../core/css/ui_font_style.css';
+  display: flex;
+  min-width: 100px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.input {
+  width: 100%;
+}
