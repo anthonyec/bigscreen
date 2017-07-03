@@ -7,7 +7,7 @@ import {
 } from './action_creators';
 
 export const startFullscreen = () => {
-  ipcRenderer.send('start_fullscreen');
+  ipcRenderer.send(START_FULLSCREEN);
 };
 
 export const updateWebAddress = (url) => {
