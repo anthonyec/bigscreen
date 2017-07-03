@@ -1,10 +1,7 @@
-const path = require('path');
-const electronSettings = require('electron-settings');
-const { BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 
 const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 const WINDOW_SETTINGS = {
-  title: `${electronSettings.get('name')} preferences`,
   useContentSize: true,
   width: 450,
   height: 215,
@@ -15,6 +12,8 @@ const WINDOW_SETTINGS = {
 
 module.exports = class PreferencesWindow {
   constructor() {
+    const path = app.getAppPath('exe');
+
     this.window = null;
     this.url = IS_DEV_ENV ?
       'http://lvh.me:8080/' :
