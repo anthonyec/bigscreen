@@ -1,4 +1,3 @@
-const path = require('path');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
@@ -26,9 +25,6 @@ describe('Preferences window', () => {
       resizable: false,
       show: false,
       kiosk: false,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-      },
     };
 
     const loadStub = sandbox.stub();
@@ -76,9 +72,6 @@ describe('Preferences window', () => {
       resizable: true,
       show: false,
       kiosk: false,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-      },
     };
 
     const loadStub = sandbox.stub();

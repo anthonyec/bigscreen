@@ -1,6 +1,5 @@
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { fromJS } from 'immutable';
 
 import reducer from './reducer';
 import { electronSettingsMiddleware } from './middleware/electron_settings';

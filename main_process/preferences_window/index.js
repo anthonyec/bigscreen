@@ -1,4 +1,3 @@
-const path = require('path');
 const { app, BrowserWindow } = require('electron');
 
 const IS_DEV_ENV = process.env.NODE_ENV === 'development';
@@ -9,9 +8,6 @@ const WINDOW_SETTINGS = {
   resizable: IS_DEV_ENV,
   show: false,
   kiosk: false,
-  webPreferences: {
-    preload: path.join(__dirname, 'preload.js'),
-  },
 };
 
 module.exports = class PreferencesWindow {
