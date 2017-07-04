@@ -6,3 +6,4 @@ export default function(state = new Map(), action) {
       return state;
   }
 }
+

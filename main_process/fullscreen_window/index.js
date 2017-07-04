@@ -84,6 +84,9 @@ module.exports = class FullscreenWindow {
    * @returns {void}
    */
   close() {
+    // The electron app will remain in kiosk mode unless this is set to false
+    // before closing. Maybe it's an electron bug?
+    this.window.setKiosk(false);
     this.window.close();
     this.unregisterShortcuts();
     this.window = null;

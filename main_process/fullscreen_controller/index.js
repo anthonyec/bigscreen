@@ -73,7 +73,6 @@ class FullscreenController {
    * @return {void}
    */
   stop() {
-    // return;
     if (this.fullscreenWindow && this.fullscreenWindow.getWindow()) {
       this.closeWindow();
     }

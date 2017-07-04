@@ -1,37 +1,33 @@
-const { app, BrowserWindow } = require('electron');
-const electronSettings = require('electron-settings');
+const { app, BrowserWindow, ipcMain } = require('electron');
 
 const fullscreenController = require('./fullscreen_controller');
+const PreferencesWindow = require('./preferences_window');
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 const { disableSleepBlocking } = require('./sleep_blocker');
 
+let preferencesWindow;
+let fullscreenWindow;
+
 function main() {
+  preferencesWindow = new PreferencesWindow();
+
   if (fullscreenController.shouldFullscreenStart()) {
     fullscreenController.start();
   } else {
-    const preferencesWindow = new BrowserWindow({
-      background: '#ECECEC',
-      title: `${electronSettings.get('name') } preferences`,
-      useContentSize: true,
-      width: 450,
-      height: 215,
-      resizable: true,
-      show: false,
+    preferencesWindow.open();
+
+    ipcMain.on('START_FULLSCREEN', () => {
+      preferencesWindow.close();
+      fullscreenController.start();
+
+      fullscreenWindow =
+        fullscreenController.fullscreenWindow.getWindow();
+
+      fullscreenWindow.once('closed', () => {
+        preferencesWindow.open();
+      });
     });
-
-    const path = app.getAppPath('exe');
-    const baseURL = process.env.NODE_ENV === 'development' ?
-      'http://lvh.me:8080/' :
-      `file://${path}/renderer_process/dist/index.html`;
-
-    preferencesWindow.loadURL(baseURL);
-
-    preferencesWindow.on('ready-to-show', preferencesWindow.show);
-
-    if (process.env.NODE_ENV === 'development') {
-      preferencesWindow.openDevTools({ detach: true });
-    }
   }
 }
 
@@ -49,6 +45,17 @@ function boot() {
 
 // Make sure the main background process is stopped when no windows are open.
 // Fixes the problem of multiple processes spawning on Windows.
-app.on('window-all-closed', app.quit);
+app.on('window-all-closed', (evt) => {
+  evt.preventDefault();
+
+  // Event needs one tick before getAllWindows().length is accurate.
+  setTimeout(() => {
+    // This event gets called when closing kiosk and opening preferences so
+    // double check there are really no windows open.
+    if (BrowserWindow.getAllWindows().length === 0) {
+      app.quit();
+    }
+  });
+});
 app.on('will-quit', cleanUpBeforeQuitting);
 app.on('ready', boot);
