@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { startFullscreen } from '../utils/electron_helpers';
 import noop from 'utils/noop';
 import { ControlsLayout, Control } from './controls_layout';
 import { Actions } from './actions';
@@ -10,14 +9,15 @@ import { Dropdown } from './dropdown';
 import { Checkbox } from './checkbox';
 import { Button } from './button';
 import {
-  updateWebAddress,
+  setWebAddress,
 } from './action_creators';
+import { startFullscreen } from '../utils/electron_helpers';
 
 import classes from '../core/css/screen.css';
 
 export class PreferencesScreen extends React.Component {
   handleWebAddressOnChange(evt) {
-    this.props.updateWebAddress(evt.target.value);
+    this.props.setWebAddress(evt.target.value);
   }
 
   render() {
@@ -68,14 +68,12 @@ export class PreferencesScreen extends React.Component {
 }
 
 PreferencesScreen.propTypes = {
-  startFullscreen: React.PropTypes.func,
-  updateWebAddress: React.PropTypes.func,
+  setWebAddress: React.PropTypes.func,
   url: React.PropTypes.string,
 };
 
 PreferencesScreen.defaultProps = {
-  startFullscreen: noop,
-  updateWebAddress: noop,
+  setWebAddress: noop,
 };
 
 export function mapStateToProps(state) {  // ownProps
@@ -88,5 +86,5 @@ export function mapStateToProps(state) {  // ownProps
 
 export default connect(
   mapStateToProps,
-  { updateWebAddress }
+  { setWebAddress }
 )(PreferencesScreen);
