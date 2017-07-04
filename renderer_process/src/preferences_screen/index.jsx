@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { startFullscreen } from '../utils/electron_helpers';
 import noop from 'utils/noop';
 import { ControlsLayout, Control } from './controls_layout';
 import { Actions } from './actions';
@@ -9,7 +10,6 @@ import { Dropdown } from './dropdown';
 import { Checkbox } from './checkbox';
 import { Button } from './button';
 import {
-  startFullscreen,
   updateWebAddress,
 } from './action_creators';
 
@@ -58,7 +58,7 @@ export class PreferencesScreen extends React.Component {
         </ControlsLayout>
 
         <Actions>
-          <Button onClick={this.props.startFullscreen}>
+          <Button onClick={startFullscreen}>
             Start
           </Button>
         </Actions>
@@ -79,7 +79,7 @@ PreferencesScreen.defaultProps = {
 };
 
 export function mapStateToProps(state) {  // ownProps
-  const preferencesScreen = state.get('preferencesScreen');
+  const preferencesScreen = state.get('preferences');
 
   return {
     url: preferencesScreen.get('url', ''),
@@ -87,5 +87,6 @@ export function mapStateToProps(state) {  // ownProps
 }
 
 export default connect(
-  mapStateToProps, { startFullscreen, updateWebAddress }
+  mapStateToProps,
+  { updateWebAddress }
 )(PreferencesScreen);
