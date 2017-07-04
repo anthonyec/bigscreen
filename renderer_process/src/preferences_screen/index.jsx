@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { startFullscreen } from '../utils/electron_helpers';
 import noop from 'utils/noop';
 import { ControlsLayout, Control } from './controls_layout';
 import { Actions } from './actions';
@@ -8,7 +9,7 @@ import { Combobox } from './combobox';
 import { Dropdown } from './dropdown';
 import { Checkbox } from './checkbox';
 import { Button } from './button';
-import { startFullscreen } from './action_creators';
+
 
 import classes from '../core/css/screen.css';
 
@@ -48,7 +49,7 @@ export class PreferencesScreen extends React.Component {
         </ControlsLayout>
 
         <Actions>
-          <Button onClick={this.props.startFullscreen}>
+          <Button onClick={startFullscreen}>
             Start
           </Button>
         </Actions>
@@ -70,5 +71,5 @@ export function mapStateToProps(state) {  // ownProps
 }
 
 export default connect(
-  mapStateToProps, { startFullscreen }
+  mapStateToProps,
 )(PreferencesScreen);
