@@ -15,6 +15,7 @@ export class Combobox extends React.Component {
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
   }
 
   handleOnChange(evt) {
@@ -22,13 +23,20 @@ export class Combobox extends React.Component {
     this.props.onChange(evt);
   }
 
+  handleOnBlur(value) {
+    this.setState({ value });
+    this.props.onBlur(value);
+  }
+
   render() {
     return (
       <div className={ classes.combobox }>
         <Textfield
           id={ this.props.id }
-          onChange={ this.handleOnChange }
           value={ this.state.value }
+          onChange={ this.handleOnChange }
+          onBlur={ this.handleOnBlur }
+          onBlurFormatter={ this.props.onBlurFormatter }
         />
         <div className={ classes.selectContainer }>
           <img className={ classes.arrow } src={ downArrow }/>
@@ -49,6 +57,8 @@ export class Combobox extends React.Component {
 
 Combobox.defaultProps = {
   onChange: noop,
+  onBlur: noop,
+  onBlurFormatter: noop,
 };
 
 Combobox.propTypes = {
@@ -56,4 +66,6 @@ Combobox.propTypes = {
   value: React.PropTypes.string,
   children: React.PropTypes.node,
   onChange: React.PropTypes.func,
+  onBlur: React.PropTypes.func,
+  onBlurFormatter: React.PropTypes.func,
 };

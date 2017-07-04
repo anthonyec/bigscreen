@@ -12,12 +12,17 @@ import {
   setWebAddress,
 } from './action_creators';
 import { startFullscreen } from '../utils/electron_helpers';
+import urlWithProtocol from '../utils/url_with_protocol';
 
 import classes from '../core/css/screen.css';
 
 export class PreferencesScreen extends React.Component {
   handleWebAddressOnChange(evt) {
     this.props.setWebAddress(evt.target.value);
+  }
+
+  handleWebAddressOnBlur(value) {
+    this.props.setWebAddress(value);
   }
 
   render() {
@@ -28,6 +33,8 @@ export class PreferencesScreen extends React.Component {
             <Combobox
               value={this.props.url}
               onChange={this.handleWebAddressOnChange.bind(this)}
+              onBlur={this.handleWebAddressOnBlur.bind(this)}
+              onBlurFormatter={urlWithProtocol}
             >
               <option value="">
                 Custom
