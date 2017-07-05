@@ -6,7 +6,7 @@ import {
 
 const electronSettings = remote.require('electron-settings');
 
-export const electronSettingsMiddleware = () => { // store
+export const electronSettingsMiddleware = (store) => {
   return (next) => {
     return (action) => {
       // Dispatch default action
@@ -14,7 +14,10 @@ export const electronSettingsMiddleware = () => { // store
 
       switch (action.type) {
         case SET_WEB_ADDRESS:
-          electronSettings.set('url', action.payload.url);
+          const preferences = store.getState().get('preferences').toJS();
+          const existingSettings = electronSettings.getAll();
+          const mergedSettings = Object.assign(existingSettings, preferences);
+          electronSettings.setAll(mergedSettings);
           return;
 
         default:

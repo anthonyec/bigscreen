@@ -12,9 +12,7 @@ export default function(state = new Map(), action) {
       return state.merge(fromJS(settings));
 
     case SET_WEB_ADDRESS:
-      return state.set({
-        url: action.payload.url,
-      });
+      return state.setIn(['url'], action.payload.url);
 
     default:
       return state;
