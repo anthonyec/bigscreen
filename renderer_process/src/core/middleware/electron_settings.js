@@ -2,6 +2,7 @@ import { remote } from 'electron';
 
 import {
   SET_WEB_ADDRESS,
+  SET_START_AT_LOGIN,
 } from 'preferences_screen/action_creators';
 
 const electronSettings = remote.require('electron-settings');
@@ -18,6 +19,10 @@ export const electronSettingsMiddleware = (store) => {
           const existingSettings = electronSettings.getAll();
           const mergedSettings = Object.assign(existingSettings, preferences);
           electronSettings.setAll(mergedSettings);
+          return;
+
+        case SET_START_AT_LOGIN:
+          electronSettings.set('autolaunch', action.payload.value);
           return;
 
         default:

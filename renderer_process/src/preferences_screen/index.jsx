@@ -10,6 +10,7 @@ import { Checkbox } from './checkbox';
 import { Button } from './button';
 import {
   setWebAddress,
+  setStartAtLogin,
 } from './action_creators';
 import { startFullscreen } from '../utils/electron_helpers';
 import urlWithProtocol from '../utils/url_with_protocol';
@@ -26,6 +27,8 @@ export class PreferencesScreen extends React.Component {
   }
 
   render() {
+    console.log(this.props.autolaunch);
+
     return (
       <div className={ classes.screen }>
         <ControlsLayout>
@@ -60,7 +63,10 @@ export class PreferencesScreen extends React.Component {
           </Control>
 
           <Control>
-            <Checkbox label="Start a login"/>
+            <Checkbox
+              label="Start a login"
+              onChange={this.props.setStartAtLogin}
+            />
           </Control>
         </ControlsLayout>
 
@@ -88,10 +94,11 @@ export function mapStateToProps(state) {  // ownProps
 
   return {
     url: preferencesScreen.get('url', ''),
+    autolaunch: preferencesScreen.get('autolaunch', false),
   };
 }
 
 export default connect(
   mapStateToProps,
-  { setWebAddress }
+  { setWebAddress, setStartAtLogin }
 )(PreferencesScreen);

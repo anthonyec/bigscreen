@@ -61,8 +61,8 @@ export class Checkbox extends React.Component {
 }
 
 Checkbox.defaultProps = {
-  onChange: noop,
   isChecked: false,
+  onChange: noop,
 };
 
 Checkbox.propTypes = {
