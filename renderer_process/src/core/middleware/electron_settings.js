@@ -17,8 +17,14 @@ export const electronSettingsMiddleware = (store) => {
         case SET_WEB_ADDRESS:
           const preferences = store.getState().get('preferences').toJS();
           const existingSettings = electronSettings.getAll();
-          const mergedSettings = Object.assign(existingSettings, preferences);
+          const mergedSettings = Object.assign(
+            {},
+            existingSettings,
+            preferences
+          );
+
           electronSettings.setAll(mergedSettings);
+
           return;
 
         case SET_START_AT_LOGIN:
