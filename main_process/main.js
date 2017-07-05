@@ -1,3 +1,4 @@
+const electronSettings = require('electron-settings');
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 const fullscreenController = require('./fullscreen_controller');
@@ -27,6 +28,10 @@ function main() {
       fullscreenWindow.once('closed', () => {
         preferencesWindow.open();
       });
+    });
+
+    ipcMain.on('UPDATE_WEB_ADDRESS', (evt, action) => {
+      electronSettings.set('url', action.url);
     });
   }
 }

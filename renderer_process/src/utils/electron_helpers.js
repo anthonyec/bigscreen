@@ -1,7 +1,11 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
+
+const electronSettings = remote.require('electron-settings');
 
 export const getSettings = () => {
-  return {};
+  return {
+    url: electronSettings.get('url'),
+  };
 };
 
 export const startFullscreen = () => {
