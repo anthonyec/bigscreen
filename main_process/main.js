@@ -1,4 +1,3 @@
-const electronSettings = require('electron-settings');
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 const fullscreenController = require('./fullscreen_controller');

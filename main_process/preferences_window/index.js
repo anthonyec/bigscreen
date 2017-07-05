@@ -1,7 +1,5 @@
 const { app, BrowserWindow } = require('electron');
 
-const autolaunch = require('../autolaunch');
-
 const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 const WINDOW_SETTINGS = {
   useContentSize: true,
