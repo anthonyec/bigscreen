@@ -12,7 +12,10 @@ import {
   setWebAddress,
   setStartAtLogin,
 } from './action_creators';
-import { startFullscreen } from '../utils/electron_helpers';
+import {
+  startFullscreen,
+  setAutoLaunch,
+} from '../utils/electron_helpers';
 import urlWithProtocol from '../utils/url_with_protocol';
 
 import classes from '../core/css/screen.css';
@@ -26,9 +29,12 @@ export class PreferencesScreen extends React.Component {
     this.props.setWebAddress(value);
   }
 
-  render() {
-    console.log(this.props.autolaunch);
+  handleOnStartAtLoginChange(value) {
+    setAutoLaunch(value);
+    this.props.setStartAtLogin(value);
+  }
 
+  render() {
     return (
       <div className={ classes.screen }>
         <ControlsLayout>
@@ -64,8 +70,9 @@ export class PreferencesScreen extends React.Component {
 
           <Control>
             <Checkbox
-              label="Start a login"
-              onChange={this.props.setStartAtLogin}
+              label="Start at login"
+              isChecked={this.props.autolaunch}
+              onChange={this.handleOnStartAtLoginChange.bind(this)}
             />
           </Control>
         </ControlsLayout>

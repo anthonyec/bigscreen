@@ -6,34 +6,48 @@ const PreferencesWindow = require('./preferences_window');
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 const { disableSleepBlocking } = require('./sleep_blocker');
+const { enableAutoLaunch, disableAutoLaunch } = require('./autolaunch');
 
 let preferencesWindow;
 let fullscreenWindow;
+
+function addFullscreenCloseEvent() {
+  fullscreenWindow = fullscreenController.fullscreenWindow.getWindow();
+
+  fullscreenWindow.once('closed', () => {
+    preferencesWindow.open();
+  });
+}
+
+function addEvents() {
+  ipcMain.on('START_FULLSCREEN', () => {
+    preferencesWindow.close();
+    fullscreenController.start();
+    addFullscreenCloseEvent();
+  });
+
+  ipcMain.on('ENABLE_AUTO_LAUNCH', () => {
+    enableAutoLaunch();
+  });
+
+  ipcMain.on('DISABLE_AUTO_LAUNCH', () => {
+    disableAutoLaunch();
+  });
+}
 
 function main() {
   preferencesWindow = new PreferencesWindow();
 
   if (fullscreenController.shouldFullscreenStart()) {
+    console.log('IT SHOULD START THEN');
     fullscreenController.start();
+    addFullscreenCloseEvent();
   } else {
+    console.log('NO START');
     preferencesWindow.open();
-
-    ipcMain.on('START_FULLSCREEN', () => {
-      preferencesWindow.close();
-      fullscreenController.start();
-
-      fullscreenWindow =
-        fullscreenController.fullscreenWindow.getWindow();
-
-      fullscreenWindow.once('closed', () => {
-        preferencesWindow.open();
-      });
-    });
-
-    ipcMain.on('UPDATE_WEB_ADDRESS', (evt, action) => {
-      electronSettings.set('url', action.url);
-    });
   }
+
+  addEvents();
 }
 
 function cleanUpBeforeQuitting() {
