@@ -39,11 +39,9 @@ function main() {
   preferencesWindow = new PreferencesWindow();
 
   if (fullscreenController.shouldFullscreenStart()) {
-    console.log('IT SHOULD START THEN');
     fullscreenController.start();
     addFullscreenCloseEvent();
   } else {
-    console.log('NO START');
     preferencesWindow.open();
   }
 
