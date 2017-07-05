@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 const electronSettings = require('electron-settings');
 
-const fullscreen = require('./');
+const FullscreenController = require('./');
 const FullscreenWindow = require('../fullscreen_window');
 const autolaunch = require('../autolaunch');
 const keepAlive = require('../keep_alive');
@@ -27,6 +27,8 @@ describe('Fullscreen Controller', () => {
 
   describe('wasFullscreenRunning', () => {
     it('gets the electron-setting to see if it is true or false', () => {
+      const fullscreen = new FullscreenController();
+
       const electronSettingGetStub = sandbox.stub(electronSettings, 'get');
 
       electronSettingGetStub.returns(true);
@@ -47,6 +49,7 @@ describe('Fullscreen Controller', () => {
 
   describe('shouldFullscreenStart', () => {
     it('returns true if isAutoLaunchEnabled or wasFullscreenRunning', () => {
+      const fullscreen = new FullscreenController();
       const isAutoLaunchEnabledStub = sandbox.stub(
         autolaunch,
         'isAutoLaunchEnabled'
@@ -94,9 +97,11 @@ describe('Fullscreen Controller', () => {
         return fullscreenStub;
       });
 
-      const fullscreenControllerProxy = proxyquire('./', {
+      const FullscreenControllerProxy = proxyquire('./', {
         '../fullscreen_window': FullscreenWindowWrapper,
       });
+
+      const fullscreenControllerProxy = new FullscreenControllerProxy();
 
       electronSettingsGetStub.returns('https://example.com');
       fullscreenStub.open = openStub;
@@ -122,9 +127,11 @@ describe('Fullscreen Controller', () => {
         return fullscreenStub;
       });
 
-      const fullscreenControllerProxy = proxyquire('./', {
+      const FullscreenControllerProxy = proxyquire('./', {
         '../fullscreen_window': FullscreenWindowWrapper,
       });
+
+      const fullscreenControllerProxy = new FullscreenControllerProxy();
 
       electronSettingsGetStub.returns('https://example.com');
       fullscreenStub.open = openStub;
@@ -142,9 +149,11 @@ describe('Fullscreen Controller', () => {
   });
 
   describe('start', () => {
-    it('opens window and starty processes only if instance does not exist', () => { // eslint-disable-line
+    it('opens window and starts processes only if instance does not exist', () => { // eslint-disable-line
+      const fullscreen = new FullscreenController();
       const openWindowStub = sandbox.stub(fullscreen, 'openWindow');
       const startProcessesStub = sandbox.stub(fullscreen, 'startProcesses');
+      const addCloseEventStub = sandbox.stub(fullscreen, 'addCloseEvent');
 
       // Call start and pretend fullscreenWindow not to exist. This should
       // call the openWindow and startProcesses functions once.
@@ -157,11 +166,13 @@ describe('Fullscreen Controller', () => {
 
       expect(openWindowStub.calledOnce).to.equal(true);
       expect(startProcessesStub.calledOnce).to.equal(true);
+      expect(addCloseEventStub.calledOnce).to.equal(true);
     });
   });
 
   describe('stop', () => {
     it('closes window only if instance and window instance exists', () => {
+      const fullscreen = new FullscreenController();
       const getWindowStub = sandbox.stub();
       const closeWindowStub = sandbox.stub();
 
@@ -183,6 +194,7 @@ describe('Fullscreen Controller', () => {
 
   describe('startProcesses', () => {
     it('enables sleep blocker, keep alive and sets electron-setting', () => {
+      const fullscreen = new FullscreenController();
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
       const enableKeepAliveStub = sandbox.stub(keepAlive, 'enableKeepAlive');
       const enableSleepBlockingStub = sandbox.stub(
@@ -204,6 +216,7 @@ describe('Fullscreen Controller', () => {
 
   describe('stopProcesses', () => {
     it('disables sleep blocker, keep alive and sets electron-setting', () => {
+      const fullscreen = new FullscreenController();
       const electronSettingsSetStub = sandbox.stub(electronSettings, 'set');
       const disableKeepAliveStub = sandbox.stub(keepAlive, 'disableKeepAlive');
       const disableSleepBlockingStub = sandbox.stub(
@@ -220,6 +233,27 @@ describe('Fullscreen Controller', () => {
         FULLSCREEN_IS_RUNNING,
         false,
       ]);
+    });
+  });
+
+  describe('addCloseEvent', () => {
+    it('adds once event for when window closes', () => {
+      const fullscreen = new FullscreenController();
+      const getWindowStub = sandbox.stub();
+      const onceStub = sandbox.stub();
+
+      getWindowStub.returns({
+        once: onceStub,
+      });
+
+      fullscreen.fullscreenWindow = sinon.createStubInstance(FullscreenWindow);
+      fullscreen.fullscreenWindow.getWindow = getWindowStub;
+
+      fullscreen.addCloseEvent();
+
+      expect(getWindowStub.calledOnce).to.equal(true);
+      expect(onceStub.calledOnce).to.equal(true);
+      expect(onceStub.args[0][0]).to.equal('closed');
     });
   });
 });

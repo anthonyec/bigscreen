@@ -89,11 +89,14 @@ export class PreferencesScreen extends React.Component {
 
 PreferencesScreen.propTypes = {
   setWebAddress: React.PropTypes.func,
+  setStartAtLogin: React.PropTypes.func,
   url: React.PropTypes.string,
+  autolaunch: React.PropTypes.bool,
 };
 
 PreferencesScreen.defaultProps = {
   setWebAddress: noop,
+  setStartAtLogin: noop,
 };
 
 export function mapStateToProps(state) {  // ownProps

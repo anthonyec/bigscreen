@@ -1,50 +1,13 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow } = require('electron');
 
-const fullscreenController = require('./fullscreen_controller');
-const PreferencesWindow = require('./preferences_window');
+const WindowController = require('./window_controller');
 const { loadConfigIntoSettings } = require('./settings');
 const { logSystemDetails } = require('./log');
 const { disableSleepBlocking } = require('./sleep_blocker');
-const { enableAutoLaunch, disableAutoLaunch } = require('./autolaunch');
-
-let preferencesWindow;
-let fullscreenWindow;
-
-function addFullscreenCloseEvent() {
-  fullscreenWindow = fullscreenController.fullscreenWindow.getWindow();
-
-  fullscreenWindow.once('closed', () => {
-    preferencesWindow.open();
-  });
-}
-
-function addEvents() {
-  ipcMain.on('START_FULLSCREEN', () => {
-    preferencesWindow.close();
-    fullscreenController.start();
-    addFullscreenCloseEvent();
-  });
-
-  ipcMain.on('ENABLE_AUTO_LAUNCH', () => {
-    enableAutoLaunch();
-  });
-
-  ipcMain.on('DISABLE_AUTO_LAUNCH', () => {
-    disableAutoLaunch();
-  });
-}
 
 function main() {
-  preferencesWindow = new PreferencesWindow();
-
-  if (fullscreenController.shouldFullscreenStart()) {
-    fullscreenController.start();
-    addFullscreenCloseEvent();
-  } else {
-    preferencesWindow.open();
-  }
-
-  addEvents();
+  const windowController = new WindowController();
+  windowController.startup();
 }
 
 function cleanUpBeforeQuitting() {
