@@ -7,7 +7,7 @@ const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 const WINDOW_SETTINGS = {
   useContentSize: true,
   width: 450,
-  height: 215,
+  height: 180,
   resizable: IS_DEV_ENV,
   show: false,
   kiosk: false,
