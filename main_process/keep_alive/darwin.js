@@ -2,14 +2,13 @@ const fs = require('fs');
 const path = require('path');
 
 const plist = require('plist');
-const electronSettings = require('electron-settings');
 
 const {
   EXE_PATH,
   LAUNCH_AGENTS_PATH,
 } = require('../settings/paths');
 
-const LABEL = electronSettings.get('name') || 'Bigscreen';
+const LABEL = 'Bigscreen';
 const PLIST_PATH = path.join(LAUNCH_AGENTS_PATH, `${LABEL}.keepalive.plist`);
 
 const PLIST_FILE = {
