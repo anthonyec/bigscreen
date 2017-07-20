@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 
 const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 const WINDOW_SETTINGS = {
@@ -40,6 +40,7 @@ module.exports = class PreferencesWindow {
     this.window.loadURL(this.url);
 
     this.window.on('ready-to-show', this.window.show);
+    this.window.webContents.on('context-menu', this.onContextMenu);
 
     if (IS_DEV_ENV) {
       this.window.openDevTools({ detach: true });
@@ -53,5 +54,56 @@ module.exports = class PreferencesWindow {
   close() {
     this.window.close();
     this.window = null;
+  }
+
+  /**
+   * Add handler to webContext right click event.
+   * @param {url} url Web page to display.
+   * @returns {void}
+   */
+  onContextMenu(e, props) {
+    console.log('onContextMenu');
+
+
+    // Electron disables ALL context menus by default. Some may say this is
+    // good, others may say not. But hmmmm....
+    // https://github.com/electron/electron/issues/4068
+    const inputContextMenu = Menu.buildFromTemplate([{
+        label: 'Undo',
+        role: 'undo',
+      },
+      {
+          label: 'Redo',
+          role: 'redo',
+      },
+      {
+          type: 'separator',
+      },
+      {
+          label: 'Cut',
+          role: 'cut',
+      },
+      {
+          label: 'Copy',
+          role: 'copy',
+      },
+      {
+          label: 'Paste',
+          role: 'paste',
+      },
+      {
+          type: 'separator',
+      },
+      {
+          label: 'Select all',
+          role: 'selectall',
+      },
+    ]);
+
+    const { inputFieldType } = props;
+
+    if (inputFieldType === 'plainText') {
+      inputContextMenu.popup(this.window);
+    }
   }
 };
