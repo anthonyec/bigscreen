@@ -187,6 +187,8 @@ function build() {
       // Override existing packages in the dist folder.
       overwrite: true,
 
+      prune: false,
+
       icon: path.join(program.resources, 'app_icon/app.icns'),
       platform: program.platform,
       arch: program.arch,
