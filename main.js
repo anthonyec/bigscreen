@@ -1,10 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 
-const fullscreenController = require('./fullscreen_controller');
-const PreferencesWindow = require('./preferences_window');
-const { loadConfigIntoSettings } = require('./settings');
-const { logSystemDetails } = require('./log');
-const { disableSleepBlocking } = require('./sleep_blocker');
+const fullscreenController = require('./main_process/fullscreen_controller');
+const PreferencesWindow = require('./main_process/preferences_window');
+const { loadConfigIntoSettings } = require('./main_process/settings');
+const { logSystemDetails } = require('./main_process/log');
+const { disableSleepBlocking } = require('./main_process/sleep_blocker');
 
 let preferencesWindow;
 let fullscreenWindow;
