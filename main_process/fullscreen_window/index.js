@@ -181,7 +181,7 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Called when 'did-fail-to-load' event fires on the webContents.
+   * Called when 'did-fail-load' event fires on the webContents.
    * @param {object} evt Error event.
    * @param {integer} errorCode Error code.
    * @param {object} errorDesc Description of error.
