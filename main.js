@@ -1,11 +1,12 @@
 const electronSettings = require('electron-settings');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 
 const fullscreenController = require('./main_process/fullscreen_controller');
 const PreferencesWindow = require('./main_process/preferences_window');
 const { loadConfigIntoSettings } = require('./main_process/settings');
 const { logSystemDetails } = require('./main_process/log');
 const { disableSleepBlocking } = require('./main_process/sleep_blocker');
+const DEFAULT_MENU = require('./main_process/menu_templates/default_menu');
 
 let preferencesWindow;
 let fullscreenWindow;
@@ -34,6 +35,8 @@ function main() {
       electronSettings.set('url', action.url);
     });
   }
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(DEFAULT_MENU));
 }
 
 function cleanUpBeforeQuitting() {
