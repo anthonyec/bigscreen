@@ -68,35 +68,42 @@ module.exports = class PreferencesWindow {
     // Electron disables ALL context menus by default. Some may say this is
     // good, others may say not. But hmmmm....
     // https://github.com/electron/electron/issues/4068
-    const inputContextMenu = Menu.buildFromTemplate([{
+    const inputContextMenu = Menu.buildFromTemplate([
+      {
         label: 'Undo',
         role: 'undo',
+        accelerator: 'CmdOrCtrl+Z',
       },
       {
-          label: 'Redo',
-          role: 'redo',
+        label: 'Redo',
+        role: 'redo',
+        accelerator: 'CmdOrCtrl+R',
       },
       {
-          type: 'separator',
+        type: 'separator',
       },
       {
-          label: 'Cut',
-          role: 'cut',
+        label: 'Cut',
+        role: 'cut',
+        accelerator: 'CmdOrCtrl+X',
       },
       {
-          label: 'Copy',
-          role: 'copy',
+        label: 'Copy',
+        role: 'copy',
+        accelerator: 'CmdOrCtrl+C',
       },
       {
-          label: 'Paste',
-          role: 'paste',
+        label: 'Paste',
+        role: 'paste',
+        accelerator: 'CmdOrCtrl+V',
       },
       {
-          type: 'separator',
+        type: 'separator',
       },
       {
-          label: 'Select all',
-          role: 'selectall',
+        label: 'Select all',
+        role: 'selectall',
+        accelerator: 'CmdOrCtrl+A',
       },
     ]);
 
