@@ -182,6 +182,11 @@ module.exports = class FullscreenWindow {
 
   /**
    * Called when 'did-fail-to-load' event fires on the webContents.
+   * @param {object} evt Error event.
+   * @param {integer} errorCode Error code.
+   * @param {object} errorDesc Description of error.
+   * @param {string} url Resource URL.
+   * @param {boolean} isMainFrame true if not resource that isn't main page.
    * @returns {void}
    */
   onDidFailToLoad(evt, errorCode, errorDesc, url, isMainFrame) {
