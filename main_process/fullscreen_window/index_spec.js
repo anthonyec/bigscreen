@@ -288,12 +288,20 @@ describe('Fullscreen window', () => {
     const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'did-fail-load',
+      { url: 'http://www.exmaple.com' },
     ];
 
     fullscreenWindow.openFallback = openFallbackStub;
 
     // Normally called by the 'certificate-error' event.
-    fullscreenWindow.onDidFailToLoad();
+    // Args: evt, errorCode, errorDesc, url, isMainFrame
+    fullscreenWindow.onDidFailToLoad(
+      null,
+      null,
+      null,
+      'http://www.exmaple.com',
+      true
+    );
 
     expect(errorStub.calledOnce).to.equal(true);
     expect(errorStub.args[0]).to.eql(expectedLogArgs);
