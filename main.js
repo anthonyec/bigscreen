@@ -1,9 +1,9 @@
 const { app, BrowserWindow } = require('electron');
 
-const WindowController = require('./window_controller');
-const { loadConfigIntoSettings } = require('./settings');
-const { logSystemDetails } = require('./log');
-const { disableSleepBlocking } = require('./sleep_blocker');
+const WindowController = require('./main_process/window_controller');
+const { loadConfigIntoSettings } = require('./main_process/settings');
+const { logSystemDetails } = require('./main_process/log');
+const { disableSleepBlocking } = require('./main_process/sleep_blocker');
 
 function main() {
   const windowController = new WindowController();

@@ -8,6 +8,7 @@ const config = {
 };
 
 module.exports = {
+  target: 'electron-renderer',
   entry: [
     'babel-polyfill',
     './src/index.js',
@@ -21,7 +22,7 @@ module.exports = {
       test: /\.css$/,
       use: [
         'style-loader',
-        'css-loader',
+        'css-loader?&modules&localIdentName=[name]-[local]-[hash:base64:5]',
         {
           loader: 'postcss-loader',
           options: {
