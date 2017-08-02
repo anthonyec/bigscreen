@@ -103,8 +103,6 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-<<<<<<< HEAD
-=======
    * Toggle the dev tools.
    * @returns {void}
    */
@@ -112,6 +110,10 @@ module.exports = class FullscreenWindow {
     this.window.toggleDevTools();
   }
 
+  /**
+   * Loads stylesheet and inserts the contents in the the webpage.
+   * @returns {void}
+   */
   injectCSS() {
     const stylesheetPath = path.join(__dirname, 'injected_styles.css');
 
@@ -125,7 +127,6 @@ module.exports = class FullscreenWindow {
   }
 
   /**
->>>>>>> ee7295f... Added hide cursor via injected stylesheet
    * Creates global shortcuts.
    * @returns {void}
    */
