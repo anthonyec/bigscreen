@@ -288,7 +288,6 @@ describe('Fullscreen window', () => {
     const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'did-fail-load',
-      { url: 'http://www.exmaple.com' },
     ];
 
     fullscreenWindow.openFallback = openFallbackStub;

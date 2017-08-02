@@ -58,6 +58,7 @@ function startLogger() {
   return bunyan.createLogger({
     name: electronSettings.get('name') || 'bigscreen',
     streams: [
+
       // The one thing they don't tell you is that this sets the minimum log
       // level. See https://github.com/trentm/node-bunyan/issues/340 for more
       // info.
