@@ -12,12 +12,12 @@ const WINDOW_SETTINGS = {
 
 module.exports = class PreferencesWindow {
   constructor() {
-    const path = app.getAppPath('exe');
+    const exePath = app.getAppPath('exe');
 
     this.window = null;
     this.url = IS_DEV_ENV ?
       'http://lvh.me:8080/' :
-      `file://${path}/renderer_process/dist/index.html`;
+      `file://${exePath}/renderer_process/dist/index.html`;
   }
 
   /**

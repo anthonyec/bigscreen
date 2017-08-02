@@ -1,13 +1,19 @@
 import React from 'react';
 
+import noop from 'utils/noop';
+
 import classes from './textfield.css';
 
 export class Textfield extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: '' };
+
+    this.state = {
+      value: props.value,
+    };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -19,6 +25,16 @@ export class Textfield extends React.Component {
     this.props.onChange(evt);
   }
 
+  handleOnBlur(evt) {
+    // When the onBlur event fires an optional formatter can format and fix the
+    // text. Useful for phone numbers, URLs, postcodes etc.
+    const value = this.props.onBlurFormatter(evt.target.value) ||
+      evt.target.value;
+
+    this.setState({ value });
+    this.props.onBlur(value);
+  }
+
   render() {
     return (
       <div className={ classes.textfield }>
@@ -28,6 +44,7 @@ export class Textfield extends React.Component {
           type="text"
           value={ this.state.value }
           onChange={ this.handleChange }
+          onBlur={ this.handleOnBlur }
         />
       </div>
     );
@@ -35,10 +52,15 @@ export class Textfield extends React.Component {
 }
 
 Textfield.defaultProps = {
-  onChange: () => {},
+  onChange: noop,
+  onBlur: noop,
+  onBlurFormatter: noop,
 };
 
 Textfield.propTypes = {
   id: React.PropTypes.string,
+  value: React.PropTypes.string,
   onChange: React.PropTypes.func,
+  onBlur: React.PropTypes.func,
+  onBlurFormatter: React.PropTypes.func,
 };

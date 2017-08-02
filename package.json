@@ -1,7 +1,7 @@
 {
   "name": "Bigscreen",
   "version": "0.0.1",
-  "main": "main_process/main.js",
+  "main": "main.js",
   "license": "MIT",
   "author": "Anthony Cossins <anthony@signal-noise.co.uk>",
   "scripts": {
