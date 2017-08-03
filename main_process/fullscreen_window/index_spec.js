@@ -175,14 +175,15 @@ describe('Fullscreen window', () => {
 
     // Ensure the all the events get added.
     expect(windowEventStub.callCount).to.equal(2);
-    expect(webContentsEventStub.callCount).to.equal(3);
+    expect(webContentsEventStub.callCount).to.equal(4);
 
     expect(windowEventStub.args[0][0]).to.equal('unresponsive');
     expect(windowEventStub.args[1][0]).to.equal('gpu-process-crashed');
 
-    expect(webContentsEventStub.args[0][0]).to.equal('did-fail-load');
-    expect(webContentsEventStub.args[1][0]).to.equal('certificate-error');
-    expect(webContentsEventStub.args[2][0]).to.equal('crashed');
+    expect(webContentsEventStub.args[0][0]).to.equal('did-finish-load');
+    expect(webContentsEventStub.args[1][0]).to.equal('did-fail-load');
+    expect(webContentsEventStub.args[2][0]).to.equal('certificate-error');
+    expect(webContentsEventStub.args[3][0]).to.equal('crashed');
   });
 
   it('reloads URL if poll is successful', () => {
@@ -288,12 +289,20 @@ describe('Fullscreen window', () => {
     const errorStub = sandbox.stub(log, 'error');
     const expectedLogArgs = [
       'did-fail-load',
+      { url: 'http://www.exmaple.com' },
     ];
 
     fullscreenWindow.openFallback = openFallbackStub;
 
     // Normally called by the 'certificate-error' event.
-    fullscreenWindow.onDidFailToLoad();
+    // Args: evt, errorCode, errorDesc, url, isMainFrame
+    fullscreenWindow.onDidFailToLoad(
+      null,
+      null,
+      null,
+      'http://www.exmaple.com',
+      true
+    );
 
     expect(errorStub.calledOnce).to.equal(true);
     expect(errorStub.args[0]).to.eql(expectedLogArgs);
