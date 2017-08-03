@@ -58,12 +58,17 @@ function startLogger() {
   return bunyan.createLogger({
     name: electronSettings.get('name') || 'bigscreen',
     streams: [
-      { level: 'fatal', path: LOG_PATH },
-      { level: 'error', path: LOG_PATH },
-      { level: 'warn', path: LOG_PATH },
-      { level: 'info', path: LOG_PATH },
-      { level: 'debug', path: LOG_PATH },
-      { level: 'trace', path: LOG_PATH },
+
+      // The one thing they don't tell you is that this sets the minimum log
+      // level. See https://github.com/trentm/node-bunyan/issues/340 for more
+      // info.
+      {
+        level: 'trace',
+        type: 'rotating-file',
+        path: LOG_PATH,
+        period: '1d',
+        count: 7,
+      },
     ],
   });
 }

@@ -88,12 +88,13 @@ describe('Log', () => {
     const expectedArgs = {
       name: 'bigscreen',
       streams: [
-        { level: 'fatal', path: logPath },
-        { level: 'error', path: logPath },
-        { level: 'warn', path: logPath },
-        { level: 'info', path: logPath },
-        { level: 'debug', path: logPath },
-        { level: 'trace', path: logPath },
+        {
+          level: 'trace',
+          type: 'rotating-file',
+          path: logPath,
+          period: '1d',
+          count: 7,
+        },
       ],
     };
 
