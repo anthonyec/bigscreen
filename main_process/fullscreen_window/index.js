@@ -110,6 +110,10 @@ module.exports = class FullscreenWindow {
     this.window.toggleDevTools();
   }
 
+  /**
+   * Loads stylesheet and inserts the contents in the the webpage.
+   * @returns {void}
+   */
   injectCSS() {
     const stylesheetPath = path.join(__dirname, 'injected_styles.css');
 
