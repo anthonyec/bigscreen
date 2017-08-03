@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 
 const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
@@ -31,6 +32,7 @@ module.exports = class FullscreenWindow {
     };
 
     this.webContentsEvents = {
+      'did-finish-load': this.onDidFinishLoad,
       'did-fail-load': this.onDidFailToLoad,
       'certificate-error': this.onCertificateError,
       crashed: this.onCrashed,
@@ -98,6 +100,30 @@ module.exports = class FullscreenWindow {
    */
   load() {
     this.window.loadURL(this.url);
+  }
+
+  /**
+   * Toggle the dev tools.
+   * @returns {void}
+   */
+  toggleDevTools() {
+    this.window.toggleDevTools();
+  }
+
+  /**
+   * Loads stylesheet and inserts the contents in the the webpage.
+   * @returns {void}
+   */
+  injectCSS() {
+    const stylesheetPath = path.join(__dirname, 'injected_styles.css');
+
+    fs.readFile(stylesheetPath, 'utf8', (err, css) => {
+      if (err) {
+        throw (err);
+      }
+
+      this.window.webContents.insertCSS(css);
+    });
   }
 
   /**
@@ -178,6 +204,14 @@ module.exports = class FullscreenWindow {
    */
   onWebContentsLog(evt, args) {
     logger.log.debug(args);
+  }
+
+  /**
+   * Called when 'did-finish-load' event fires on the webContents.
+   * @returns {void}
+   */
+  onDidFinishLoad() {
+    this.injectCSS();
   }
 
   /**
