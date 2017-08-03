@@ -103,8 +103,6 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-<<<<<<< HEAD
-=======
    * Toggle the dev tools.
    * @returns {void}
    */
@@ -125,7 +123,6 @@ module.exports = class FullscreenWindow {
   }
 
   /**
->>>>>>> ee7295f... Added hide cursor via injected stylesheet
    * Creates global shortcuts.
    * @returns {void}
    */
@@ -214,12 +211,22 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Called when 'did-fail-to-load' event fires on the webContents.
+   * Called when 'did-fail-load' event fires on the webContents.
+   * @param {object} evt Error event.
+   * @param {integer} errorCode Error code.
+   * @param {object} errorDesc Description of error.
+   * @param {string} url Resource URL.
+   * @param {boolean} isMainFrame true if not resource that isn't main page.
    * @returns {void}
    */
-  onDidFailToLoad() {
-    logger.log.error('did-fail-load');
-    this.openFallback();
+  onDidFailToLoad(evt, errorCode, errorDesc, url, isMainFrame) {
+    logger.log.error('did-fail-load', { url });
+
+    // Only load fallback if the main paged failed to load. Allow resources of
+    // the page to fail.
+    if (isMainFrame) {
+      this.openFallback();
+    }
   }
 
   /**
