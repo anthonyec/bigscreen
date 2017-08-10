@@ -1,5 +1,6 @@
 const electronSettings = require('electron-settings');
 
+const noop = require('../utils/noop');
 const FullscreenWindow = require('../fullscreen_window');
 const autolaunch = require('../autolaunch');
 const keepAlive = require('../keep_alive');
@@ -10,8 +11,9 @@ const {
 } = require('../settings/attributes');
 
 class FullscreenController {
-  constructor() {
+  constructor({ onClose = noop } = {}) {
     this.stop = this.stop.bind(this);
+    this.onClose = onClose;
   }
 
   /**
@@ -65,6 +67,7 @@ class FullscreenController {
     if (!this.fullscreenWindow) {
       this.openWindow();
       this.startProcesses();
+      this.addCloseEvent();
     }
   }
 
@@ -97,6 +100,15 @@ class FullscreenController {
     sleepBlocker.disableSleepBlocking();
     keepAlive.disableKeepAlive();
   }
+
+  /**
+   * Add event that fires once the window is closed.
+   * @return {void}
+   */
+  addCloseEvent() {
+    const fullscreenWindow = this.fullscreenWindow.getWindow();
+    fullscreenWindow.once('closed', this.onClose);
+  }
 }
 
-module.exports = exports = new FullscreenController();
+module.exports = exports = FullscreenController;

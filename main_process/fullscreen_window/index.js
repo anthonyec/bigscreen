@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 
 const { BrowserWindow, globalShortcut, ipcMain } = require('electron');
@@ -31,6 +32,7 @@ module.exports = class FullscreenWindow {
     };
 
     this.webContentsEvents = {
+      'did-finish-load': this.onDidFinishLoad,
       'did-fail-load': this.onDidFailToLoad,
       'certificate-error': this.onCertificateError,
       crashed: this.onCrashed,
@@ -93,11 +95,39 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Loads the web page
+   * Loads the web page and clear the cache.
    * @returns {void}
    */
   load() {
-    this.window.loadURL(this.url);
+    // TODO: Maybe make this optional or work out how to only cache bust
+    // index.html.
+    this.window.webContents.session.clearCache(() => {
+      this.window.loadURL(this.url);
+    });
+  }
+
+  /**
+   * Toggle the dev tools.
+   * @returns {void}
+   */
+  toggleDevTools() {
+    this.window.toggleDevTools();
+  }
+
+  /**
+   * Loads stylesheet and inserts the contents in the the webpage.
+   * @returns {void}
+   */
+  injectCSS() {
+    const stylesheetPath = path.join(__dirname, 'injected_styles.css');
+
+    fs.readFile(stylesheetPath, 'utf8', (err, css) => {
+      if (err) {
+        throw (err);
+      }
+
+      this.window.webContents.insertCSS(css);
+    });
   }
 
   /**
@@ -181,12 +211,30 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Called when 'did-fail-to-load' event fires on the webContents.
+   * Called when 'did-finish-load' event fires on the webContents.
    * @returns {void}
    */
-  onDidFailToLoad() {
-    logger.log.error('did-fail-load');
-    this.openFallback();
+  onDidFinishLoad() {
+    this.injectCSS();
+  }
+
+  /**
+   * Called when 'did-fail-load' event fires on the webContents.
+   * @param {object} evt Error event.
+   * @param {integer} errorCode Error code.
+   * @param {object} errorDesc Description of error.
+   * @param {string} url Resource URL.
+   * @param {boolean} isMainFrame true if not resource that isn't main page.
+   * @returns {void}
+   */
+  onDidFailToLoad(evt, errorCode, errorDesc, url, isMainFrame) {
+    logger.log.error('did-fail-load', { url });
+
+    // Only load fallback if the main paged failed to load. Allow resources of
+    // the page to fail.
+    if (isMainFrame) {
+      this.openFallback();
+    }
   }
 
   /**
