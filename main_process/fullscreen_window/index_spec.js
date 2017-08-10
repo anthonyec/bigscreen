@@ -100,12 +100,23 @@ describe('Fullscreen window', () => {
     expect(fullscreenWindow.window).to.equal(null);
   });
 
-  it('reloads the window with the same URL', () => {
+  it('loads the window with the URL after clearing cache', () => {
     const fullscreenWindow = new FullscreenWindow();
     const loadURLStub = sandbox.stub();
+    const clearCacheStub = sandbox.stub();
 
     fullscreenWindow.window = sinon.createStubInstance(FullscreenWindow);
     fullscreenWindow.window.loadURL = loadURLStub;
+    fullscreenWindow.window.webContents = {
+      session: {
+        clearCache: clearCacheStub,
+      },
+    };
+
+    // Simulate cache clearing finished.
+    clearCacheStub.callsFake((callback) => {
+      callback();
+    });
 
     fullscreenWindow.url = 'https://www.google.com/';
     const expectURL = fullscreenWindow.url;

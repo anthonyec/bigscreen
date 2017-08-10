@@ -95,11 +95,15 @@ module.exports = class FullscreenWindow {
   }
 
   /**
-   * Loads the web page
+   * Loads the web page and clear the cache.
    * @returns {void}
    */
   load() {
-    this.window.loadURL(this.url);
+    // TODO: Maybe make this optional or work out how to only cache bust
+    // index.html.
+    this.window.webContents.session.clearCache(() => {
+      this.window.loadURL(this.url);
+    });
   }
 
   /**
