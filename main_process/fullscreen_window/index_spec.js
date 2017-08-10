@@ -32,6 +32,7 @@ describe('Fullscreen window', () => {
     };
 
     const loadStub = sandbox.stub();
+    const setMenuStub = sandbox.stub();
     const registerShortcutsStub = sandbox.stub();
     const addWindowEventsStub = sandbox.stub();
     const ipcMainOnStub = sandbox.stub();
@@ -39,6 +40,7 @@ describe('Fullscreen window', () => {
     // Stub the electron's BrowserWindow with fake methods.
     function BrowserWindow() {
       this.on = sandbox.stub();
+      this.setMenu = setMenuStub;
     }
 
     // Wrap the BrowserWindow in a spy.
@@ -64,10 +66,13 @@ describe('Fullscreen window', () => {
     // Check the URL gets stored in the class, the reload method uses it.
     expect(fullscreenWindow.url).to.equal(url);
 
-    // Check registerShortcuts, addWindowEvents and load get called.
+    // Check registerShortcuts, addWindowEvents, load and setMenu get called.
     expect(registerShortcutsStub.calledOnce).to.equal(true);
     expect(addWindowEventsStub.calledOnce).to.equal(true);
     expect(loadStub.calledOnce).to.equal(true);
+    expect(setMenuStub.calledOnce).to.equal(true);
+
+    expect(setMenuStub.args[0][0]).to.equal(null);
 
     // Check that new BrowserWindow gets called with the expected args.
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
