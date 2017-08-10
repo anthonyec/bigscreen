@@ -50,6 +50,9 @@ module.exports = class PreferencesWindow {
     this.window = new BrowserWindow(settings);
     this.window.loadURL(this.url);
 
+    // Remove menubar on win32.
+    this.window.setMenu(null);
+
     this.window.on('ready-to-show', this.window.show);
     this.window.webContents.on('context-menu', this.onContextMenu);
 

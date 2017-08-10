@@ -72,6 +72,9 @@ module.exports = class FullscreenWindow {
     this.window = new BrowserWindow(settings);
     this.load();
 
+    // Remove menubar on win32.
+    this.window.setMenu(null);
+
     // Add webContents and window event handlers.
     this.addWindowEvents();
     this.registerShortcuts();

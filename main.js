@@ -8,9 +8,13 @@ const DEFAULT_MENU = require('./main_process/menu_templates/default_menu');
 
 function main() {
   const windowController = new WindowController();
+
+  // This needs to execute before windowController startup otherwise
+  // it cancels out setMenu(null) for win32.
+  Menu.setApplicationMenu(Menu.buildFromTemplate(DEFAULT_MENU));
+
   windowController.startup();
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(DEFAULT_MENU));
 }
 
 function cleanUpBeforeQuitting() {
