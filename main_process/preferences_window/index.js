@@ -1,23 +1,33 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+
+const noop = require('../utils/noop');
+const { enableAutoLaunch, disableAutoLaunch } = require('../autolaunch');
 
 const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 const WINDOW_SETTINGS = {
   useContentSize: true,
   width: 450,
-  height: 215,
+  height: 180,
   resizable: IS_DEV_ENV,
   show: false,
   kiosk: false,
 };
 
 module.exports = class PreferencesWindow {
-  constructor() {
+  constructor({ onStartFullscreen = noop } = {}) {
     const exePath = app.getAppPath('exe');
 
     this.window = null;
     this.url = IS_DEV_ENV ?
       'http://lvh.me:8080/' :
       `file://${exePath}/renderer_process/dist/index.html`;
+
+    ipcMain.on('START_FULLSCREEN', () => {
+      onStartFullscreen();
+      this.close();
+    });
+    ipcMain.on('ENABLE_AUTO_LAUNCH', enableAutoLaunch);
+    ipcMain.on('DISABLE_AUTO_LAUNCH', disableAutoLaunch);
   }
 
   /**

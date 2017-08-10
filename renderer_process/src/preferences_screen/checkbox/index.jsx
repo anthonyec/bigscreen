@@ -48,6 +48,7 @@ export class Checkbox extends React.Component {
             type="checkbox"
             ref="checkbox"
             id={ this.id }
+            checked={this.state.isChecked}
             onChange={this.handleChange}
           />
           <div className={ classes.check }>
@@ -61,8 +62,8 @@ export class Checkbox extends React.Component {
 }
 
 Checkbox.defaultProps = {
-  onChange: noop,
   isChecked: false,
+  onChange: noop,
 };
 
 Checkbox.propTypes = {

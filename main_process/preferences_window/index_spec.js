@@ -21,7 +21,7 @@ describe('Preferences window', () => {
     const expectedBrowserWindowArgs = {
       useContentSize: true,
       width: 450,
-      height: 215,
+      height: 180,
       resizable: false,
       show: false,
       kiosk: false,
@@ -66,7 +66,7 @@ describe('Preferences window', () => {
     const expectedBrowserWindowArgs = {
       useContentSize: true,
       width: 450,
-      height: 215,
+      height: 180,
 
       // Should be true when running in the "development" environment.
       resizable: true,

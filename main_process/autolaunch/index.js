@@ -47,6 +47,7 @@ function isAutoLaunchEnabled() {
 function enableAutoLaunch() {
   const autoLaunch = module.exports.getAutoLaunchInstance();
 
+
   return autoLaunch().enable().then(() => {
     electronSettings.set('autolaunch', true);
     logger.log.info('autolaunch enabled');
