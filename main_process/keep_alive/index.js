@@ -21,7 +21,7 @@ function dummyMethod() {
 }
 
 /**
- * Get the methods specfic playforms.
+ * Get the methods specfic platforms.
  * @return {object} methods - Object of exported methods.
  */
 function getPlatformAPI() {
