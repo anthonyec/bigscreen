@@ -1,4 +1,14 @@
-const blockerWin32 = require('./darwin');
+const os = require('os');
+
+const blockerWin32 = require('./win32');
+
+/**
+ * Get the OS platform name.
+ * @return {string} Platform name.
+ */
+function getPlatform() {
+  return os.platform();
+}
 
 /**
  * Fake function used to for unsupported platforms.
@@ -9,7 +19,6 @@ function dummyMethod() {
     resolve();
   });
 }
-
 
 /**
  * Get the methods specfic platforms.
@@ -32,4 +41,7 @@ function getPlatformAPI() {
   };
 }
 
+module.exports.getPlatformAPI = getPlatformAPI;
+module.exports.dummyMethod = dummyMethod;
+module.exports.getPlatform = getPlatform;
 module.exports = Object.assign(module.exports, getPlatformAPI());
