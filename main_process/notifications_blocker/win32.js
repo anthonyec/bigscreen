@@ -17,10 +17,15 @@ const PowerShell = require('powershell');
 */
 const WINDOWS7_REGEX = /^6.1/g;
 const RELEASE_VERSION = os.release();
-const BALLOON_LOCATION = 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced'; // eslint-disable-line
 
-// To swap out windows 8-10 toast notification for balloon.
-const PUSH_NOTIFICATIONS_LOCATION = 'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications'; // eslint-disable-line
+const BALLOON_LOCATION =
+  'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced';
+const PUSH_NOTIFICATIONS_LOCATION =
+  'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications';
+
+function booleanToInt(bool) {
+  return bool ? 1 : 0;
+}
 
 /**
  * Get registry key and value structure for EnableBalloonTips.
@@ -54,49 +59,17 @@ function getPushNotificationsValue(value) {
   };
 }
 
-/**
- * Put value into registry to set ToastEnabled to 0;
- * @return {promise} Resolves when inserted into registry.
- */
-function setPushNotificationsEntryToFalse() {
-  return new Promise((resolve, reject) => {
-    const value = getPushNotificationsValue(0);
-
-    regedit.putValue(value, (err) => {
-      if (err) {
-        reject(err);
-      }
-
-      resolve();
-    });
-  });
-}
 
 /**
- * Put value into registry to set ToastEnabled to 1;
+ * Put value into registry to set EnableBalloonTips to 0;
+ * @param {boolean} bool True to enable push notifications.
  * @return {promise} Resolves when inserted into registry.
  */
-function setPushNotificationsEntryToTrue() {
+function setPushNotificationsEntry(bool) {
+  const intValue = booleanToInt(bool);
+
   return new Promise((resolve, reject) => {
-    const value = getPushNotificationsValue(1);
-
-    regedit.putValue(value, (err) => {
-      if (err) {
-        reject(err);
-      }
-
-      resolve();
-    });
-  });
-}
-
-/**
- * Put value into registry to set EnableBalloonTips to 1;
- * @return {promise} Resolves when inserted into registry.
- */
-function setBalloonTipsRegistryEntryToTrue() {
-  return new Promise((resolve, reject) => {
-    const value = getBalloonEntryValue(1);
+    const value = getPushNotificationsValue(intValue);
 
     regedit.putValue(value, (err) => {
       if (err) {
@@ -110,11 +83,14 @@ function setBalloonTipsRegistryEntryToTrue() {
 
 /**
  * Put value into registry to set EnableBalloonTips to 0;
+ * @param {boolean} bool True to enable balloon tips.
  * @return {promise} Resolves when inserted into registry.
  */
-function setBalloonTipsRegistryEntryToFalse() {
+function setBalloonTipsRegistryEntry(bool) {
+  const intValue = booleanToInt(bool);
+
   return new Promise((resolve, reject) => {
-    const value = getBalloonEntryValue(0);
+    const value = getBalloonEntryValue(intValue);
 
     regedit.putValue(value, (err) => {
       if (err) {
@@ -149,27 +125,11 @@ function restartWindowsExplorer() {
 
 /**
  * Disable Windows 7's balloon tooltips and restart Windows Explorer.
+ * @param {boolean} bool True to enable balloon tips.
  * @return {promise} Resolves after restarting explorer.
  */
-function disableBalloonTips() {
-  // https://www.howtogeek.com/howto/windows-vista/
-  // disable-all-notification-balloons-in-windows-vista/
-
-  // Create the registry entry "EnableBalloonTips" with value 0 (int).
-  // Restart explorer for the changes to take effect.
-  return setBalloonTipsRegistryEntryToFalse().then(() => {
-    return restartWindowsExplorer();
-  }).catch((err) => {
-    throw err;
-  });
-}
-
-/**
- * Enable Windows 7's balloon tooltips and restart Windows Explorer.
- * @return {promise} Resolves after restarting explorer.
- */
-function enableBalloonTips() {
-  return setBalloonTipsRegistryEntryToTrue().then(() => {
+function toggleBalloonTips(bool) {
+  return setBalloonTipsRegistryEntry(bool).then(() => {
     return restartWindowsExplorer();
   }).catch((err) => {
     throw err;
@@ -178,22 +138,11 @@ function enableBalloonTips() {
 
 /**
  * Disable WWindows 8+ toast notifications and restart Windows Explorer.
+ * @param {boolean} bool True to enable push notifications.
  * @return {promise} Resolves after restarting explorer.
  */
-function disableToastNotifications() {
-  return setPushNotificationsEntryToFalse().then(() => {
-    return restartWindowsExplorer();
-  }).catch((err) => {
-    throw err;
-  });
-}
-
-/**
- * Enable WWindows 8+ toast notifications and restart Windows Explorer.
- * @return {promise} Resolves after restarting explorer.
- */
-function enableToastNotifications() {
-  return setPushNotificationsEntryToTrue().then(() => {
+function toggleToastNotifications(bool) {
+  return setPushNotificationsEntry(bool).then(() => {
     return restartWindowsExplorer();
   }).catch((err) => {
     throw err;
@@ -207,9 +156,10 @@ function enableToastNotifications() {
  */
 function enableNotificationBlocker() {
   if (RELEASE_VERSION.match(WINDOWS7_REGEX)) {
-    return disableBalloonTips();
+    return toggleBalloonTips(false);
   }
-  return disableToastNotifications();
+
+  return toggleToastNotifications(false);
 }
 
 /**
@@ -218,24 +168,21 @@ function enableNotificationBlocker() {
  * @return {promise} Resolves after restarting explorer.
  */
 function disableNotificationBlocker() {
-  // If windows 7 then disable balloon notifications,
-  // else assume this is Windows 10. Bigscreen should only run on Windows 7+.
   if (RELEASE_VERSION.match(WINDOWS7_REGEX)) {
-    return enableBalloonTips();
+    return toggleBalloonTips(true);
   }
-  return enableToastNotifications();
+
+  return toggleToastNotifications(true);
 }
 
 module.exports = {
   getBalloonEntryValue,
   getPushNotificationsValue,
-  setBalloonTipsRegistryEntryToTrue,
-  setBalloonTipsRegistryEntryToFalse,
+  setPushNotificationsEntry,
+  setBalloonTipsRegistryEntry,
   restartWindowsExplorer,
-  disableBalloonTips,
-  enableBalloonTips,
-  disableToastNotifications,
-  enableToastNotifications,
+  toggleBalloonTips,
+  toggleToastNotifications,
 
   enableNotificationBlocker,
   disableNotificationBlocker,
