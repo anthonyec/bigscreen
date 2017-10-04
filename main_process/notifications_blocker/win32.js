@@ -110,7 +110,7 @@ function restartWindowsExplorer() {
   return new Promise((resolve, reject) => {
     // Use powershell instead of CMD.exe because on windows 10, explorer.exe
     // does not fully restart when calling it from Electron.
-    // Even tried running .bat files and stuff and nope, incositent on win10.
+    // Even tried running .bat files and stuff and nope, inconsistent on win10.
     const ps = new PowerShell('Stop-Process -ProcessName Explorer');
 
     ps.on('error', (err) => {
@@ -176,6 +176,7 @@ function disableNotificationBlocker() {
 }
 
 module.exports = {
+  booleanToInt,
   getBalloonEntryValue,
   getPushNotificationsValue,
   setPushNotificationsEntry,
