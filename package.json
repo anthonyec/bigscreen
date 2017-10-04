@@ -25,6 +25,7 @@
     "mv": "^2.1.1",
     "plist": "^2.1.0",
     "powershell": "^2.2.1",
+    "regedit": "github:anthonyec/node-regedit",
     "request": "^2.81.0"
   },
   "devDependencies": {
@@ -40,9 +41,6 @@
     "node-fs-extra": "^0.8.1",
     "proxyquire": "^1.7.11",
     "sinon": "^2.1.0"
-  },
-  "optionalDependencies": {
-    "regedit": "^2.2.7"
   },
   "engines": {
     "node": ">=6.7.0"
