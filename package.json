@@ -25,8 +25,8 @@
     "mv": "^2.1.1",
     "plist": "^2.1.0",
     "powershell": "^2.2.1",
-    "regedit": "github:anthonyec/node-regedit",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "winreg": "^1.2.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",

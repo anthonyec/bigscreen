@@ -1,5 +1,5 @@
 const os = require('os');
-const regedit = require('regedit');
+const Registry = require('winreg');
 const PowerShell = require('powershell');
 
 /*
@@ -19,46 +19,13 @@ const WINDOWS7_REGEX = /^6.1/g;
 const RELEASE_VERSION = os.release();
 
 const BALLOON_LOCATION =
-  'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced';
+  '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced';
 const PUSH_NOTIFICATIONS_LOCATION =
-  'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications';
+  '\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications';
 
 function booleanToInt(bool) {
   return bool ? 1 : 0;
 }
-
-/**
- * Get registry key and value structure for EnableBalloonTips.
- * @param {integer} value Integer value boolean.
- * @return {object} Options for regedit.
- */
-function getBalloonEntryValue(value) {
-  return {
-    [BALLOON_LOCATION]: {
-      EnableBalloonTips: {
-        value,
-        type: 'REG_DWORD', // `REG_DWORD` is a 32bit number.
-      },
-    },
-  };
-}
-
-/**
- * Get registry key and value structure for ToastEnabled.
- * @param {integer} value Integer value boolean.
- * @return {object} Options for regedit.
- */
-function getPushNotificationsValue(value) {
-  return {
-    [PUSH_NOTIFICATIONS_LOCATION]: {
-      ToastEnabled: {
-        value,
-        type: 'REG_DWORD', // `REG_DWORD` is a 32bit number.
-      },
-    },
-  };
-}
-
 
 /**
  * Put value into registry to set EnableBalloonTips to 0;
@@ -66,12 +33,14 @@ function getPushNotificationsValue(value) {
  * @return {promise} Resolves when inserted into registry.
  */
 function setPushNotificationsEntry(bool) {
-  const intValue = booleanToInt(bool);
-
   return new Promise((resolve, reject) => {
-    const value = getPushNotificationsValue(intValue);
+    const intValue = booleanToInt(bool);
+    const regKey = new Registry({
+      hive: Registry.HKCU,
+      key: PUSH_NOTIFICATIONS_LOCATION,
+    });
 
-    regedit.putValue(value, (err) => {
+    regKey.set('ToastEnabled', 'REG_DWORD', intValue, (err) => {
       if (err) {
         reject(err);
       }
@@ -87,12 +56,14 @@ function setPushNotificationsEntry(bool) {
  * @return {promise} Resolves when inserted into registry.
  */
 function setBalloonTipsRegistryEntry(bool) {
-  const intValue = booleanToInt(bool);
-
   return new Promise((resolve, reject) => {
-    const value = getBalloonEntryValue(intValue);
+    const intValue = booleanToInt(bool);
+    const regKey = new Registry({
+      hive: Registry.HKCU,
+      key: BALLOON_LOCATION,
+    });
 
-    regedit.putValue(value, (err) => {
+    regKey.set('EnableBalloonTips', 'REG_DWORD', intValue, (err) => {
       if (err) {
         reject(err);
       }
@@ -177,8 +148,6 @@ function disableNotificationBlocker() {
 
 module.exports = {
   booleanToInt,
-  getBalloonEntryValue,
-  getPushNotificationsValue,
   setPushNotificationsEntry,
   setBalloonTipsRegistryEntry,
   restartWindowsExplorer,
