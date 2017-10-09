@@ -7,6 +7,7 @@ const keepAlive = require('../keep_alive');
 const sleepBlocker = require('../sleep_blocker');
 const notificationsBlocker = require('../notifications_blocker/');
 const { restartShell } = require('../restart_shell/');
+const focusAllWindows = require('../utils/focus_all_windows');
 
 const {
   FULLSCREEN_IS_RUNNING,
@@ -93,6 +94,8 @@ class FullscreenController {
     keepAlive.enableKeepAlive();
     notificationsBlocker.enableNotificationBlocker().then(() => {
       return restartShell();
+    }).then(() => {
+      setTimeout(focusAllWindows, 1000);
     }).catch((err) => {
       throw err;
     });
@@ -108,6 +111,8 @@ class FullscreenController {
     keepAlive.disableKeepAlive();
     notificationsBlocker.disableNotificationBlocker().then(() => {
       return restartShell();
+    }).then(() => {
+      setTimeout(focusAllWindows, 1000);
     }).catch((err) => {
       throw err;
     });
