@@ -3,6 +3,7 @@
 .dropdown {
   composes: uiFontStyle from '../../core/css/ui_font_style.css';
   background-color: #EBECF0;
+  border: 1px solid #848C91;
   border-radius: 3px;
   color: #333333;
   display: inline-flex;
