@@ -2,7 +2,7 @@ const getPlatformAPI = require('../utils/get_platform_api');
 const keepAliveDarwin = require('./darwin');
 
 const api = getPlatformAPI({
-  'darwin': {
+  darwin: {
     enableKeepAlive: keepAliveDarwin.enableKeepAlive,
     disableKeepAlive: keepAliveDarwin.disableKeepAlive,
   },

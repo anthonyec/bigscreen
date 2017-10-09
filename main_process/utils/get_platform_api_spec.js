@@ -26,10 +26,10 @@ describe('Get platform specfic API util', () => {
       osPlatformStub.returns('win32');
 
       const api = getPlatformAPI({
-        'win32': {
+        win32: {
           doSomething: win32Method,
         },
-        'darwin': {
+        darwin: {
           doSomething: darwinMethod,
         },
       }, noopStub);
@@ -50,10 +50,10 @@ describe('Get platform specfic API util', () => {
       osPlatformStub.returns('unsupported_os');
 
       const api = getPlatformAPI({
-        'win32': {
+        win32: {
           doSomething: win32Method,
         },
-        'darwin': {
+        darwin: {
           doSomething: darwinMethod,
         },
       }, noopStub);
