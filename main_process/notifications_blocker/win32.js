@@ -15,16 +15,25 @@ const PowerShell = require('powershell');
    Windows Server 2012                   6                2
    Windows 7                             6                1
 */
-const WINDOWS7_REGEX = /^6.1/g;
+const WINDOWS7_REGEX = /^6.1/;
 const RELEASE_VERSION = os.release();
 
+// Location of the key in the windows registry to toggle the balloon tips in
+// windows 7.
 const BALLOON_LOCATION =
   '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced';
+
+// Location of the key in the windows registry to toggle the
+// toast notifications in windows 8+.
 const PUSH_NOTIFICATIONS_LOCATION =
   '\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications';
 
 function booleanToInt(bool) {
   return bool ? 1 : 0;
+}
+
+function isWindows7(version) {
+  return WINDOWS7_REGEX.test(version);
 }
 
 /**
@@ -42,10 +51,10 @@ function setPushNotificationsEntry(bool) {
 
     regKey.set('ToastEnabled', 'REG_DWORD', intValue, (err) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
@@ -65,10 +74,10 @@ function setBalloonTipsRegistryEntry(bool) {
 
     regKey.set('EnableBalloonTips', 'REG_DWORD', intValue, (err) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
 
-      resolve();
+      return resolve();
     });
   });
 }
@@ -100,8 +109,8 @@ function restartWindowsExplorer() {
  * @return {promise} Resolves after restarting explorer.
  */
 function toggleBalloonTips(bool) {
-  return setBalloonTipsRegistryEntry(bool).then(() => {
-    return restartWindowsExplorer();
+  return module.exports.setBalloonTipsRegistryEntry(bool).then(() => {
+    return module.exports.restartWindowsExplorer();
   }).catch((err) => {
     throw err;
   });
@@ -113,8 +122,8 @@ function toggleBalloonTips(bool) {
  * @return {promise} Resolves after restarting explorer.
  */
 function toggleToastNotifications(bool) {
-  return setPushNotificationsEntry(bool).then(() => {
-    return restartWindowsExplorer();
+  return module.exports.setPushNotificationsEntry(bool).then(() => {
+    return module.exports.restartWindowsExplorer();
   }).catch((err) => {
     throw err;
   });
@@ -126,11 +135,11 @@ function toggleToastNotifications(bool) {
  * @return {promise} Resolves after restarting explorer.
  */
 function enableNotificationBlocker() {
-  if (RELEASE_VERSION.match(WINDOWS7_REGEX)) {
-    return toggleBalloonTips(false);
+  if (module.exports.isWindows7(RELEASE_VERSION)) {
+    return module.exports.toggleBalloonTips(false);
   }
 
-  return toggleToastNotifications(false);
+  return module.exports.toggleToastNotifications(false);
 }
 
 /**
@@ -139,15 +148,16 @@ function enableNotificationBlocker() {
  * @return {promise} Resolves after restarting explorer.
  */
 function disableNotificationBlocker() {
-  if (RELEASE_VERSION.match(WINDOWS7_REGEX)) {
-    return toggleBalloonTips(true);
+  if (module.exports.isWindows7(RELEASE_VERSION)) {
+    return module.exports.toggleBalloonTips(true);
   }
 
-  return toggleToastNotifications(true);
+  return module.exports.toggleToastNotifications(true);
 }
 
 module.exports = {
   booleanToInt,
+  isWindows7,
   setPushNotificationsEntry,
   setBalloonTipsRegistryEntry,
   restartWindowsExplorer,
