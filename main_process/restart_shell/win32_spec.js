@@ -27,11 +27,11 @@ describe('Restart OS shell util', () => {
         this.on = onSpy;
       });
 
-      const restartWindowsExplorer = proxyquire('./win32', {
+      const restartShellWin32 = proxyquire('./win32', {
         powershell: powerShellSpy,
       });
 
-      restartWindowsExplorer().then(() => {
+      restartShellWin32.restartWindowsExplorer().then(() => {
         expect(powerShellSpy.args[0][0]).to.equal(expectedCommand);
 
         expect(onSpy.args[0][0]).to.equal('error');

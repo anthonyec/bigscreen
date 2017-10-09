@@ -21,4 +21,4 @@ function restartWindowsExplorer() {
   });
 }
 
-module.exports = exports = restartWindowsExplorer;
+module.exports.restartWindowsExplorer = restartWindowsExplorer;

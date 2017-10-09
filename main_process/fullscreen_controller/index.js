@@ -6,6 +6,7 @@ const autolaunch = require('../autolaunch');
 const keepAlive = require('../keep_alive');
 const sleepBlocker = require('../sleep_blocker');
 const notificationsBlocker = require('../notifications_blocker/');
+const { restartShell } = require('../restart_shell/');
 
 const {
   FULLSCREEN_IS_RUNNING,
@@ -90,7 +91,11 @@ class FullscreenController {
     electronSettings.set(FULLSCREEN_IS_RUNNING, true);
     sleepBlocker.enableSleepBlocking();
     keepAlive.enableKeepAlive();
-    notificationsBlocker.enableNotificationBlocker();
+    notificationsBlocker.enableNotificationBlocker().then(() => {
+      return restartShell();
+    }).catch((err) => {
+      throw err;
+    });
   }
 
   /**
@@ -101,7 +106,11 @@ class FullscreenController {
     electronSettings.set(FULLSCREEN_IS_RUNNING, false);
     sleepBlocker.disableSleepBlocking();
     keepAlive.disableKeepAlive();
-    notificationsBlocker.disableNotificationBlocker();
+    notificationsBlocker.disableNotificationBlocker().then(() => {
+      return restartShell();
+    }).catch((err) => {
+      throw err;
+    });
   }
 
   /**

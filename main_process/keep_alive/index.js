@@ -8,6 +8,4 @@ const api = getPlatformAPI({
   },
 });
 
-console.log(api);
-
 module.exports = Object.assign(module.exports, api);

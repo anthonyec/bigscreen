@@ -1,6 +1,5 @@
 const os = require('os');
 const Registry = require('winreg');
-const PowerShell = require('powershell');
 
 /*
  https://msdn.microsoft.com/en-us/library/windows/desktop/ms724834(v=vs.85).aspx
@@ -82,26 +81,6 @@ function setBalloonTipsRegistryEntry(bool) {
   });
 }
 
-/**
- * Restart Windows Explorer for any registry changes to take affect.
- * @return {promise} Resolves once PowerShell script has ended.
- */
-function restartWindowsExplorer() {
-  return new Promise((resolve, reject) => {
-    // Use powershell instead of CMD.exe because on windows 10, explorer.exe
-    // does not fully restart when calling it from Electron.
-    // Even tried running .bat files and stuff and nope, inconsistent on win10.
-    const ps = new PowerShell('Stop-Process -ProcessName Explorer');
-
-    ps.on('error', (err) => {
-      reject(err);
-    });
-
-    ps.on('end', () => {
-      resolve();
-    });
-  });
-}
 
 /**
  * Disable Windows 7's balloon tooltips and restart Windows Explorer.
@@ -109,11 +88,7 @@ function restartWindowsExplorer() {
  * @return {promise} Resolves after restarting explorer.
  */
 function toggleBalloonTips(bool) {
-  return module.exports.setBalloonTipsRegistryEntry(bool).then(() => {
-    return module.exports.restartWindowsExplorer();
-  }).catch((err) => {
-    throw err;
-  });
+  return module.exports.setBalloonTipsRegistryEntry(bool);
 }
 
 /**
@@ -122,11 +97,7 @@ function toggleBalloonTips(bool) {
  * @return {promise} Resolves after restarting explorer.
  */
 function toggleToastNotifications(bool) {
-  return module.exports.setPushNotificationsEntry(bool).then(() => {
-    return module.exports.restartWindowsExplorer();
-  }).catch((err) => {
-    throw err;
-  });
+  return module.exports.setPushNotificationsEntry(bool);
 }
 
 /**
@@ -160,10 +131,8 @@ module.exports = {
   isWindows7,
   setPushNotificationsEntry,
   setBalloonTipsRegistryEntry,
-  restartWindowsExplorer,
   toggleBalloonTips,
   toggleToastNotifications,
-
   enableNotificationBlocker,
   disableNotificationBlocker,
 };
