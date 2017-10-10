@@ -28,11 +28,17 @@ describe('Preferences window', () => {
     };
 
     const loadStub = sandbox.stub();
+    const setMenuStub = sandbox.stub();
     const onStub = sandbox.stub();
+    const onContextMenuStub = sandbox.stub();
 
     function BrowserWindow() {
       this.loadURL = loadStub;
+      this.setMenu = setMenuStub;
       this.on = onStub;
+      this.webContents = {
+        on: onContextMenuStub,
+      };
     }
 
     const browserWindowSpy = sandbox.spy(BrowserWindow);
@@ -58,6 +64,9 @@ describe('Preferences window', () => {
     expect(loadStub.args[0][0]).to.equal(expectedPath);
     expect(onStub.calledOnce).to.equal(true);
     expect(onStub.args[0][0]).to.equal('ready-to-show');
+    expect(onContextMenuStub.calledOnce).to.equal(true);
+    expect(onContextMenuStub.args[0][0]).to.equal('context-menu');
+    expect(setMenuStub.args[0][0]).to.equal(null);
   });
 
   it('dev environment opens devtools and uses localhost URL', () => {
@@ -75,13 +84,19 @@ describe('Preferences window', () => {
     };
 
     const loadStub = sandbox.stub();
+    const setMenuStub = sandbox.stub();
     const onStub = sandbox.stub();
     const openDevToolsStub = sandbox.stub();
+    const onContextMenuStub = sandbox.stub();
 
     function BrowserWindow() {
       this.loadURL = loadStub;
+      this.setMenu = setMenuStub;
       this.on = onStub;
       this.openDevTools = openDevToolsStub;
+      this.webContents = {
+        on: onContextMenuStub,
+      };
     }
 
     const browserWindowSpy = sandbox.spy(BrowserWindow);
@@ -112,6 +127,11 @@ describe('Preferences window', () => {
     expect(openDevToolsStub.args[0][0]).to.eql({ detach: true });
 
     expect(browserWindowSpy.args[0][0]).to.eql(expectedBrowserWindowArgs);
+
+    expect(onContextMenuStub.calledOnce).to.equal(true);
+    expect(onContextMenuStub.args[0][0]).to.equal('context-menu');
+
+    expect(setMenuStub.args[0][0]).to.equal(null);
 
     // Change the environment back to what it was originally. In this case,
     // probably "test".

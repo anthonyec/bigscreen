@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const INPUT_CONTEXT_MENU = require('../menu_templates/input_context');
 
 const noop = require('../utils/noop');
 const { enableAutoLaunch, disableAutoLaunch } = require('../autolaunch');
@@ -49,7 +50,11 @@ module.exports = class PreferencesWindow {
     this.window = new BrowserWindow(settings);
     this.window.loadURL(this.url);
 
+    // Remove menubar on win32.
+    this.window.setMenu(null);
+
     this.window.on('ready-to-show', this.window.show);
+    this.window.webContents.on('context-menu', this.onContextMenu);
 
     if (IS_DEV_ENV) {
       this.window.openDevTools({ detach: true });
@@ -63,5 +68,24 @@ module.exports = class PreferencesWindow {
   close() {
     this.window.close();
     this.window = null;
+  }
+
+  /**
+   * Add handler to webContext right click event.
+   * @param {evt} evt Input DOM event.
+   * @param {props} props Event props.
+   * @returns {void}
+   */
+  onContextMenu(evt, props) {
+    const { inputFieldType } = props;
+
+    // Electron disables ALL context menus by default. Some may say this is
+    // good, others may say not. But hmmmm....
+    // https://github.com/electron/electron/issues/4068
+    const inputContextMenu = Menu.buildFromTemplate(INPUT_CONTEXT_MENU);
+
+    if (inputFieldType === 'plainText') {
+      inputContextMenu.popup(this.window);
+    }
   }
 };
