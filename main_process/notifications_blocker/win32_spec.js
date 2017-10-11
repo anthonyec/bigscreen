@@ -118,52 +118,18 @@ describe('Notificationss blocker for win32', () => {
     });
   });
 
-  describe('restartWindowsExplorer', () => {
-    it('calls PowerShell with correct command', (done) => {
-      const expectedCommand = 'Stop-Process -ProcessName Explorer';
-      const onSpy = sandbox.spy((event, callback) => {
-        if (event === 'end') {
-          callback();
-        }
-      });
-
-      const powerShellSpy = sandbox.spy(function PowerShell() {
-        this.on = onSpy;
-      });
-
-      const notificationsBlockerProxy = proxyquire('./win32', {
-        powershell: powerShellSpy,
-      });
-
-      notificationsBlockerProxy.restartWindowsExplorer().then(() => {
-        expect(powerShellSpy.args[0][0]).to.equal(expectedCommand);
-
-        expect(onSpy.args[0][0]).to.equal('error');
-        expect(onSpy.args[1][0]).to.equal('end');
-
-        done();
-      }).catch(done);
-    });
-  });
-
   describe('toggleBalloonTips', () => {
     it('sets balloon tips and restarts windows explorer', () => {
       const setBalloonTipsRegistryEntryStub = sandbox.stub();
-      const restartWindowsExplorerStub = sandbox.stub();
 
       notificationsBlocker.setBalloonTipsRegistryEntry =
         setBalloonTipsRegistryEntryStub;
 
-      notificationsBlocker.restartWindowsExplorer =
-        restartWindowsExplorerStub;
-
       setBalloonTipsRegistryEntryStub.returns(Promise.resolve());
-      restartWindowsExplorerStub.returns(Promise.resolve());
 
       return notificationsBlocker.toggleBalloonTips(true).then(() => {
         expect(setBalloonTipsRegistryEntryStub.args[0][0]).to.equal(true);
         expect(setBalloonTipsRegistryEntryStub.calledOnce).to.equal(true);
-        expect(restartWindowsExplorerStub.calledOnce).to.equal(true);
       });
     });
   });
@@ -171,21 +137,15 @@ describe('Notificationss blocker for win32', () => {
   describe('toggleToastNotifications', () => {
     it('sets push notifications and restarts windows explorer', () => {
       const setPushNotificationsEntryStub = sandbox.stub();
-      const restartWindowsExplorerStub = sandbox.stub();
 
       notificationsBlocker.setPushNotificationsEntry =
         setPushNotificationsEntryStub;
 
-      notificationsBlocker.restartWindowsExplorer =
-        restartWindowsExplorerStub;
-
       setPushNotificationsEntryStub.returns(Promise.resolve());
-      restartWindowsExplorerStub.returns(Promise.resolve());
 
       return notificationsBlocker.toggleToastNotifications(true).then(() => {
         expect(setPushNotificationsEntryStub.args[0][0]).to.equal(true);
         expect(setPushNotificationsEntryStub.calledOnce).to.equal(true);
-        expect(restartWindowsExplorerStub.calledOnce).to.equal(true);
       });
     });
   });
