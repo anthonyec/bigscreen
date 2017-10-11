@@ -952,6 +952,10 @@ http-signature@~1.1.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
+if-async@^3.7.4:
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/if-async/-/if-async-3.7.4.tgz#55868deb0093d3c67bf7166e745353fb9bcb21a2"
+
 ignore@^3.2.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.0.tgz#3812d22cbe9125f2c2b4915755a1b8abd745a001"
@@ -1098,9 +1102,17 @@ is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
 
+is-undefined@^1.0.0:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/is-undefined/-/is-undefined-1.0.8.tgz#aede8551d75285364bc98b666792f7b6ab5c25a5"
+
 is-utf8@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
+
+is-win@^1.0.2:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/is-win/-/is-win-1.0.7.tgz#f3598767c330f899614ee4b729f6f095a9c6110c"
 
 isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
@@ -1649,6 +1661,14 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
+powershell@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/powershell/-/powershell-2.2.1.tgz#87b19b3f4abd67e36ae1eee26d1be579bef309d4"
+  dependencies:
+    is-undefined "^1.0.0"
+    is-win "^1.0.2"
+    spawno "^1.0.0"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -1659,6 +1679,10 @@ pretty-bytes@^1.0.2:
   dependencies:
     get-stdin "^4.0.1"
     meow "^3.1.0"
+
+proc-output@^1.0.0:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/proc-output/-/proc-output-1.0.6.tgz#9ffcfb3ac6a156ee32b7ebd69f024a4f6d896350"
 
 process-nextick-args@~1.0.6:
   version "1.0.7"
@@ -1763,6 +1787,15 @@ readable-stream@^2.2.2:
     string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
+"readable-stream@>=1.0.33-1 <1.1.0-0":
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.0.34.tgz#125820e34bc842d2f2aaafafe4c2916ee32c157c"
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "0.0.1"
+    string_decoder "~0.10.x"
+
 readline2@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/readline2/-/readline2-1.0.1.tgz#41059608ffc154757b715d9989d199ffbf372e35"
@@ -1783,6 +1816,15 @@ redent@^1.0.0:
   dependencies:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
+
+regedit@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/regedit/-/regedit-2.2.7.tgz#47028487a471aaa7d62a8d0383cceeedebf3af80"
+  dependencies:
+    debug "^2.1.1"
+    if-async "^3.7.4"
+    stream-slicer "0.0.6"
+    through2 "^0.6.3"
 
 regenerator-runtime@^0.10.0:
   version "0.10.5"
@@ -1942,6 +1984,12 @@ sntp@1.x.x:
   dependencies:
     hoek "2.x.x"
 
+spawno@^1.0.0:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/spawno/-/spawno-1.0.4.tgz#8df56503fc315693588e7221494d5c94f165bb57"
+  dependencies:
+    proc-output "^1.0.0"
+
 spdx-correct@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-1.0.2.tgz#4b3073d933ff51f3912f03ac5519498a4150db40"
@@ -1978,6 +2026,10 @@ sshpk@^1.7.0:
     jodid25519 "^1.0.0"
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
+
+stream-slicer@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/stream-slicer/-/stream-slicer-0.0.6.tgz#f86b2ac5c2440b7a0a87b71f33665c0788046138"
 
 string_decoder@~0.10.x:
   version "0.10.31"
@@ -2090,6 +2142,13 @@ throttleit@0.0.2:
 through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
+
+through2@^0.6.3:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/through2/-/through2-0.6.5.tgz#41ab9c67b29d57209071410e1d7a7a968cd3ad48"
+  dependencies:
+    readable-stream ">=1.0.33-1 <1.1.0-0"
+    xtend ">=4.0.0 <4.1.0-0"
 
 through2@~0.2.3:
   version "0.2.3"
@@ -2247,7 +2306,7 @@ xmldom@0.1.x:
   version "0.1.27"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
 
-xtend@^4.0.0:
+xtend@^4.0.0, "xtend@>=4.0.0 <4.1.0-0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
 

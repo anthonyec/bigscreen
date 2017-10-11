@@ -24,7 +24,9 @@
     "js-yaml": "^3.8.2",
     "mv": "^2.1.1",
     "plist": "^2.1.0",
-    "request": "^2.81.0"
+    "powershell": "^2.2.1",
+    "request": "^2.81.0",
+    "winreg": "^1.2.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",

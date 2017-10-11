@@ -1,6 +1,6 @@
 const os = require('os');
 
-const keepAliveDarwin = require('./darwin');
+const blockerWin32 = require('./win32');
 
 /**
  * Get the OS platform name.
@@ -27,17 +27,17 @@ function dummyMethod() {
 function getPlatformAPI() {
   const platform = module.exports.getPlatform();
 
-  if (platform === 'darwin') {
+  if (platform === 'win32') {
     return {
-      enableKeepAlive: keepAliveDarwin.enableKeepAlive,
-      disableKeepAlive: keepAliveDarwin.disableKeepAlive,
+      enableNotificationBlocker: blockerWin32.enableNotificationBlocker,
+      disableNotificationBlocker: blockerWin32.disableNotificationBlocker,
     };
   }
 
   return {
     // Return fake functions that always resolve.
-    enableKeepAlive: module.exports.dummyMethod,
-    disableKeepAlive: module.exports.dummyMethod,
+    enableNotificationBlocker: module.exports.dummyMethod,
+    disableNotificationBlocker: module.exports.dummyMethod,
   };
 }
 
