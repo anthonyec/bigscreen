@@ -2,13 +2,15 @@
   <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side@2x.png" alt="Bigscreen" width="420">
   <br><br><br>
   Display web content fullscreen, forever.
-  <br><br><br><br><br><br>
-  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot" width="460">
-  <br><br><br>
+  <br><br>
   <a href="">Download latest release</a>
 </div>
 
 ## Features
+<div align="center">
+  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot" width="460">
+</div>
+<br>
 - **Fullscreen:** Hides the cursor, menubars, notifications and other system stuff.
 - **Multi-monitor:** Content can span the width of all screens plugged in.
 - **Always awake:** Disables computer sleep and screensaver when running.
