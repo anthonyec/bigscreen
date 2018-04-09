@@ -1,15 +1,12 @@
-<center>
-![](docs/logo.png)
-# Bigscreen
-
-Display web content fullscreen, forever.
-
-[Download latest release]()
-
-</center>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side.png" alt="Bigscreen" width="400">
+  <br>
+  Display web content fullscreen, forever.
+  
+  [Download latest release]()
+</div>
 
 ## Features
-
 - **Fullscreen:** Hides the cursor, menubars, notifications and other system stuff.
 - **Multi-monitor:** Content can span the width of all screens plugged in.
 - **Always awake:** Disables computer sleep and screensaver when running.
