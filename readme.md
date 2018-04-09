@@ -2,10 +2,10 @@
   <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side@2x.png" alt="Bigscreen" width="420">
   <br><br><br>
   Display web content fullscreen, forever.
+  <br><br><br><br><br><br>
+  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot" width="460">
   <br><br><br>
-  [Download latest release]()
-  <br><br><br>
-  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot">
+  <a href="">Download latest release</a>
 </div>
 
 ## Features
