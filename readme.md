@@ -1,9 +1,11 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side.png" alt="Bigscreen" width="400">
-  <br>
+  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side@2x.png" alt="Bigscreen" width="420">
+  <br><br><br>
   Display web content fullscreen, forever.
-  
+  <br><br><br>
   [Download latest release]()
+  <br><br><br>
+  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot">
 </div>
 
 ## Features
