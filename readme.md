@@ -3,7 +3,7 @@
   <br><br>
   Display web content fullscreen, forever.
   <br>
-  <a href="">Download latest release</a>
+  <a href="https://github.com/anthonyec/bigscreen/releases/download/v1.0/Bigscreen-darwin-x64.zip">Download latest release for macOS</a>
 </div>
 
 ## Features
