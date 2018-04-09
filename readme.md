@@ -10,7 +10,9 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/screenshot.png" alt="Screenshot" width="460">
 </div>
+
 <br>
+
 - **Fullscreen:** Hides the cursor, menubars, notifications and other system stuff.
 - **Multi-monitor:** Content can span the width of all screens plugged in.
 - **Always awake:** Disables computer sleep and screensaver when running.
