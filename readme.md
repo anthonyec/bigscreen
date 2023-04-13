@@ -1,10 +1,16 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/anthonyec/bigscreen/master/docs/images/logo_side@2x.png" alt="Bigscreen" width="420">
+  <img src="./docs/images/logo.png" width="420" alt="Bigscreen">
   <br><br>
-  Display web content fullscreen, forever.
-  <br>
-  <a href="https://github.com/anthonyec/bigscreen/releases/download/v1.0/Bigscreen-darwin-x64.zip">Download latest release for macOS</a>
+
+**Display web content fullscreen, forever.**
+
+  [Download latest release for macOS](https://github.com/anthonyec/bigscreen/releases/download/v1.0/Bigscreen-darwin-x64.zip)
+
 </div>
+
+## Archived
+
+⚠️ This project is archived because it has not been maintained or updated for a looong time. Use at your own risk.
 
 ## Features
 <div align="center">
